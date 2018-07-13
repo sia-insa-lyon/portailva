@@ -193,6 +193,19 @@ class AssociationDirectoryEntryDeleteView(AssociationMixin, TemplateView):
         }))
 
 
+class AssociationPrintView(DetailView):
+    template_name = 'directory/print.html'
+    model = Association
+    context_object_name = 'association'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['now'] = datetime.now()
+        context['days'] = OpeningHour.DAYS_OF_WEEK
+
+        return context
+
+
 class AssociationDirectoryPublicView(ListView):
     template_name = 'directory/public.html'
     model = Association

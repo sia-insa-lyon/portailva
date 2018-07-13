@@ -48,6 +48,10 @@ class DirectoryEntry(models.Model):
     def __str__(self):
         return "[" + self.association.name + "] Version du " + str(self.created_at)
 
+    @property
+    def public_phone(self):
+        return self.phone
+
 
 class OpeningHour(models.Model):
     """

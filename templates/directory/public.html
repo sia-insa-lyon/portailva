@@ -363,6 +363,9 @@
                             </div>
                             <div class="modal-footer">
                                 <div class="btn-group">
+                                    <a href="{% url 'association-print' asso.id %}" class="btn btn-light">
+                                        Version imprimable
+                                    </a>
                                     {% if user.is_superuser %}
                                         <a href="{% url 'association-detail' asso.id %}" class="btn btn-light">
                                             Admin

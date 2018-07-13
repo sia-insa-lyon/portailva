@@ -3,7 +3,7 @@ from django.conf.urls import url
 from .views import AssociationDirectoryEntryDetailView, AssociationDirectoryEntryUpdateView, \
     AssociationDirectoryEntryOpeningHourCreateView, AssociationDirectoryEntryOpeningHourUpdateView, \
     AssociationDirectoryEntryOpeningHourDeleteView, AssociationDirectoryEntryPublishView, \
-    AssociationDirectoryEntryDeleteView, AssociationDirectoryPublicView
+    AssociationDirectoryEntryDeleteView, AssociationDirectoryPublicView, AssociationPrintView
 
 urlpatterns = [
     url('^association/(?P<association_pk>\d+)/directory/$', AssociationDirectoryEntryDetailView.as_view(),
@@ -23,5 +23,6 @@ urlpatterns = [
     url('^association/(?P<association_pk>\d+)/directory/delete/$', AssociationDirectoryEntryDeleteView.as_view(),
         name='association-directory-delete'),
 
-    url('^association/botinsa-beta/$', AssociationDirectoryPublicView.as_view(), name='association-directory-public')
+    url('^association/botinsa-beta/$', AssociationDirectoryPublicView.as_view(), name='association-directory-public'),
+    url('^association/(?P<pk>\d+)/print/$', AssociationPrintView.as_view(), name='association-print'),
 ]
