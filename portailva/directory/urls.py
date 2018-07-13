@@ -23,6 +23,6 @@ urlpatterns = [
     url('^association/(?P<association_pk>\d+)/directory/delete/$', AssociationDirectoryEntryDeleteView.as_view(),
         name='association-directory-delete'),
 
-    url('^association/botinsa-beta/$', AssociationDirectoryPublicView.as_view(), name='association-directory-public'),
+    url('^association/botinsa/$', AssociationDirectoryPublicView.as_view(), name='association-directory-public'),
     url('^association/(?P<pk>\d+)/print/$', AssociationPrintView.as_view(), name='association-print'),
 ]
