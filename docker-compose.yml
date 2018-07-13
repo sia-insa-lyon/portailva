@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services:
   nginx:
@@ -6,12 +6,14 @@ services:
     container_name: nginx-django
     ports:
       - "8000:8000"
+    networks:
+      - web
     depends_on:
       - app
     volumes:
       - ./docker/config/nginx:/etc/nginx/conf.d
-      - ./staticfiles:/app/staticfiles
-      - ./mediafiles:/app/mediafiles
+      - staticfiles:/app/staticfiles
+      - mediafiles:/app/mediafiles
 
   app:
     build: .
@@ -21,18 +23,36 @@ services:
       - DATABASE_URL=postgres://postgresql@postgres/portailva
       - APP_DEBUG=True
       - SITE_DNS=web
+    networks:
+      - db
+      - web
 
     depends_on:
       - db
     expose:
       - "8000"
     volumes:
-      - ./staticfiles:/app/staticfiles
-      - ./mediafiles:/app/mediafiles
+      - staticfiles:/app/staticfiles
+      - mediafiles:/app/mediafiles
+      - ./:/app
+
 
   db:
     image: postgres:latest
     container_name: postgres
+    networks:
+      - db
     environment:
       - POSTGRES_USER=postgresql
       - POSTGRES_DB=portailva
+    volumes:
+      - db:/var/lib/postgresql/data
+
+networks:
+  db: {}
+  web: {}
+
+volumes:
+  staticfiles: {}
+  mediafiles: {}
+  db: {}
