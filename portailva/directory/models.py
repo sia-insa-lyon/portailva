@@ -1,3 +1,5 @@
+import os
+
 from itertools import groupby
 
 from django.db import models
@@ -50,7 +52,11 @@ class DirectoryEntry(models.Model):
 
     @property
     def public_phone(self):
-        return self.phone
+        if (self.phone.startswith('06') or self.phone.startswith('+336') or self.phone.startswith('336')
+                or self.phone.startswith('07') or self.phone.startswith('+337') or self.phone.startswith('337')):
+            return os.getenv('BDE_PHONE')
+        else:
+            return self.phone
 
 
 class OpeningHour(models.Model):

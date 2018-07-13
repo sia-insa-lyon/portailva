@@ -23,6 +23,7 @@ services:
       - DATABASE_URL=postgres://postgresql@postgres/portailva
       - APP_DEBUG=True
       - SITE_DNS=web
+      - BDE_PHONE=0404040404
     networks:
       - db
       - web

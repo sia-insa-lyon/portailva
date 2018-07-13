@@ -251,9 +251,9 @@
                                                     {% endif %}<br>
 
                                                     <i class="fa fa-fw fa-phone"></i>
-                                                    {% if asso.current_directory_entry.phone %}
-                                                        <a href="tel:{{ asso.current_directory_entry.phone }}">
-                                                            {{ asso.current_directory_entry.phone }}
+                                                    {% if asso.current_directory_entry.public_phone %}
+                                                        <a href="tel:{{ asso.current_directory_entry.public_phone }}">
+                                                            {{ asso.current_directory_entry.public_phone }}
                                                         </a>
                                                     {% else %}
                                                         <em>Non défini</em>
