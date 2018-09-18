@@ -26,7 +26,7 @@ class DirectoryEntry(models.Model):
     """
     description = models.TextField("Description de l'association")
     contact_address = models.EmailField("Adresse de contact")
-    phone = models.CharField("Téléphone", max_length=10, blank=True, null=True)
+    phone = models.CharField("Téléphone", max_length=10, blank=True)
 
     website_url = models.URLField("URL site web", null=True, blank=True)
     facebook_url = models.URLField("URL page Facebook", null=True, blank=True)
