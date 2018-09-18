@@ -222,7 +222,7 @@ class AssociationDirectoryPublicView(ListView):
     def normalize_query(query_string,
                         findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
                         normspace=re.compile(r'\s{2,}').sub):
-        """ Splits the query string in invidual keywords, getting rid of unecessary spaces
+        """ Splits the query string in individual keywords, getting rid of unnecessary spaces
             and grouping quoted words together.
             Example:
 
