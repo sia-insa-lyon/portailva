@@ -1,0 +1,43 @@
+version: '3.5'
+
+services:
+  app:
+    build: .
+    container_name: portailva
+
+    environment:
+      - DATABASE_URL=postgres://postgresql@postgres/portailva
+      - APP_DEBUG=True
+      - SITE_DNS=web
+      - BDE_PHONE=0404040404
+    networks:
+      - db
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    expose:
+      - "8000"
+    volumes:
+      - staticfiles:/app/staticfiles
+      - mediafiles:/app/mediafiles
+      - ./:/app
+
+  db:
+    image: postgres:latest
+    container_name: postgres
+    networks:
+      - db
+    environment:
+      - POSTGRES_USER=postgresql
+      - POSTGRES_DB=portailva
+    volumes:
+      - db:/var/lib/postgresql/data
+
+networks:
+  db: {}
+
+volumes:
+  staticfiles: {}
+  mediafiles: {}
+  db: {}
