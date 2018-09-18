@@ -11,7 +11,9 @@ def validate_image_url(url):
                               "Assurez-vous que l'URL que vous fournissez ne pointe pas vers une visionneuse "
                               "type Google Drive mais bien vers le fichier en lui-même. "
                               "Assurez-vous également que l'accès à l'image ne requière pas "
-                              "d'authentification (mode \"public\" sur PortailVA).")
+                              "d'authentification (mode \"public\" sur PortailVA). Vous pouvez mettre en ligne votre "
+                              "logo dans vos fichiers sur PortailVA, rendre le fichier public et utiliser "
+                              "le lien ainsi généré dans ce champ.")
 
 
 def validate_iban(iban):

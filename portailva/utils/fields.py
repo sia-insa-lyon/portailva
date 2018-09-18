@@ -23,5 +23,7 @@ class LogoURLField(ImageURLField):
                                "Assurez-vous que le lien que vous fournissez "
                                "pointe directement sur l'image (pas de page "
                                "d'affichage comme Google Drive ou autres) et que "
-                               "l'image soit accessible.")
+                               "l'image soit accessible. Vous pouvez mettre en ligne votre logo "
+                               "dans vos fichiers sur PortailVA, rendre le fichier public et utiliser "
+                               "le lien ainsi généré dans ce champ.")
         super().__init__(*args, **kwargs)
