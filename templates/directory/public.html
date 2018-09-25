@@ -81,6 +81,7 @@
                     <small class="text-muted">({{ associations.count }} selon les critères choisis)</small>
                 {% endif %}
             </h2>
+            <p class="text-muted">Les associations avec un fond sombre sont inactives et cherchent un repreneur.</p>
             <div class="row mb-4">
                 <div class="col-12">
                     <form action="{% if cat %}?cat={{ cat }}{% endif %}" method="get" class="form-inline">
@@ -111,15 +112,17 @@
             </div>
             <div class="card-columns">
                 {% for asso in associations %}
-                    <div class="card">
+                    <div class="card {% if not asso.is_active %}text-white bg-secondary{% endif %}">
                         {% if asso.logo_url %}<img class="card-img-top" src="{{ asso.logo_url }}" alt="Logo">{% endif %}
                         <div class="card-body">
                             <h4 class="card-title">
                                 {{ asso.name }}
                                 {% if asso.acronym %}
-                                    <small class="text-muted">({{ asso.acronym }})</small>
+                                    <small class="{% if asso.is_active %}text-muted{% endif %}">
+                                        ({{ asso.acronym }})
+                                    </small>
                                 {% endif %}
-                                <span class="badge badge-pill badge-secondary">{{ asso.category.name }}</span>
+                                <span class="badge badge-pill {% if asso.is_active %}badge-secondary{% else %}badge-light{% endif %}">{{ asso.category.name }}</span>
                             </h4>
                             <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
                             <div class="btn-group">

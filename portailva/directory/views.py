@@ -212,12 +212,6 @@ class AssociationDirectoryPublicView(ListView):
     context_object_name = 'associations'
     query = None
     cat = None
-    queryset = (Association.objects
-                .filter(is_validated=True)
-                .filter(is_active=True)
-                .filter(directory_entries__isnull=False)
-                .filter(directory_entries__is_online=True)
-                .distinct())
 
     @staticmethod
     def normalize_query(query_string,
@@ -259,8 +253,16 @@ class AssociationDirectoryPublicView(ListView):
         self.cat = self.request.GET.get('cat')
         return super().dispatch(request, *args, **kwargs)
 
+    @property
+    def queryset(self):
+        return (Association.objects
+                .filter(is_validated=True)
+                .filter(directory_entries__isnull=False)
+                .filter(directory_entries__is_online=True)
+                .distinct())
+
     def get_queryset(self):
-        queryset = AssociationDirectoryPublicView.queryset
+        queryset = self.queryset
         if self.query:
             queryset = (queryset
                         .filter(self.get_query(self.query, ['name', 'acronym',
@@ -283,10 +285,10 @@ class AssociationDirectoryPublicView(ListView):
         context['highlights']['assos'] = assos
 
         events = (Event.objects
-                  .filter(association__in=self.queryset)
-                  .filter(is_online=True)
-                  .filter(ends_at__gte=datetime.now())
-                  .order_by('?')[:5])
+                      .filter(association__in=self.queryset)
+                      .filter(is_online=True)
+                      .filter(ends_at__gte=datetime.now())
+                      .order_by('?')[:5])
         context['highlights']['events'] = events
 
         context['categories'] = Category.objects.order_by('name')
