@@ -123,6 +123,11 @@
                                     </small>
                                 {% endif %}
                                 <span class="badge badge-pill {% if asso.is_active %}badge-secondary{% else %}badge-light{% endif %}">{{ asso.category.name }}</span>
+                                {% if not asso.is_active %}
+                                    <span class="badge badge-pill badge-dark">
+                                        Inactive
+                                    </span>
+                                {% endif %}
                             </h4>
                             <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
                             <div class="btn-group">
