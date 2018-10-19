@@ -41,6 +41,8 @@ class File(models.Model):
             # If file is an association file, we ensure user belongs to association or is an admin
             if isinstance(self, AssociationFile):
                 return self.association.can_access(user)
+            elif hasattr(self, 'associationfile'):
+                return self.associationfile.association.can_access(user)
             else:
                 return True
         return False
