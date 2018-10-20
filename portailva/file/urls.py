@@ -10,7 +10,7 @@ from portailva.file.views.files import FileView
 
 urlpatterns = [
     # File
-    url('^file/(?P<pk>\d+)/$', FileView.as_view(), name='file-view'),
+    url('^file/(?P<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$', FileView.as_view(), name='file-view'),
 
     # Association file
     url('^association/(?P<association_pk>\d+)/file/tree(?:/(?P<folder_pk>\d+))?/$', AssociationFileTreeView.as_view(),

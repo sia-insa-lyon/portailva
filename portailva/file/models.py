@@ -20,6 +20,7 @@ class File(models.Model):
     """
     A File.
     """
+    uuid = models.UUIDField("uuid", default=uuid.uuid4, editable=False)
     name = models.CharField("Nom", max_length=200)
 
     is_public = models.BooleanField("Public", default=False, blank=True)
