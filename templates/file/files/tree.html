@@ -16,52 +16,53 @@
 
 {% block content_association %}
     <table class="table table-hover">
-        {% if current_folder %}
-            {% if current_folder.parent %}
-                <tr>
-                    <td><i class="fa fa-folder"></i> <a
-                            href="{% url 'association-file-tree' association.id current_folder.parent.id %}">..</a></td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td><i class="fa fa-folder"></i> <a href="{% url 'association-file-tree' association.id %}">..</a>
-                    </td>
-                </tr>
-            {% endif %}
-        {% else %}
-            {% if is_root %}
-                <tr>
-                    <td><i class="fa fa-folder"></i> <a
-                            href="{% url 'association-resource-tree' association.id %}">Ressources</a></td>
-                </tr>
-            {% endif %}
-        {% endif %}
+        <tr>
+            <td colspan="2">
+                {% if current_folder %}
+                    {% if current_folder.parent %}
+                        <i class="fa fa-folder"></i>
+                        <a href="{% url 'association-file-tree' association.id current_folder.parent.id %}">..</a>
+                    {% else %}
+                        <i class="fa fa-folder"></i>
+                        <a href="{% url 'association-file-tree' association.id %}">..</a>
+                    {% endif %}
+                {% else %}
+                    {% if is_root %}
+                        <i class="fa fa-folder"></i>
+                        <a href="{% url 'association-resource-tree' association.id %}">Ressources</a>
+                    {% endif %}
+                {% endif %}
 
-        {% for folder in folders %}
-            <tr>
-                <td><i class="fa fa-folder"></i> <a
-                        href="{% url 'association-file-tree' association.id folder.id %}">{{ folder.name }}</a></td>
-            </tr>
-        {% endfor %}
+                {% for folder in folders %}
+                    <tr>
+                        <td colspan="2"><i class="fa fa-folder"></i> <a
+                                href="{% url 'association-file-tree' association.id folder.id %}">{{ folder.name }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
         {% for file in files %}
             <tr>
-                <td><i class="fa fa-file"></i> <a href="{% url 'file-view' file.id %}">
+                <td><i class="fa fa-file"></i> <a href="{% url 'file-view' file.uuid %}">
                     {{ file.name }} ({% if file.is_public %}public{% else %}privé{% endif %})
                 </a></td>
-                {% if folder.id %}
-                    <td class="text-right"><a href="{% url 'association-file-delete' association.id file.id %}"
-                                              data-toggle="tooltip" title="Supprimer le fichier"><i
-                            class="fa fa-times"></i></a></td>
-                {% endif %}
                 <td class="text-right">
                     <form action="{% url 'association-file-publish' association.id file.id %}"
                           method="post">
                         {% csrf_token %}
-                        <button type="submit"
-                                class="btn btn-sm btn-{% if file.is_public %}warning{% else %}success{% endif %}">
-                            <i class="fa fa-low-vision"></i>
-                            Rendre {% if file.is_public %}privé{% else %}public{% endif %}
-                        </button>
+                        <div class="btn-group">
+                            <button type="submit"
+                                    class="btn btn-sm btn-{% if file.is_public %}warning{% else %}success{% endif %}">
+                                <i class="fa fa-low-vision"></i>
+                                Rendre {% if file.is_public %}privé{% else %}public{% endif %}
+                            </button>
+                            {% if file.folder.id %}
+                                <a href="{% url 'association-file-delete' association.id file.id %}"
+                                   data-toggle="tooltip"
+                                   class="btn btn-sm btn-danger"
+                                   title="Supprimer le fichier"><i
+                                        class="fa fa-times"></i></a>
+                            {% endif %}
+                        </div>
                     </form>
                 </td>
             </tr>
