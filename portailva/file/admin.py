@@ -3,7 +3,11 @@ from django.contrib import admin
 # Register your models here.
 from portailva.file.models import File, FileVersion, AssociationFile, FileType, FileFolder, ResourceFile
 
-admin.site.register(File)
+
+class FileAdmin(admin.ModelAdmin):
+    list_filter = ['is_public']
+
+admin.site.register(File, FileAdmin)
 admin.site.register(FileType)
 
 
