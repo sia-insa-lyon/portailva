@@ -52,11 +52,17 @@ class DirectoryEntry(models.Model):
 
     @property
     def public_phone(self):
-        if (self.phone.startswith('06') or self.phone.startswith('+336') or self.phone.startswith('336')
+        if (self.phone == ''
+                or self.phone.startswith('06') or self.phone.startswith('+336') or self.phone.startswith('336')
                 or self.phone.startswith('07') or self.phone.startswith('+337') or self.phone.startswith('337')):
-            return os.getenv('BDE_PHONE')
+            return {
+                'phone': os.getenv('BDE_PHONE'),
+                'source': "Standard BdE"
+            }
         else:
-            return self.phone
+            return {
+                'phone': self.phone,
+            }
 
 
 class OpeningHour(models.Model):

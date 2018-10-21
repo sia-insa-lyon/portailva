@@ -264,9 +264,9 @@
 
                                                     <i class="fa fa-fw fa-phone"></i>
                                                     {% if asso.current_directory_entry.public_phone %}
-                                                        <a href="tel:{{ asso.current_directory_entry.public_phone }}">
-                                                            {{ asso.current_directory_entry.public_phone }}
-                                                        </a>
+                                                        <a href="tel:{{ asso.current_directory_entry.public_phone.phone }}">
+                                                            {{ asso.current_directory_entry.public_phone.phone }}
+                                                        </a>{% if asso.current_directory_entry.public_phone.source %} ({{ asso.current_directory_entry.public_phone.source }}){% endif %}
                                                     {% else %}
                                                         <em>Non défini</em>
                                                     {% endif %}

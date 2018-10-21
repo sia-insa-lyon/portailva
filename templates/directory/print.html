@@ -82,9 +82,9 @@
 
                     <i class="fa fa-fw fa-phone"></i>
                     {% if association.current_directory_entry.public_phone %}
-                        <a href="tel:{{ association.current_directory_entry.public_phone }}">
-                            {{ association.current_directory_entry.public_phone }}
-                        </a>
+                        <a href="tel:{{ association.current_directory_entry.public_phone.phone }}">
+                            {{ association.current_directory_entry.public_phone.phone }}
+                        </a>{% if association.current_directory_entry.public_phone.source %} ({{ association.current_directory_entry.public_phone.source }}){% endif %}
                     {% else %}
                         <em>Non défini</em>
                     {% endif %}
