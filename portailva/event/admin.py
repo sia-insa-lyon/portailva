@@ -13,6 +13,7 @@ publish.short_description = "Publier les évènements sélectionnés"
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ['name', 'is_online', 'type', 'begins_at', 'ends_at']
+    list_filter = 'is_online', 'type',
     ordering = ['name']
     actions = [publish]
 
