@@ -33,6 +33,11 @@ SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
 if os.environ.get('API_DNS', False):
     ALLOWED_HOSTS.append(os.environ.get('API_DNS'))
 
+ADMINS = [('Équipe OrgaIF', os.getenv('ADMIN_EMAIL')), ]
+SERVER_EMAIL = os.getenv('SERVER_EMAIL')
+EMAIL_SUBJECT_PREFIX = '[PortailVA] '
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -133,6 +138,25 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'portailva': {
+            'handlers': ['console'],
+            'level': LOG_LEVEL
+        },
+    },
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
