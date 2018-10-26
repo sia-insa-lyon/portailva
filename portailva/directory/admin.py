@@ -17,7 +17,7 @@ class DirectoryEntryAdmin(admin.ModelAdmin):
     search_fields = 'association__name',
     list_filter = 'is_online',
     date_hierarchy = 'created_at'
-    ordering = 'id',
+    ordering = '-id',
     actions = [publish]
 
     def asso_name(self, obj):
@@ -33,7 +33,7 @@ class OpeningHourAdmin(admin.ModelAdmin):
     list_display_links = 'id',
     search_fields = 'directory_entry__association__name',
     list_filter = 'day',
-    ordering = 'id',
+    ordering = '-id',
 
     def asso_name(self, obj):
         return obj.directory_entry.association.name
