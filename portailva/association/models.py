@@ -136,7 +136,7 @@ class People(models.Model):
     first_name = models.CharField("Prénom", max_length=50)
     last_name = models.CharField("Nom", max_length=50)
     email = models.EmailField("Adresse email", max_length=250)
-    phone = models.CharField("Numéro de téléphone", max_length=50, null=True, blank=True)
+    phone = models.CharField("Numéro de téléphone", max_length=50, default='')
 
     role = models.ForeignKey(PeopleRole, verbose_name="Rôle", related_name="peoples", on_delete=models.SET_NULL,
                              null=True)
