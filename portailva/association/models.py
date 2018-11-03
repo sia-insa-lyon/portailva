@@ -16,6 +16,8 @@ class Category(models.Model):
     """
     name = models.CharField("Nom", max_length=50)
     position = models.IntegerField("Position")
+    latex_color_name = models.CharField(max_length=100,
+                                        help_text="Used for LaTeX generation, see the .sty for more info")
 
     class Meta(object):
         default_permissions = ('add', 'change', 'delete', 'admin',)
