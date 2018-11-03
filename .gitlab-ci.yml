@@ -26,6 +26,6 @@ deploy:
   stage: deploy
   image: cdrx/rancher-gitlab-deploy
   script:
-    - upgrade --stack portailva --service portailva --start-before-stopping --environment Production
+    - upgrade --stack portailva --service portailva --start-before-stopping --environment Production --upgrade-timeout 600
   only:
     - master
