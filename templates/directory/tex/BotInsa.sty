@@ -1,0 +1,311 @@
+%!TEX root=./BotInsa_Template.tex
+\ProvidesPackage{BotInsa}
+
+%% Packages
+	% Layout and font packages
+	\RequirePackage[a6paper]{geometry}				% for A6 document
+	\RequirePackage[light,condensed,math]{iwona} 	% font
+	\RequirePackage[T1]{fontenc}					
+	\RequirePackage[utf8]{inputenc}
+	\RequirePackage[french]{babel}
+	\RequirePackage{multicol}
+
+	% Graphical packages
+	\RequirePackage{fontawesome}					% for the mail, facebook, etc. icons
+	\RequirePackage{graphicx}						% for including the logos
+	\RequirePackage{xcolor}							% for defining new colors
+	\RequirePackage[explicit]{titlesec}				% for redefining section styles, explicit allows for direct referencing to title
+	\RequirePackage[skins]{tcolorbox}					% for filling nodes with picture
+	\RequirePackage{tikz}							
+		\usetikzlibrary{calc} % for coordinates calculations
+	\RequirePackage{varwidth} 						% allows controlling the maximum width of a box.
+
+	% Programming packages
+	\RequirePackage{pdftexcmds}						% for string testing with expansion of macros
+	
+	% Miscellaneous
+	\RequirePackage{lipsum}							% for generating random text
+
+	% Last loaded
+	\RequirePackage{hyperref}						% for hyper text features
+
+%% Lengths definitions
+	\newlength{\HBlockSeparator}		% Horizontal distance between blocks
+	\newlength{\VBlockSeparator}		% Vertical distance between blocks
+	\newlength{\HorizontalMargin}		% Horizontal margin
+	\newlength{\VerticalMargin}			% Vertical margin
+	\newlength{\AssoDescriptionMaxWidth}% Maximum width of the association description
+	\newlength{\LogoMaxWidth}			% Logo maximum width
+	\newlength{\DayMaxWidth}			% Day maximum width
+	\newlength{\DayScheduleMaxWidth}	% Day schedule maximum width
+	\newlength{\InfoMaxWidth}			% Information maximum width
+
+%% Lengths value assignations
+	\setlength{\HBlockSeparator}{.025\paperwidth}
+	\setlength{\VBlockSeparator}{.05\paperheight}
+	\setlength{\HorizontalMargin}{.075\paperwidth}
+	\setlength{\VerticalMargin}{.075\paperheight}
+	\setlength{\AssoDescriptionMaxWidth}{\paperwidth}\addtolength{\AssoDescriptionMaxWidth}{-2\HorizontalMargin}
+	\setlength{\LogoMaxWidth}{.1\paperwidth}
+	\setlength{\DayMaxWidth}{.06\paperwidth}
+	\setlength{\DayScheduleMaxWidth}{.06\paperwidth}
+	\setlength{\InfoMaxWidth}{.35\paperwidth}
+
+%% Category colors
+	\definecolor{AnimationCampus}	{HTML}{046975}
+	\definecolor{ArtSpectacle}		{HTML}{418A47}
+	\definecolor{Departement}		{HTML}{ACCC61}
+	\definecolor{International}		{HTML}{FFDF59}
+	\definecolor{HumanitaireSocial}	{HTML}{FF1D47}
+	\definecolor{Loisir}			{HTML}{7954BE}
+	\definecolor{Sport}				{HTML}{03318C}
+	\definecolor{Science}			{HTML}{FF530D}
+	\definecolor{DefaultColor}		{HTML}{000000}
+
+%% Tikz style definitions
+	\tikzset{
+	    maximum width/.style args={#1}{% define a new field for setting maximum width of an element
+	        execute at begin node={\begin{varwidth}{#1}},
+	        execute at end node={\end{varwidth}}
+	    },
+	    every node/.style={% apply to all nodes this style
+	    	inner sep=0pt,
+	    	% draw=green,
+	    	anchor=north west,
+	    },
+	    category marker/.style={
+	    	anchor=north west,
+	    	draw=none,
+	    },
+	    day/.style={% style for the days
+	    	minimum width=\DayMaxWidth,
+	    	maximum width=\DayMaxWidth,
+	    	text width=\DayMaxWidth,
+	    	rectangle,
+	    	font=\footnotesize,
+	    	rounded corners=2.5,
+	    	align=center,
+	    },
+	    day schedule/.style={% style for the day schedule
+	    	minimum width=\DayScheduleMaxWidth,
+	    	maximum width=\DayScheduleMaxWidth,
+	    	text width=\DayScheduleMaxWidth,
+	    	rectangle,
+	    	align=flush center,
+	    	rounded corners=2.5,
+	    	font=\footnotesize,
+	    },
+	    logo/.style={% style for the association's logo node
+	    	maximum width=\LogoMaxWidth,
+	    	rectangle,
+	    },
+	    info/.style={% style for the association information
+	    	maximum width=\InfoMaxWidth,
+	    	rectangle,
+	    	anchor=north east,
+	    	font=\footnotesize,
+	    },
+	    asso description/.style={% style for the association description
+	    	minimum width=\AssoDescriptionMaxWidth,
+	    	maximum width=\AssoDescriptionMaxWidth,
+	    	text width=\AssoDescriptionMaxWidth,
+	    	align=justify,
+	    	rectangle,
+	    }
+	}
+
+%% Counters
+\newcounter{association}[part]
+\setcounter{association}{0}
+
+
+%% Commands
+	% Color-related commands
+	\gdef\PredefinedCategoryColors{% List of a predefined category colors.
+		AnimationCampus,ArtSpectacle,Departement,International,HumanitaireSocial,Loisir,Sport,Science% Do not remove this comment, it is strangely necessary for a foreach loop to iterate on in correctly.
+	}
+	\newcommand{\AddPredefinedCategoryColor}[3]{
+		\definecolor{#1}{#2}{#3}
+		\xdef\PredefinedCategoryColors{\PredefinedCategoryColors,#1} %important to use \xdef instead of \def to avoid infinite recursive call !
+	}
+	\gdef\catcolor{DefaultColor} 	% default category color,\gdef is for global definition
+
+	% Part (= Category) restyling
+	\renewcommand{\partname}{Catégorie}
+	\newcommand{\SetCategoryColor}[1][DefaultColor]{
+		% \SetCategoryColor[color] sets the category color theme to be used for the next new parts.
+		% If the color is specified as one of the predefined category colors below, then the color is automatically chosen.
+		% Predefined category colors:
+		% 	- AnimationCampus		- ArtSpectacle 	- Departement 	- International,
+		% 	- HumanitaireSocial 	- Loisir 		- Sport 		- Science.
+		% It is possible to add new predefined category colors with the command:
+		%	\AddPredefinedCategoryColor{name}{type}{def}.
+		% If the input color is not a predefined category color, the category color is set to the default
+		% color category.
+		\gdef\catcolor{DefaultColor} % default category color
+		\foreach \PredefinedCategoryColor in \PredefinedCategoryColors
+		{
+			\makeatletter
+				\ifnum\pdf@strcmp{#1}{\PredefinedCategoryColor}=\z@ \gdef\catcolor{#1}\fi
+			\makeatother
+		}
+	}
+	\newcommand{\SetCategoryPicture}[1]{
+		\gdef\catpicture{#1} 	% define the category background picture to display every new part
+	}
+	\newcommand*\SetCategoryHeader{}
+		\titleformat{\part}
+			[block]%shape
+			{}%format
+			{\partname~\thepart}% label e.g. Part II.
+			{0pt}% Separator between the label and the title
+			{% Before code
+				\begin{tikzpicture}[overlay,remember picture]
+					\draw[fill stretch image=\catpicture] (current page.north west) rectangle (current page.south east);
+					\fill[white,opacity=.75]  (current page.north west) rectangle (current page.south east);
+					\node[align=center,anchor=center] at (current page.center) {\Huge\textcolor{\catcolor!50!black}{\partname~\thepart.~#1}};
+				\end{tikzpicture}	
+			}[% After code
+				\newpage%
+			]
+
+	\newcommand{\FormatPart}[2][DefaultColor]{
+		\setcounter{section}{0}
+		\SetCategoryColor[#1]
+		\SetCategoryPicture{#2}
+		\SetCategoryHeader
+	}
+
+	% Section (= Association) restyling
+	% \renewcommand{\sectionname}{Association}
+	\newcommand{\SetAssociationColor}{
+		% \SetCategoryColor[color] sets the category color theme to be used for the next new parts.
+		% If the color is specified as one of the predefined category colors below, then the color is automatically chosen.
+		% Predefined category colors:
+		% 	- AnimationCampus		- ArtSpectacle 	- Departement 	- International,
+		% 	- HumanitaireSocial 	- Loisir 		- Sport 		- Science.
+		% It is possible to add new predefined category colors with the command:
+		%	\AddPredefinedCategoryColor{name}{type}{def}.
+		% If the input color is not a predefined category color, the category color is set to the default
+		% color category.
+		\gdef\assocolor{\catcolor}
+	}
+	\newcommand{\SetAssociationLogo}[1]{
+		\gdef\assologo{#1} 	% define the logo of the association
+	}
+	\newcommand{\SetAssociationDescription}[1]{
+		\gdef\assodescription{#1}
+	}
+
+	\newcommand\SetAssociationLayout{
+		\titleformat{\section}
+			[block]%shape
+			{}%format
+			{}% label e.g. Part II.
+			{0pt}% Separator between the label and the title
+			{% Before code
+				\tikzset{
+					day/.append style={
+						fill=\catcolor!50!white,
+					},
+					day schedule/.append style={
+						fill=\catcolor!25!white,
+					},
+					category marker/.append style={
+						fill=\catcolor!50!white,
+					}
+				}
+				\begin{tikzpicture}[overlay,remember picture]
+					% Background
+					\draw[category marker]
+					($(current page.north east) - (.5\HorizontalMargin,\VBlockSeparator)$) rectangle
+					($(current page.north east) - (0,\VerticalMargin+3\VBlockSeparator)$);
+					%
+					% Logo
+					\node[logo]
+					at ($(current page.north west)+(\HorizontalMargin,-\VerticalMargin)$)
+					{\includegraphics[width=\LogoMaxWidth]{\assologo}};
+					%
+					% Association description
+					\node[asso description]
+					at ($(current page.north west)+(\HorizontalMargin,-6\VBlockSeparator)$)
+					{
+						{\Large\textcolor{\catcolor!50!black}{\thesection.~##1}}\\
+						\assodescription
+					};
+					%
+					% Calendar
+					\node[day]
+					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator,-\VerticalMargin)$)
+					{L};
+					\node[day schedule]
+					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator,-\VerticalMargin-\VBlockSeparator)$)
+					{8h00\\12h45\\13h\\21h};
+					%
+					\node[day]
+					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+1\DayMaxWidth,-\VerticalMargin)$)
+					{M};
+					\node[day schedule]
+					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
+					{8h45\\12h45\\13h\\23h};
+					%
+					\node[day]
+					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+2\DayMaxWidth,-\VerticalMargin)$)
+					{M};
+					\node[day schedule]
+					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+2\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
+					{15h\\18h};
+					%
+					\node[day]
+					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+3\DayMaxWidth,-\VerticalMargin)$)
+					{J};
+					\node[day schedule]
+					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+3\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
+					{H1\\H2\\H3\\H4};
+					%
+					\node[day]
+					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+4\DayMaxWidth,-\VerticalMargin)$)
+					{V};
+					\node[day schedule]
+					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+4\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
+					{H1\\H2\\H3\\H4};
+					%
+					\node[day]
+					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+5\DayMaxWidth,-\VerticalMargin)$)
+					{S};
+					\node[day schedule]
+					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+5\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
+					{H1\\H2\\H3\\H4};
+					%
+					\node[day]
+					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+6\DayMaxWidth,-\VerticalMargin)$)
+					{D};
+					\node[day schedule]
+					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+6\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
+					{H1\\H2\\H3\\H4};
+					%
+					% Website
+					\node[info]
+					at ($(current page.north east)-(\HorizontalMargin,\VerticalMargin)$)
+					{\faDesktop{} \href{http://rotonde-asso-insa.kazeo.com/}{http://rotonde-asso-insa.kazeo.com/}};
+					%
+					% Mail
+					\node[info]
+					at ($(current page.north east)-(\HorizontalMargin,\VerticalMargin+\VBlockSeparator)$)
+					{\faEnvelope{} \href{mailto:cgr.general@gmail.com}{cgr.general@gmail.com}};
+					%
+					% Facebook
+					\node[info]
+					at ($(current page.north east)-(\HorizontalMargin,\VerticalMargin+2\VBlockSeparator)$)
+					{\faFacebookSquare{} \href{https://www.facebook.com/bdeinsalyon}{bdeinsalyon}};
+				\end{tikzpicture}
+			}[% After code
+				\newpage%
+			]
+	}
+	\newcommand{\FormatSection}[2]{
+		\SetAssociationColor
+		\SetAssociationLogo{#1}
+		\SetAssociationDescription{#2}
+		\SetAssociationLayout
+	}

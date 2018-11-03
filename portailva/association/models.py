@@ -23,6 +23,14 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_directory_associations(self):
+        return (self.association_set
+                .filter(is_validated=True)
+                .filter(directory_entries__isnull=False)
+                .filter(directory_entries__is_online=True)
+                .distinct()
+                .order_by('name'))
+
 
 class Association(models.Model):
     """

@@ -1,0 +1,21 @@
+{% autoescape off %}
+\documentclass[landscape,10pt]{article}
+\usepackage{BotInsa}
+
+\begin{document}
+\pagestyle{empty}
+\begin{multicols}{2}
+	\footnotesize
+	\tableofcontents
+\end{multicols}
+\newpage
+
+{% for category in categories %}
+	\FormatPart[{{ category.name }}]{ScienceBackground.png} 	\part{ {{ category.name }} }
+	{% for asso in category.get_directory_associations %}
+		\FormatSection{ {{asso.logo}} }{ {{asso.current_directory_entry.description}} }		\section{ {{asso.name}} }\label{sec:{{asso.name}}}
+	{% endfor %}
+{% endfor %}
+\end{document}
+
+{% endautoescape %}

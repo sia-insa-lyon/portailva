@@ -206,6 +206,18 @@ class AssociationPrintView(DetailView):
         return context
 
 
+class AssociationDirectoryTexView(ListView):
+    template_name = 'directory/tex/BotInsa_Template.tex'
+    model = Category
+    context_object_name = 'categories'
+    content_type = 'text/vnd.latex-z'
+
+    def render_to_response(self, context, **response_kwargs):
+        response = super().render_to_response(context, **response_kwargs)
+        response['Content-Disposition'] = 'attachment; filename="BotINSA.tex"'
+        return response
+
+
 class AssociationDirectoryPublicView(ListView):
     template_name = 'directory/public.html'
     model = Association
