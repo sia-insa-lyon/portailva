@@ -1,4 +1,5 @@
 {% autoescape off %}
+{% load latex %}
 \documentclass[landscape,10pt]{article}
 \usepackage{BotInsa}
 
@@ -11,9 +12,9 @@
 \newpage
 
 {% for category in categories %}
-	\FormatPart[{{ category.name }}]{ScienceBackground.png} 	\part{ {{ category.name }} }
+	\FormatPart[{{ category.name|escape_latex_specials }}]{ScienceBackground.png} 	\part{ {{ category.name|escape_latex_specials }} }
 	{% for asso in category.get_directory_associations %}
-		\FormatSection{ {{asso.logo}} }{ {{asso.current_directory_entry.description}} }		\section{ {{asso.name}} }\label{sec:{{asso.name}}}
+		\FormatSection{ {{asso.logo}} }{ {{asso.current_directory_entry.description|escape_latex_specials}} }		\section{ {{asso.name|escape_latex_specials}} }\label{sec:{{asso.name}}}
 	{% endfor %}
 {% endfor %}
 \end{document}
