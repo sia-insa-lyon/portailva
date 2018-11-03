@@ -13,6 +13,7 @@ def escape_latex_specials(value):
             .replace('€', '\\euro{}')
             .replace('$', '\\$')
             .replace('n°', '\\no')
+            .replace('·', '.')
             .replace('\n\n', '\n')
             .replace('\n', '\n\n')
             )
