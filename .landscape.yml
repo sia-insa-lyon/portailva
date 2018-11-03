@@ -6,7 +6,7 @@ uses:
   - django
 autodetect: true
 requirements:
-  - requirements.txt
+  - Pipfile.lock
 ignore-paths:
   - assets
 ignore-patterns:

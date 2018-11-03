@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.7
 
 EXPOSE 8000
 
@@ -10,10 +10,9 @@ ENV LIBRARY_PATH=/lib:/usr/lib
 
 WORKDIR /app
 
-# Idem for requirements.txt
-COPY requirements.txt /app
-
-RUN pip install -r requirements.txt
+RUN pip install pipenv
+COPY Pipfile Pipfile.lock /app/
+RUN pipenv install
 
 # Then copy the rest of the app
 COPY . /app
