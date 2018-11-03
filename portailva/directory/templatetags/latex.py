@@ -9,12 +9,11 @@ def escape_latex_specials(value):
             .replace('&', '\\&')
             .replace('#', '\\#')
             .replace('_', '\\_')
-            .replace('\\', '\\backslash')
+            .replace('\\', '\\backslash{}')
             .replace('€', '\\euro{}')
             .replace('$', '\\$')
             .replace('n°', '\\no')
             .replace('\n\n', '\n')
-            .replace('\n\n', '\n')  # Duplication is intentional
             .replace('\n', '\n\n')
             )
 
