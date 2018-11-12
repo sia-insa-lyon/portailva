@@ -1,55 +1,92 @@
 %!TEX root=./BotInsa_Template.tex
-\ProvidesPackage{BotInsa}
+\ProvidesPackage{BotInsa2}
 
 %% Packages
 	% Layout and font packages
 	\RequirePackage[a6paper]{geometry}				% for A6 document
+		\geometry{
+			vmargin={0.3\paperheight,0.1\paperheight},
+			hmargin=0.1\paperwidth,
+			foot=0.05\paperheight
+		}
 	\RequirePackage[light,condensed,math]{iwona} 	% font
-	\RequirePackage[T1]{fontenc}					
 	\RequirePackage[utf8]{inputenc}
+	\RequirePackage[T1]{fontenc}					
 	\RequirePackage[french]{babel}
-	\RequirePackage{multicol}
+	\RequirePackage{enumitem} 						% for customizing the lists
+	\RequirePackage{eurosym}						% for printing the € symbol
+	\RequirePackage{multicol}						% for locally multicolumn content
+		% Set column separator line width
+			\setlength{\columnseprule}{0.4pt}
+	\RequirePackage{tocloft}						% for changing the toc's font size
+		% Change title fonts
+			\renewcommand\cftpartfont{\footnotesize\bfseries}
+			\renewcommand\cftsecfont{\tiny}
+		% Change page fonts
+			\renewcommand\cftpartpagefont{\footnotesize\bfseries}
+			\renewcommand\cftsecpagefont{\tiny}
+		% Change vertical space
+			\setlength\cftbeforepartskip{0pt}
+			\setlength\cftbeforesecskip{-4pt}
 
 	% Graphical packages
 	\RequirePackage{fontawesome}					% for the mail, facebook, etc. icons
 	\RequirePackage{graphicx}						% for including the logos
 	\RequirePackage{xcolor}							% for defining new colors
-	\RequirePackage[explicit]{titlesec}				% for redefining section styles, explicit allows for direct referencing to title
+	\RequirePackage[explicit,pagestyles]{titlesec}	% for redefining section styles, explicit allows for direct referencing to title and pagestyles allows to customize and create new page styles
 	\RequirePackage[skins]{tcolorbox}					% for filling nodes with picture
 	\RequirePackage{tikz}							
 		\usetikzlibrary{calc} % for coordinates calculations
 	\RequirePackage{varwidth} 						% allows controlling the maximum width of a box.
 
 	% Programming packages
+	\RequirePackage{xargs}
+	\RequirePackage{xstring}
 	\RequirePackage{pdftexcmds}						% for string testing with expansion of macros
 	
 	% Miscellaneous
 	\RequirePackage{lipsum}							% for generating random text
 
 	% Last loaded
-	\RequirePackage{hyperref}						% for hyper text features
+	\RequirePackage[pdfpagelabels]{hyperref}						% for hyper text features
+		\hypersetup{
+			unicode=true,
+			colorlinks=true,
+			linkcolor=blue!20!black,
+			urlcolor=blue!20!black,
+			pageanchor=false,	% avoid tons of useless warnings while compiling
+		}
 
 %% Lengths definitions
-	\newlength{\HBlockSeparator}		% Horizontal distance between blocks
-	\newlength{\VBlockSeparator}		% Vertical distance between blocks
 	\newlength{\HorizontalMargin}		% Horizontal margin
 	\newlength{\VerticalMargin}			% Vertical margin
+	\newlength{\TopMargin}				% Vertical distance between the top paper boarder and the text body
+	\newlength{\LeftMargin}				% Vertical distance between the left paper boarder and the text body
+	\newlength{\RightMargin}			% Vertical distance between the right paper boarder and the text body
+	\newlength{\BottomMargin}			% Vertical distance between the bottom paper boarder and the text body
+	\newlength{\HBlockSeparator}		% Horizontal distance between blocks
+	\newlength{\VBlockSeparator}		% Vertical distance between blocks
 	\newlength{\AssoDescriptionMaxWidth}% Maximum width of the association description
 	\newlength{\LogoMaxWidth}			% Logo maximum width
-	\newlength{\DayMaxWidth}			% Day maximum width
-	\newlength{\DayScheduleMaxWidth}	% Day schedule maximum width
+	\newlength{\ScheduleMaxWidth}	% Day schedule maximum width
 	\newlength{\InfoMaxWidth}			% Information maximum width
 
 %% Lengths value assignations
-	\setlength{\HBlockSeparator}{.025\paperwidth}
-	\setlength{\VBlockSeparator}{.05\paperheight}
-	\setlength{\HorizontalMargin}{.075\paperwidth}
-	\setlength{\VerticalMargin}{.075\paperheight}
-	\setlength{\AssoDescriptionMaxWidth}{\paperwidth}\addtolength{\AssoDescriptionMaxWidth}{-2\HorizontalMargin}
-	\setlength{\LogoMaxWidth}{.1\paperwidth}
-	\setlength{\DayMaxWidth}{.06\paperwidth}
-	\setlength{\DayScheduleMaxWidth}{.06\paperwidth}
-	\setlength{\InfoMaxWidth}{.35\paperwidth}
+	% Lengths for page layout
+		\setlength{\HorizontalMargin}{.075\paperwidth}
+		\setlength{\VerticalMargin}{.075\paperheight}
+		\setlength{\TopMargin}{.3\paperheight}
+		\setlength{\LeftMargin}{\HorizontalMargin}
+		\setlength{\RightMargin}{\HorizontalMargin}
+		\setlength{\BottomMargin}{\VerticalMargin}
+
+	% Lengths for elements positionning
+		\setlength{\HBlockSeparator}{.025\paperwidth}
+		\setlength{\VBlockSeparator}{.05\paperheight}
+		\setlength{\AssoDescriptionMaxWidth}{\paperwidth}\addtolength{\AssoDescriptionMaxWidth}{-2\HorizontalMargin}
+		\setlength{\LogoMaxWidth}{.1\paperwidth}
+		\setlength{\ScheduleMaxWidth}{.35\paperwidth}
+		\setlength{\InfoMaxWidth}{.28\paperwidth}
 
 %% Category colors
 	\definecolor{AnimationCampus}	{HTML}{046975}
@@ -70,40 +107,39 @@
 	    },
 	    every node/.style={% apply to all nodes this style
 	    	inner sep=0pt,
-	    	% draw=green,
+	    	draw=green,
 	    	anchor=north west,
+	    },
+	    category title/.style={
+	    	align=center,
+	    	text width=.8\paperwidth,
+	    	anchor=center,
 	    },
 	    category marker/.style={
 	    	anchor=north west,
 	    	draw=none,
 	    },
-	    day/.style={% style for the days
-	    	minimum width=\DayMaxWidth,
-	    	maximum width=\DayMaxWidth,
-	    	text width=\DayMaxWidth,
-	    	rectangle,
-	    	font=\footnotesize,
-	    	rounded corners=2.5,
-	    	align=center,
-	    },
-	    day schedule/.style={% style for the day schedule
-	    	minimum width=\DayScheduleMaxWidth,
-	    	maximum width=\DayScheduleMaxWidth,
-	    	text width=\DayScheduleMaxWidth,
+	   	schedule/.style={% style for the day schedule
+	    	text width=\ScheduleMaxWidth,
+	    	anchor=west,
 	    	rectangle,
 	    	align=flush center,
 	    	rounded corners=2.5,
-	    	font=\footnotesize,
+	    	font=\fontsize{6pt}{6pt}\selectfont,
 	    },
 	    logo/.style={% style for the association's logo node
 	    	maximum width=\LogoMaxWidth,
 	    	rectangle,
+	    	anchor=west,
 	    },
 	    info/.style={% style for the association information
 	    	maximum width=\InfoMaxWidth,
+	    	maximum width=\InfoMaxWidth,
+	    	text width=\InfoMaxWidth,
 	    	rectangle,
-	    	anchor=north east,
-	    	font=\footnotesize,
+	    	align=left,
+	    	anchor=east,
+	    	font=\Huge,
 	    },
 	    asso description/.style={% style for the association description
 	    	minimum width=\AssoDescriptionMaxWidth,
@@ -114,12 +150,7 @@
 	    }
 	}
 
-%% Counters
-\newcounter{association}[part]
-\setcounter{association}{0}
-
-
-%% Commands
+%% Formatting commands
 	% Color-related commands
 	\gdef\PredefinedCategoryColors{% List of a predefined category colors.
 		AnimationCampus,ArtSpectacle,Departement,International,HumanitaireSocial,Loisir,Sport,Science% Do not remove this comment, it is strangely necessary for a foreach loop to iterate on in correctly.
@@ -131,7 +162,6 @@
 	\gdef\catcolor{DefaultColor} 	% default category color,\gdef is for global definition
 
 	% Part (= Category) restyling
-	\renewcommand{\partname}{Catégorie}
 	\newcommand{\SetCategoryColor}[1][DefaultColor]{
 		% \SetCategoryColor[color] sets the category color theme to be used for the next new parts.
 		% If the color is specified as one of the predefined category colors below, then the color is automatically chosen.
@@ -153,27 +183,29 @@
 	\newcommand{\SetCategoryPicture}[1]{
 		\gdef\catpicture{#1} 	% define the category background picture to display every new part
 	}
-	\newcommand*\SetCategoryHeader{}
+	\newcommand\SetCategoryHeader{
 		\titleformat{\part}
 			[block]%shape
 			{}%format
-			{\partname~\thepart}% label e.g. Part II.
+			{}% label e.g. Part II.
 			{0pt}% Separator between the label and the title
 			{% Before code
+				\renewcommand{\partname}{Catégorie}
 				\begin{tikzpicture}[overlay,remember picture]
 					\draw[fill stretch image=\catpicture] (current page.north west) rectangle (current page.south east);
 					\fill[white,opacity=.75]  (current page.north west) rectangle (current page.south east);
-					\node[align=center,anchor=center] at (current page.center) {\Huge\textcolor{\catcolor!50!black}{\partname~\thepart.~#1}};
+					\node[category title] at (current page.center) {\Huge\textcolor{\catcolor!50!black}{\partname~\thepart.~##1}};
 				\end{tikzpicture}	
 			}[% After code
 				\newpage%
 			]
-
-	\newcommand{\FormatPart}[2][DefaultColor]{
+	}
+	\newcommandx{\category}[3][1=DefaultColor,2=default.png,usedefault]{
 		\setcounter{section}{0}
 		\SetCategoryColor[#1]
 		\SetCategoryPicture{#2}
 		\SetCategoryHeader
+		\part{#3}
 	}
 
 	% Section (= Association) restyling
@@ -193,16 +225,31 @@
 	\newcommand{\SetAssociationLogo}[1]{
 		\gdef\assologo{#1} 	% define the logo of the association
 	}
+	\newcommand{\SetAssociationSchedule}[1]{
+		\gdef\assoschedule{#1}
+	}
 	\newcommand{\SetAssociationDescription}[1]{
 		\gdef\assodescription{#1}
 	}
+	\newcommand{\SetAssociationEMail}[1]{
+		\gdef\assoemail{#1}
+	}
+	\newcommand{\SetAssociationWebsite}[1]{
+		\gdef\assowebsite{#1}
+	}
+	\newcommand{\SetAssociationFacebook}[1]{
+		\gdef\assofacebook{#1}
+	}
 
+	\newcommand*{\commalength}[1]{%
+	  \StrCount{#1,}{,}%
+	}
 	\newcommand\SetAssociationLayout{
 		\titleformat{\section}
-			[block]%shape
-			{}%format
-			{}% label e.g. Part II.
-			{0pt}% Separator between the label and the title
+			[display]%shape
+			{\footnotesize} %format ALL the text of the section so if you wish to format only the label do it in the label argument (next argument).
+			{\Large\color{\catcolor}\thesection.~##1\normalsize}% label, the content should (must) have ##1 somewhere to explicitly gives the section title.
+			{-20pt}% Separator between the label and the text body
 			{% Before code
 				\tikzset{
 					day/.append style={
@@ -213,99 +260,67 @@
 					},
 					category marker/.append style={
 						fill=\catcolor!50!white,
+					},
+					info/.append style={
+						font=\color{\catcolor!50!black},
 					}
 				}
 				\begin{tikzpicture}[overlay,remember picture]
 					% Background
 					\draw[category marker]
-					($(current page.north east) - (.5\HorizontalMargin,\VBlockSeparator)$) rectangle
-					($(current page.north east) - (0,\VerticalMargin+3\VBlockSeparator)$);
+					($(current page.north east) - (0.0\RightMargin,0.15\TopMargin)$) rectangle
+					($(current page.north east) - (0.5\RightMargin,0.85\TopMargin)$);
 					%
 					% Logo
 					\node[logo]
-					at ($(current page.north west)+(\HorizontalMargin,-\VerticalMargin)$)
+					at ($(current page.north west)+(\LeftMargin,-0.5\TopMargin)$)
 					{\includegraphics[width=\LogoMaxWidth]{\assologo}};
-					%
-					% Association description
-					\node[asso description]
-					at ($(current page.north west)+(\HorizontalMargin,-6\VBlockSeparator)$)
-					{
-						{\Large\textcolor{\catcolor!50!black}{\thesection.~##1}}\\
-						\assodescription
-					};
-					%
-					% Calendar
-					\node[day]
-					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator,-\VerticalMargin)$)
-					{L};
-					\node[day schedule]
-					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator,-\VerticalMargin-\VBlockSeparator)$)
-					{8h00\\12h45\\13h\\21h};
-					%
-					\node[day]
-					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+1\DayMaxWidth,-\VerticalMargin)$)
-					{M};
-					\node[day schedule]
-					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
-					{8h45\\12h45\\13h\\23h};
-					%
-					\node[day]
-					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+2\DayMaxWidth,-\VerticalMargin)$)
-					{M};
-					\node[day schedule]
-					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+2\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
-					{15h\\18h};
-					%
-					\node[day]
-					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+3\DayMaxWidth,-\VerticalMargin)$)
-					{J};
-					\node[day schedule]
-					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+3\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
-					{H1\\H2\\H3\\H4};
-					%
-					\node[day]
-					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+4\DayMaxWidth,-\VerticalMargin)$)
-					{V};
-					\node[day schedule]
-					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+4\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
-					{H1\\H2\\H3\\H4};
-					%
-					\node[day]
-					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+5\DayMaxWidth,-\VerticalMargin)$)
-					{S};
-					\node[day schedule]
-					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+5\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
-					{H1\\H2\\H3\\H4};
-					%
-					\node[day]
-					at ($(current page.north west)+(1\HorizontalMargin+\LogoMaxWidth+1\HBlockSeparator+6\DayMaxWidth,-\VerticalMargin)$)
-					{D};
-					\node[day schedule]
-					at ($(current page.north west)+(\HorizontalMargin+\LogoMaxWidth+\HBlockSeparator+6\DayScheduleMaxWidth,-\VerticalMargin-\VBlockSeparator)$)
-					{H1\\H2\\H3\\H4};
 					%
 					% Website
 					\node[info]
-					at ($(current page.north east)-(\HorizontalMargin,\VerticalMargin)$)
-					{\faDesktop{} \href{http://rotonde-asso-insa.kazeo.com/}{http://rotonde-asso-insa.kazeo.com/}};
+					at ($(current page.north east)-(\RightMargin,0.30\TopMargin)$)
+					{\faDesktop{} \href{\assowebsite}{\assowebsite}};
 					%
+					\node[schedule]
+					at ($(current page.north west)+(\RightMargin+\LogoMaxWidth+\HBlockSeparator,-0.5\TopMargin)$)
+					{
+						\makeatletter
+							\ifnum\pdf@strcmp{\assoschedule}{\empty}=\z@ \normalsize\text{\catcolor}{\emph{Pas de permanences.}}
+							\else{
+								{\normalsize \textcolor{\catcolor}{\emph{Horaires}}}\\
+								\begin{multicols}{2}
+									\begin{description}[align=right,labelindent=4em,]
+										\foreach \day/\time in \assoschedule
+										{
+											\item[\day:] \time
+										}
+									\end{description}
+								\end{multicols}
+							} 
+							\fi
+						\makeatother
+					};
 					% Mail
 					\node[info]
-					at ($(current page.north east)-(\HorizontalMargin,\VerticalMargin+\VBlockSeparator)$)
-					{\faEnvelope{} \href{mailto:cgr.general@gmail.com}{cgr.general@gmail.com}};
+					at ($(current page.north east)-(\RightMargin,0.50\TopMargin)$)
+					{\faEnvelope{} \href{mailto:\assoemail}{\assoemail}};
 					%
 					% Facebook
 					\node[info]
-					at ($(current page.north east)-(\HorizontalMargin,\VerticalMargin+2\VBlockSeparator)$)
-					{\faFacebookSquare{} \href{https://www.facebook.com/bdeinsalyon}{bdeinsalyon}};
+					at ($(current page.north east)-(\RightMargin,0.70\TopMargin)$)
+					{\faFacebookSquare{} \href{https://www.facebook.com/\assofacebook}{\assofacebook}};
 				\end{tikzpicture}
 			}[% After code
-				\newpage%
+				% \newpage%
 			]
 	}
-	\newcommand{\FormatSection}[2]{
+	\newcommandx{\association}[6][1=default.png,2={},3=nomail,4=https://portail.asso-insa-lyon.fr,5=nofacebook,usedefault]{
 		\SetAssociationColor
 		\SetAssociationLogo{#1}
-		\SetAssociationDescription{#2}
+		\SetAssociationSchedule{#2}
+		\SetAssociationEMail{#3}
+		\SetAssociationWebsite{#4}
+		\SetAssociationFacebook{#5}
 		\SetAssociationLayout
+		\section{#6}
 	}

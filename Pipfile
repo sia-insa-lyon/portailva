@@ -21,7 +21,7 @@ python-magic = "==0.4.12"
 python-social-auth = "==0.2.21"
 icalendar = "==3.11.7"
 openpyxl = "==2.4.5"
-pillow = "==4.0.0"
+pillow = "*"
 "jinja2" = "*"
 
 [dev-packages]
