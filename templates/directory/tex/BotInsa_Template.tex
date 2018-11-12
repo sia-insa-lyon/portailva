@@ -23,6 +23,7 @@
     {% for asso in category.get_directory_associations %}
         \association[{{asso.logo}}][{Lundi/12h00--14h00,Dimanche/12h00--14h00,}][{{asso.current_directory_entry.contact_address|escape_latex_specials}}][{{asso.current_directory_entry.website_url|escape_latex_specials}}][{{asso.current_directory_entry.facebook_url|escape_latex_specials}}]{ {{asso.name|escape_latex_specials}} }
         {{asso.current_directory_entry.description|escape_latex_specials}}
+        \newpage
 	{% endfor %}
 {% endfor %}
 

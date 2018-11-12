@@ -8,6 +8,8 @@ def escape_latex_specials(value):
     return (value
             .replace('\\', '\\backslash{}')
             .replace('&', '\\&')
+            .replace('%', '\\%')
+            .replace(' ', ' ')  # Unbreakable space (U+202F)
             .replace('#', '\\#')
             .replace('_', '\\_')
             .replace('€', '\\euro{}')
