@@ -100,7 +100,6 @@ class AssociationFileUploadView(AssociationMixin, CreateView):
             name=form.cleaned_data.get('name'),
             association=self.association,
             folder=self.current_folder,
-            is_public=form.cleaned_data.get('is_public', False)
         )
 
         # Then file version
@@ -131,18 +130,3 @@ class AssociationFileDeleteView(AssociationMixin, DeleteView):
         messages.add_message(self.request, messages.SUCCESS, "Le fichier a correctement été supprimé.")
 
         return super(AssociationFileDeleteView, self).post(request, *args, **kwargs)
-
-
-class AssociationFilePublishView(AssociationMixin, SingleObjectMixin, View):
-    model = AssociationFile
-    http_method_names = ['post']
-    object = None
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-
-        file = AssociationFile.objects.get(id=self.object.id)
-        file.is_public = not file.is_public
-        file.save()
-
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

@@ -23,8 +23,6 @@ class File(models.Model):
     uuid = models.UUIDField("uuid", default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField("Nom", max_length=200)
 
-    is_public = models.BooleanField("Public", default=False, blank=True)
-
     created_at = models.DateTimeField("Date d'ajout", auto_now_add=True)
     updated_at = models.DateTimeField("Dernière mise à jour", auto_now=True)
 
@@ -35,9 +33,11 @@ class File(models.Model):
         return self.name
 
     def can_access(self, user):
-        # By default, user must be logged in
-        if self.is_public:
+        if isinstance(self, AssociationFile) and self.folder.is_public:
             return True
+        if hasattr(self, 'associationfile') and self.associationfile.folder.is_public:
+            return True
+        # By default, user must be logged in
         if user is not None and user.is_authenticated():
             # If file is an association file, we ensure user belongs to association or is an admin
             if isinstance(self, AssociationFile):
@@ -88,6 +88,8 @@ class FileFolder(TreeObject):
     description = models.TextField("Description")
     position = models.IntegerField("Position", blank=True)
     is_writable = models.BooleanField("Accessible en écriture ?", default=True)
+
+    is_public = models.BooleanField("Public", default=False, blank=True)
 
     allowed_types = models.ManyToManyField(FileType, verbose_name="Extensions autorisées", blank=True)
 

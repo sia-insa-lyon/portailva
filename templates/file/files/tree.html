@@ -43,27 +43,18 @@
         {% for file in files %}
             <tr>
                 <td><i class="fa fa-file"></i> <a href="{% url 'file-view' file.uuid %}">
-                    {{ file.name }} ({% if file.is_public %}public{% else %}privé{% endif %})
+                    {{ file.name }}
                 </a></td>
                 <td class="text-right">
-                    <form action="{% url 'association-file-publish' association.id file.id %}"
-                          method="post">
-                        {% csrf_token %}
-                        <div class="btn-group">
-                            <button type="submit"
-                                    class="btn btn-sm btn-{% if file.is_public %}warning{% else %}success{% endif %}">
-                                <i class="fa fa-low-vision"></i>
-                                Rendre {% if file.is_public %}privé{% else %}public{% endif %}
-                            </button>
-                            {% if file.folder.id %}
-                                <a href="{% url 'association-file-delete' association.id file.id %}"
-                                   data-toggle="tooltip"
-                                   class="btn btn-sm btn-danger"
-                                   title="Supprimer le fichier"><i
-                                        class="fa fa-times"></i></a>
-                            {% endif %}
-                        </div>
-                    </form>
+                    <div class="btn-group">
+                        {% if file.folder.id %}
+                            <a href="{% url 'association-file-delete' association.id file.id %}"
+                               data-toggle="tooltip"
+                               class="btn btn-sm btn-danger"
+                               title="Supprimer le fichier"><i
+                                    class="fa fa-times"></i></a>
+                        {% endif %}
+                    </div>
                 </td>
             </tr>
 

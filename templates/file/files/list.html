@@ -10,7 +10,6 @@
             <thead>
             <tr>
                 <th>Nom</th>
-                <th>Public ?</th>
                 <th data-orderable="false">Action</th>
             </tr>
             </thead>
@@ -18,7 +17,6 @@
             {% for file in object_list %}
                 <tr>
                     <td><a href="{% url 'file-view' file.uuid %}">{{ file.name }}</a></td>
-                    <td>{% if file.is_public %}Oui{% else %}Non{% endif %}</td>
                     <td>-</td>
                 </tr>
             {% endfor %}
