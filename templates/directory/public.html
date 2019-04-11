@@ -135,7 +135,7 @@
                                         data-target="#assoDetails{{ asso.id }}">
                                     Plus d'infos
                                 </button>
-                                {% if user.is_superuser %}
+                                {% if user.is_superuser or user.is_staff %}
                                     <a href="{% url 'association-detail' asso.id %}" class="btn btn-light">
                                         Admin
                                     </a>
