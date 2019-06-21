@@ -23,6 +23,7 @@ icalendar = "==4.0.3"
 openpyxl = "==2.6.2"
 pillow = "*"
 "jinja2" = "*"
+pipenv-to-requirements = "*"
 
 [dev-packages]
 
