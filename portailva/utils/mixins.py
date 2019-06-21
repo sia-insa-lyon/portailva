@@ -13,7 +13,7 @@ class AnonymousRequiredMixin(object):
     authenticated_redirect_url = settings.LOGIN_REDIRECT_URL
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return HttpResponseRedirect(self.get_authenticated_redirect_url())
         return super(AnonymousRequiredMixin, self).dispatch(
             request, *args, **kwargs)

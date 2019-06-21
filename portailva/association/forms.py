@@ -62,8 +62,8 @@ class MandateForm(forms.Form):
         association_mandates = Mandate.objects.all().filter(association_id=self.association.id)
         for mandate in association_mandates:
             if (begins_at <= mandate.begins_at < ends_at
-                or begins_at < mandate.ends_at <= ends_at
-                or mandate.begins_at <= begins_at < ends_at <= mandate.ends_at):
+                    or begins_at < mandate.ends_at <= ends_at
+                    or mandate.begins_at <= begins_at < ends_at <= mandate.ends_at):
                 raise forms.ValidationError("La période définie pour ce mandat empiète sur la période d'un autre "
                                             "mandat.")
 

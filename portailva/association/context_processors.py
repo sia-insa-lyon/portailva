@@ -1,5 +1,5 @@
 def my_associations(request):
-    if request.user is None or not request.user.is_authenticated():
+    if request.user is False or request.user is None or not request.user.is_authenticated:
         associations = []
     else:
         associations = request.user.associations.all()

@@ -41,6 +41,8 @@ EMAIL_SUBJECT_PREFIX = '[PortailVA] '
 # Application definition
 
 INSTALLED_APPS = [
+    'portailva.member',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +56,7 @@ INSTALLED_APPS = [
     'bootstrapform',
     'crispy_forms',
     'rest_framework',
-    'social.apps.django_app.default',
+    # 'social.apps.django_app.default',
     'ckeditor',
     'ckeditor_uploader',
     'django_premailer',
@@ -65,7 +67,6 @@ INSTALLED_APPS = [
     'portailva.event',
     'portailva.file',
     'portailva.pages',
-    'portailva.member',
     'portailva.newsletter',
     'portailva.export'
 ]
@@ -137,6 +138,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
 
 LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
@@ -218,7 +226,7 @@ ANYMAIL = {
     'MAILGUN_API_KEY': os.environ.get('MAILGUN_API_KEY'),
     'MAILGUN_SENDER_DOMAIN': os.environ.get('MAILGUN_DOMAIN', 'mg.asso-insa-lyon.fr')
 }
-EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
+EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@mg.asso-insa-lyon.fr')
 
 # REST API

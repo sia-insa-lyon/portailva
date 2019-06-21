@@ -38,7 +38,7 @@ class File(models.Model):
         if hasattr(self, 'associationfile') and self.associationfile.folder.is_public:
             return True
         # By default, user must be logged in
-        if user is not None and user.is_authenticated():
+        if user is not None and user.is_authenticated:
             # If file is an association file, we ensure user belongs to association or is an admin
             if isinstance(self, AssociationFile):
                 return self.association.can_access(user)
@@ -153,7 +153,7 @@ class ResourceFile(File):
                                related_name="resources", null=True, on_delete=models.CASCADE)
 
     def can_access(self, user):
-        if user is not None and user.is_authenticated():
+        if user is not None and user.is_authenticated:
             return self.published
         return False
 

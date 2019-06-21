@@ -7,10 +7,10 @@ from portailva.event.models import Event
 
 
 class Article(models.Model):
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    association = models.ForeignKey(Association, related_name='articles', verbose_name='Association')
+    association = models.ForeignKey(Association, related_name='articles', verbose_name='Association',
+                                    on_delete=models.CASCADE)
     validated = models.BooleanField(verbose_name='publié', default=False)
 
     title = models.CharField(max_length=255, verbose_name="Titre")
@@ -50,7 +50,6 @@ class Article(models.Model):
 
 
 class Newsletter(models.Model):
-
     title = models.CharField(max_length=255, verbose_name='Nom')
     sent = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -50,7 +50,7 @@ class Association(models.Model):
     is_validated = models.BooleanField("Est validée", default=False)
     has_place = models.BooleanField("Possède un local?", default=False)
 
-    category = models.ForeignKey(Category, verbose_name="Catégorie")
+    category = models.ForeignKey(Category, verbose_name="Catégorie", on_delete=models.PROTECT)
     users = models.ManyToManyField(User, verbose_name="Utilisateurs", related_name='associations', blank=True)
 
     logo_url = LogoURLField("URL du logo", blank=True)
@@ -81,7 +81,7 @@ class Association(models.Model):
         :param user: the user to check the rights
         :return: `True` if the user can access this association, `False` otherwise.
         """
-        if user is not None and user.is_authenticated():
+        if user is not None and user.is_authenticated:
             if user.is_superuser or user.has_perm('association.admin_association'):
                 return True
 
@@ -96,7 +96,7 @@ class Association(models.Model):
         :param user: the user to check the rights
         :return: `True` if the user can access this association, `False` otherwise.
         """
-        if user is not None and user.is_authenticated():
+        if user is not None and user.is_authenticated:
             if self.can_admin(user):
                 return True
             elif user in self.users.all():
