@@ -3,14 +3,35 @@
 {% load crispy_forms_tags %}
 
 {% block page_sub_title %}
-  Modifier le Bot'INSA
+    Modifier le Bot'INSA
 {% endblock %}
 
 {% block quick_actions %}
-  <a href="{% url 'association-directory-detail' association.id %}" class="btn btn-secondary"><i class="fa fa-times"></i> Annuler</a>
-  <button form="directoryEntryForm" type="submit" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+    <a href="{% url 'association-directory-detail' association.id %}" class="btn btn-secondary"><i class="fa fa-times"></i> Annuler</a>
+    <button form="directoryEntryForm" type="submit" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
 {% endblock %}
 
 {% block content_association %}
-  {% crispy form %}
+    {% crispy form %}
+
+    <script type="text/javascript">
+    <!--
+        "use strict";
+        let descriptionArea=$('#id_description');
+        descriptionArea.after('<small class="card-text text-muted" id="count_description"></small>')
+            .keyup(function() {
+                console.log("OK ",$(this));
+                let nombreCaractere = $(this).val().length;
+                let jqCompteur=$('#count_description');
+
+                jqCompteur.html(nombreCaractere+'/900 caractère(s)').removeClass('has-error');
+                if (nombreCaractere >= 900)
+                {
+                    jqCompteur.addClass('has-error');
+                }
+            });
+
+        descriptionArea.keyup();
+    //-->
+    </script>
 {% endblock %}

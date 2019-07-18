@@ -111,3 +111,7 @@ i.fa {
 #highlights {
     min-height: 230px;
 }
+
+.has-error{
+    color:#e93c46 !important;
+}
