@@ -20,7 +20,6 @@
         let descriptionArea=$('#id_description');
         descriptionArea.after('<small class="card-text text-muted" id="count_description"></small>')
             .keyup(function() {
-                console.log("OK ",$(this));
                 let nombreCaractere = $(this).val().length;
                 let jqCompteur=$('#count_description');
 
