@@ -15,22 +15,22 @@
     {% crispy form %}
 
     <script type="text/javascript">
-    <!--
+    //<![CDATA[
         "use strict";
         let descriptionArea=$('#id_description');
         descriptionArea.after('<small class="card-text text-muted" id="count_description"></small>')
-            .keyup(function() {
-                let nombreCaractere = $(this).val().length;
-                let jqCompteur=$('#count_description');
+                        .keyup(function() {
+                            let nombreCaractere = $(this).val().length;
+                            let jqCompteur=$('#count_description');
 
-                jqCompteur.html(nombreCaractere+'/900 caractère(s)').removeClass('has-error');
-                if (nombreCaractere >= 900)
-                {
-                    jqCompteur.addClass('has-error');
-                }
-            });
+                            jqCompteur.html(nombreCaractere+'/900 caractère(s)').removeClass('has-error');
+                            if (nombreCaractere >= 900)
+                            {
+                                jqCompteur.addClass('has-error');
+                            }
+                        });
 
         descriptionArea.keyup();
-    //-->
+    //]]>
     </script>
 {% endblock %}
