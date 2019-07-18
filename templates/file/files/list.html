@@ -16,7 +16,7 @@
             <tbody>
             {% for file in object_list %}
                 <tr>
-                    <td><a href="{% url 'file-view' file.uuid %}">{{ file.name }}</a></td>
+                    <td><a href="{% url 'file-view' file.uuid %}" rel="noreferrer noopener" target="_blank">{{ file.name }}</a></td>
                     <td>-</td>
                 </tr>
             {% endfor %}

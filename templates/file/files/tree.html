@@ -42,9 +42,11 @@
                 {% endfor %}
         {% for file in files %}
             <tr>
-                <td><i class="fa fa-file"></i> <a href="{% url 'file-view' file.uuid %}">
-                    {{ file.name }}
-                </a></td>
+                <td><i class="fa fa-file"></i>
+                    <a href="{% url 'file-view' file.uuid %}" rel="noreferrer noopener" target="_blank">
+                        {{ file.name }}
+                    </a>
+                </td>
                 <td class="text-right">
                     <div class="btn-group">
                         {% if file.folder.id %}

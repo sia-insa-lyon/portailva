@@ -47,7 +47,7 @@
             {% if files %}
                 {% for file in files %}
                     <div class="list-group-item clearfix">
-                        <a href="{% url 'file-view' uuid=file.uuid %}" target="_blank">
+                        <a href="{% url 'file-view' uuid=file.uuid %}" rel="noreferrer noopener" target="_blank">
                             {{ file }}</a>
                         <div class="pull-right">
                             {% if folder %}
