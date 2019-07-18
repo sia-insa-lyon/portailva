@@ -37,8 +37,15 @@
             <div class="col-12">
                 <b>Description</b>
                 <div class="card bg-light">
-                    <div class="card-body">{{ object.description|linebreaksbr }}</div>
+                    <div class="card-body">
+                        {{ object.description|linebreaksbr }}
+                        <br/>
+                        <small class="card-text text-muted {% if object.description|length >= 900 %}has-error{% endif %}">
+                            {{ object.description|length }}/900 caractères
+                        </small>
+                    </div>
                 </div>
+
             </div>
         </div>
 
