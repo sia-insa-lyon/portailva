@@ -19,16 +19,20 @@
         "use strict";
         let descriptionArea=$('#id_description');
         descriptionArea.after('<small class="card-text text-muted" id="count_description"></small>')
-                        .keyup(function() {
-                            let nombreCaractere = $(this).val().length;
-                            let jqCompteur=$('#count_description');
+                .keyup(function() {
+                    const strRead = $(this).val();
+                    const strReadByLine = strRead.split('\n');
 
-                            jqCompteur.html(nombreCaractere+'/900 caractère(s)').removeClass('has-error');
-                            if (nombreCaractere >= 900)
-                            {
-                                jqCompteur.addClass('has-error');
-                            }
-                        });
+                    let charNumber = strRead.length + strReadByLine.length;
+                    //We check if the last line is empty (the server remove this kind of line when persisting the description)
+                    charNumber -= ((strReadByLine.length > 1 && strReadByLine.pop().length === 0) ? 3 : 1);
+
+                    let counter = $('#count_description');
+                    counter.html(charNumber + '/900 caractère' + (charNumber > 1 ? 's' : '')).removeClass('has-error');
+                    if (charNumber > 900) {
+                        counter.addClass('has-error');
+                    }
+                });
 
         descriptionArea.keyup();
     //]]>
