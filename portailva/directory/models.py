@@ -24,7 +24,7 @@ class DirectoryEntry(models.Model):
     A DirectoryEntry contains useful information about an Association.
     It contains address and some contact information.
     """
-    description = models.TextField("Description de l'association", max_length=900)
+    description = models.TextField("Description de l'association", max_length=900, help_text='{}/900 caractère{}')
     contact_address = models.EmailField("Adresse de contact")
     phone = models.CharField("Téléphone", max_length=10, blank=True)
 

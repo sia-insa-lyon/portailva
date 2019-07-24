@@ -18,23 +18,19 @@
     //<![CDATA[
         "use strict";
         let descriptionArea=$('#id_description');
-        descriptionArea.after('<small class="card-text text-muted" id="count_description"></small>')
-                .keyup(function() {
-                    const strRead = $(this).val();
-                    const strReadByLine = strRead.split('\n');
+        descriptionArea.on('input', function() {
+            const charNumber = $(this).val().trim().replace(/\n/g,"\r\n").length;
 
-                    let charNumber = strRead.length + strReadByLine.length;
-                    //We check if the last line is empty (the server remove this kind of line when persisting the description)
-                    charNumber -= ((strReadByLine.length > 1 && strReadByLine.pop().length === 0) ? 3 : 1);
+            let counter = $('#hint_id_description');
+            counter.html(charNumber + '/900 caractère' + (charNumber > 1 ? 's' : ''));
+            if (charNumber > 900) {
+                counter.addClass('has-error');
+            }else{
+                counter.removeClass('has-error');
+            }
+        });
 
-                    let counter = $('#count_description');
-                    counter.html(charNumber + '/900 caractère' + (charNumber > 1 ? 's' : '')).removeClass('has-error');
-                    if (charNumber > 900) {
-                        counter.addClass('has-error');
-                    }
-                });
-
-        descriptionArea.keyup();
+        descriptionArea.trigger("input");
     //]]>
     </script>
 {% endblock %}

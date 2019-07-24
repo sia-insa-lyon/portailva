@@ -13,6 +13,12 @@ class DirectoryEntryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DirectoryEntryForm, self).__init__(*args, **kwargs)
+
+        description_length = len(self.initial['description'])
+        template_help_text = self.fields['description'].help_text
+
+        self.fields['description'].help_text = template_help_text.format(description_length,
+                                                                         's' if (description_length > 0) else '')
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_id = 'directoryEntryForm'
