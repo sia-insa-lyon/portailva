@@ -291,18 +291,6 @@ class AssociationDirectoryPublicView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['highlights'] = {}
-
-        assos = self.queryset.order_by('?')[:5]
-        context['highlights']['assos'] = assos
-
-        events = (Event.objects
-                      .filter(association__in=self.queryset)
-                      .filter(is_online=True)
-                      .filter(ends_at__gte=datetime.now())
-                      .order_by('?')[:5])
-        context['highlights']['events'] = events
-
         context['categories'] = Category.objects.order_by('name')
         context['query'] = self.query
         context['cat'] = self.cat

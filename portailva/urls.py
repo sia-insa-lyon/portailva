@@ -18,7 +18,7 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-from portailva.pages.views import home as home_view
+from portailva.pages.views import HomeView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -34,6 +34,6 @@ urlpatterns = [
     # REST API
     url(r'^api/', include('portailva.api_urls')),
 
-    url(r'^$', home_view, name='homepage'),
+    url(r'^$', HomeView.as_view(), name='homepage'),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
