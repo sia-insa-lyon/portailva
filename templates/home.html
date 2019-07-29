@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-
+{% load staticfiles %}
 
 {% block page_title %}
-    Bienvenue
+    Bienvenue sur Portail VA !
 {% endblock %}
 
 {% block content %}
@@ -20,6 +20,73 @@
             {% endif %}
         </p>
     </div>-->
+    <blockquote class="blockquote">
+        <p class="mb-0 text-left">Ici tu trouveras le Bot’INSA, grand annuaire des associations INSAliennes.
+            Tu pourras y dénicher des informations sur toutes les associations, comment les contacter, leurs permanences et leurs événements.</p>
+        <p class="mb-0 text-left">Si tu te connectes en tant qu’association, tu auras également accès à ton espace personnel mais aussi à beaucoup de ressources qui te seront utiles.</p>
+        <p class="mb-0 text-center">Va vite explorer tout ça et si tu rencontre un problème, tu peux nous contacter sur cva @ led.insa-lyon.fr, à très vite. </p>
+        <footer class="blockquote-footer text-center"><cite title="l’équipe CVA">l’équipe CVA.</cite></footer>
+    </blockquote>
+
+    <div class="row mb-4">
+        <div class="col-md-8 col-12" id="figures">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">La VA en chiffres</h2>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 col-4">
+                            <img src="{% static 'img/visuelAsso.png' %}"
+                                 alt="Réseau d'association"
+                                 class="rounded img-fluid"/>
+                        </div>
+                        <div class="col-md-4 col-4">
+                            <img src="{% static 'img/carteVA.png' %}"
+                                 alt="Carte VA"
+                                 class="rounded img-fluid"/>
+                        </div>
+                        <div class="col-md-4 col-4">
+                            <img src="{% static 'img/visuelBudget.png' %}"
+                                 alt="Budget"
+                                 class="rounded img-fluid"/>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 col-4">
+                            <p class="card-text text-center">108+ associations</p>
+                        </div>
+                        <div class="col-md-4 col-4">
+                            <p class="card-text text-center">3 163 adhérents VA</p>
+                        </div>
+                        <div class="col-md-4 col-4">
+                            <p class="card-text text-center">3+ millions de budget annuel</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-12" id="links">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Psst par ici ...</h2>
+                    <div class="list-group list-group-flush">
+                        <a href="https://drive.google.com/open?id=14cAxIfOKH4uRPdzsi8ZpVuzSUnmL-utC" class="list-group-item list-group-item-action">
+                            Pleiiiiiin de documents intéressants
+                        </a>
+                        <a href="https://affichage.bde-insa-lyon.fr/" class="list-group-item list-group-item-action">
+                            Afficher ton événement sur les écrans (RI, BMC, BDE)
+                        </a>
+                        <a href="https://resa.bde-insa-lyon.fr/book/home" class="list-group-item list-group-item-action">
+                            Voir les salles ou le matos que tu peux réserver (réservation à faire au BDE)
+                        </a>
+                        <a href="https://www.wikipedia.fr/" class="list-group-item list-group-item-action">
+                            Le wiki de la VA pour les assos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row mb-4">
     <div class="col-md-6 col-12" id="highlights">

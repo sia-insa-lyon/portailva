@@ -115,3 +115,13 @@ i.fa {
 .has-error{
     color:#e93c46 !important;
 }
+
+.list-group-item:hover {
+    transition: background 0.4s ease;
+    background-color: #cccccc !important;
+    border-radius: 5px;
+}
+
+.card {
+    border: none;
+}
