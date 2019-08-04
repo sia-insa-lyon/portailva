@@ -120,8 +120,13 @@ i.fa {
     transition: background 0.4s ease;
     background-color: #cccccc !important;
     border-radius: 5px;
+    word-break: normal;
 }
 
 .card {
     border: none;
+}
+
+.figure {
+    font-size: xx-large;
 }
