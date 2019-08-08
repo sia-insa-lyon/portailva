@@ -1,12 +1,12 @@
 from datetime import datetime
 from django.shortcuts import redirect
-from django.views.generic import ListView
+from django.views.generic import TemplateView
 
 from portailva.association.models import Association
 from portailva.event.models import Event
 
 
-class HomeView(ListView):
+class HomeView(TemplateView):
     model = Association
     context_object_name = 'associations'
     query = None
