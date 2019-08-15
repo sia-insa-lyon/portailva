@@ -64,7 +64,7 @@
                     </h4>
                     <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary" onclick="getModal('{% url "api-v1-directory-index" %}', {{ asso.id }})">
+                        <button type="button" class="btn btn-primary" onclick="getModal({{ asso.id }})">
                             Plus d'infos
                         </button>
                         {% if user.is_superuser or user.is_staff %}
@@ -79,7 +79,6 @@
         {% endfor %}
     </div>
 
-
     <!-- Basic modal -->
     <div class="modal fade" id="assoDetails" tabindex="-1" role="dialog"
              aria-labelledby="assoDetailsLabel"
@@ -87,7 +86,10 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="modal-association-title" style="height: 100%; width: 100%;"></h4>
+                        <h4 class="modal-title" style="height: 100%; width: 100%;">
+                            <div class="skeleton skeletonTitle"></div>
+                            <div class="skeleton skeletonBadge"></div>
+                        </h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -121,24 +123,57 @@
                                  aria-labelledby="info-tab">
 
                                 <div class="row">
-                                    <div class="col-12" id="modal-association-description"></div>
+                                    <div class="col-12">
+                                        <h5>Description</h5>
+                                            <div class="float-right skeleton col-3  skeletonThumb"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                    </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-6" id="modal-association-place"></div>
-                                    <div class="col-md-6" id="modal-association-website"></div>
+                                    <div class="col-md-6">
+                                        <h5>Lieu</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h5>Site web</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-6" id="modal-association-contact"></div>
-                                    <div class="col-md-6" id="modal-association-network"></div>
+                                    <div class="col-md-6">
+                                        <h5>Contact</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h5>Réseaux sociaux</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="hours" role="tabpanel"
                                  aria-labelledby="hours-tab" data-children=".item">
+                                <h5>Horaires de permanences</h5>
+
+                                <div class="skeleton skeletonShortText"></div>
+                                <div class="skeleton skeletonShortText"></div>
+                                <div class="skeleton skeletonShortText"></div>
                             </div>
                             <div class="tab-pane fade" id="events" role="tabpanel"
                                  aria-labelledby="events-tab" data-children=".item">
+
+                                <div class="skeleton skeletonText"></div>
+                                <div class="skeleton skeletonText"></div>
+                                <div class="skeleton skeletonText"></div>
+
                             </div>
                         </div>
                     </div>
