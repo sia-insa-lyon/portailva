@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% load l10n %}
-{% load staticfiles %}
 
 {% block page_title %}
     Bot'INSA
@@ -42,101 +41,51 @@
             </form>
         </div>
     </div>
-    <ul class="nav nav-tabs" id="navigation-type-association" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="active-tab" data-toggle="tab" href="#active-association" role="tab" aria-controls="active-association" aria-selected="true">Actives</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="inactive-tab" data-toggle="tab" href="#inactive-association" role="tab" aria-controls="inactive-association" aria-selected="false">Inactives/en sommeil</a>
-        </li>
-    </ul>
+    <div class="card-columns">
+        <script type="application/javascript">
+           <!--//
+           function removeSkeleton(divId){
+               $("#"+divId).removeClass("skeleton");
+           }
 
-    <script src="{% static "js/src/modalBotINSA.js" %}"></script>
-
-    <div class="tab-content" id="navigation-type-association-content">
-        <div class="tab-pane fade show active" id="active-association" role="tabpanel" aria-labelledby="active-tab">
-            <div class="card-columns">
-            {% for asso in associations %}
-                {% if asso.is_active %}
-                <div class="card">
-                    {% if asso.logo_url %}
-                        <div id="logo_{{ asso.id }}" class="skeleton">
-                            <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" alt="logo">
-                        </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            {{ asso.name }}
-                            {% if asso.acronym %}
-                                <small>
-                                    ({{ asso.acronym }})
-                                </small>
-                            {% endif %}
-                            <span class="badge badge-pill badge-secondary">{{ asso.category.name }}</span>
-                        </h4>
-                        <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary" onclick="getModal('{% url "api-v1-directory-index" %}', {{ asso.id }})">
-                                Plus d'infos
-                            </button>
-                            {% if user.is_superuser or user.is_staff %}
-                                <a href="{% url 'association-detail' asso.id %}" class="btn btn-light">
-                                    Admin
-                                </a>
-                            {% endif %}
-                        </div>
+           function getModal(assoId){
+                $('#assoDetails').modal('show');
+           }
+           //-->
+        </script>
+        {% for asso in associations %}
+            {% if asso.is_active %}
+            <div class="card">
+                {% if asso.logo_url %}
+                    <div id="logo_{{ asso.id }}" class="skeleton">
+                        <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" alt="logo">
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h4 class="card-title">
+                        {{ asso.name }}
+                        {% if asso.acronym %}
+                            <small>
+                                ({{ asso.acronym }})
+                            </small>
+                        {% endif %}
+                        <span class="badge badge-pill badge-secondary">{{ asso.category.name }}</span>
+                    </h4>
+                    <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" onclick="getModal({{ asso.id }})">
+                            Plus d'infos
+                        </button>
+                        {% if user.is_superuser or user.is_staff %}
+                            <a href="{% url 'association-detail' asso.id %}" class="btn btn-light">
+                                Admin
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
-                {% endif %}
-            {% empty %}
-                <h4 class="text-center">Aucune association à afficher !</h4>
-            {% endfor %}
             </div>
-        </div>
-        <div class="tab-pane fade" id="inactive-association" role="tabpanel" aria-labelledby="inactive-tab">
-            <p class="text-justify text-break">
-                Ces associations sont en sommeil, cela signifie que personne ne s’en occupe actuellement mais qu’elles n’attendent que toi pour les faire revivre !<br/>
-                Certaines possèdent peut­être encore un local et du matériel pour leur fonctionnement alors n’hésite pas à contacter le CVA si tu es intéressé.e
-                ou si tu as une idée de nouvelle association Insalienne à créer !<br/>
-            </p>
-            <div class="card-columns">
-            {% for asso in associations %}
-                {% if asso.is_active is False %}
-                <div class="card">
-                    {% if asso.logo_url %}
-                        <div id="logo_{{ asso.id }}" class="skeleton">
-                            <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" alt="logo">
-                        </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            {{ asso.name }}
-                            {% if asso.acronym %}
-                                <small>
-                                    ({{ asso.acronym }})
-                                </small>
-                            {% endif %}
-                            <span class="badge badge-pill badge-secondary">{{ asso.category.name }}</span>
-                        </h4>
-                        <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary" onclick="getModal('{% url "api-v1-directory-index" %}', {{ asso.id }})">
-                                Plus d'infos
-                            </button>
-                            {% if user.is_superuser or user.is_staff %}
-                                <a href="{% url 'association-detail' asso.id %}" class="btn btn-light">
-                                    Admin
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            {% empty %}
-                <h4 class="text-center">Aucune association à afficher !</h4>
-            {% endfor %}
-            </div>
-        </div>
+            {% endif %}
+        {% endfor %}
     </div>
 
     <!-- Basic modal -->
@@ -146,7 +95,10 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="modal-association-title" style="height: 100%; width: 100%;"></h4>
+                        <h4 class="modal-title" style="height: 100%; width: 100%;">
+                            <div class="skeleton skeletonTitle"></div>
+                            <div class="skeleton skeletonBadge"></div>
+                        </h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -180,37 +132,63 @@
                                  aria-labelledby="info-tab">
 
                                 <div class="row">
-                                    <div class="col-12" id="modal-association-description"></div>
+                                    <div class="col-12">
+                                        <h5>Description</h5>
+                                            <div class="float-right skeleton col-3  skeletonThumb"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Lieu</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h5>Site web</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-6" id="modal-association-place"></div>
-                                    <div class="col-md-6" id="modal-association-website"></div>
-                                </div>
+                                    <div class="col-md-6">
+                                        <h5>Contact</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
 
-                                <div class="row">
-                                    <div class="col-md-6" id="modal-association-contact"></div>
-                                    <div class="col-md-6" id="modal-association-network"></div>
+                                    <div class="col-md-6">
+                                        <h5>Réseaux sociaux</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="hours" role="tabpanel"
                                  aria-labelledby="hours-tab" data-children=".item">
+                                <h5>Horaires de permanences</h5>
+
+                                <div class="skeleton skeletonShortText"></div>
+                                <div class="skeleton skeletonShortText"></div>
+                                <div class="skeleton skeletonShortText"></div>
                             </div>
                             <div class="tab-pane fade" id="events" role="tabpanel"
                                  aria-labelledby="events-tab" data-children=".item">
+
+                                <div class="skeleton skeletonText"></div>
+                                <div class="skeleton skeletonText"></div>
+                                <div class="skeleton skeletonText"></div>
+
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="btn-group">
-                            <a href="{% url 'association-print' 0 %}" class="btn btn-light">
-                                Version imprimable
-                            </a>
-                            {% if user.is_superuser %}
-                                <a href="{% url 'association-detail' 0 %}" class="btn btn-light">
-                                    Admin
-                                </a>
-                            {% endif %}
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                         </div>
                     </div>
