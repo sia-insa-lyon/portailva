@@ -13,7 +13,6 @@
             <small class="text-muted">({{ associations.count }} selon les critères choisis)</small>
         {% endif %}
     </h2>
-    <p class="text-muted">Les associations avec un fond sombre sont inactives et cherchent un repreneur.</p>
     <div class="row mb-4">
         <div class="col-12">
             <form action="{% if cat %}?cat={{ cat }}{% endif %}" method="get" class="form-inline">
@@ -43,28 +42,38 @@
         </div>
     </div>
     <div class="card-columns">
+        <script type="application/javascript">
+           <!--//
+           function removeSkeleton(divId){
+               $("#"+divId).removeClass("skeleton");
+           }
+
+           function getModal(assoId){
+                $('#assoDetails').modal('show');
+           }
+           //-->
+        </script>
         {% for asso in associations %}
-            <div class="card {% if not asso.is_active %}text-white bg-secondary{% endif %}">
-                {% if asso.logo_url %}<img class="card-img-top" src="{{ asso.logo_url }}" alt="Logo">{% endif %}
+            {% if asso.is_active %}
+            <div class="card">
+                {% if asso.logo_url %}
+                    <div id="logo_{{ asso.id }}" class="skeleton">
+                        <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" alt="logo">
+                    </div>
+                {% endif %}
                 <div class="card-body">
                     <h4 class="card-title">
                         {{ asso.name }}
                         {% if asso.acronym %}
-                            <small class="{% if asso.is_active %}text-muted{% endif %}">
+                            <small>
                                 ({{ asso.acronym }})
                             </small>
                         {% endif %}
-                        <span class="badge badge-pill {% if asso.is_active %}badge-secondary{% else %}badge-light{% endif %}">{{ asso.category.name }}</span>
-                        {% if not asso.is_active %}
-                            <span class="badge badge-pill badge-dark">
-                                Inactive
-                            </span>
-                        {% endif %}
+                        <span class="badge badge-pill badge-secondary">{{ asso.category.name }}</span>
                     </h4>
                     <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#assoDetails{{ asso.id }}">
+                        <button type="button" class="btn btn-primary" onclick="getModal({{ asso.id }})">
                             Plus d'infos
                         </button>
                         {% if user.is_superuser or user.is_staff %}
@@ -75,9 +84,115 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         {% endfor %}
     </div>
 
-    <!-- Modals -->
-    {% include 'directory/asso_modals.html' %}
+    <!-- Basic modal -->
+    <div class="modal fade" id="assoDetails" tabindex="-1" role="dialog"
+             aria-labelledby="assoDetailsLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="height: 100%; width: 100%;">
+                            <div class="skeleton skeletonTitle"></div>
+                            <div class="skeleton skeletonBadge"></div>
+                        </h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="info-tab" data-toggle="tab"
+                                   href="#info" role="tab"
+                                   aria-controls="info" aria-expanded="true">
+                                    Infos générales
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="hours-tab" data-toggle="tab"
+                                   href="#hours" role="tab"
+                                   aria-controls="hours">
+                                    Horaires
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="events-tab" data-toggle="tab"
+                                   href="#events" role="tab"
+                                   aria-controls="events">
+                                    Évènements
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="info" role="tabpanel"
+                                 aria-labelledby="info-tab">
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h5>Description</h5>
+                                            <div class="float-right skeleton col-3  skeletonThumb"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                            <div class="skeleton skeletonText"></div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Lieu</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h5>Site web</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Contact</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h5>Réseaux sociaux</h5>
+                                        <div class="skeleton skeletonShortText"></div>
+                                        <div class="skeleton skeletonShortText"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="hours" role="tabpanel"
+                                 aria-labelledby="hours-tab" data-children=".item">
+                                <h5>Horaires de permanences</h5>
+
+                                <div class="skeleton skeletonShortText"></div>
+                                <div class="skeleton skeletonShortText"></div>
+                                <div class="skeleton skeletonShortText"></div>
+                            </div>
+                            <div class="tab-pane fade" id="events" role="tabpanel"
+                                 aria-labelledby="events-tab" data-children=".item">
+
+                                <div class="skeleton skeletonText"></div>
+                                <div class="skeleton skeletonText"></div>
+                                <div class="skeleton skeletonText"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 {% endblock %}
