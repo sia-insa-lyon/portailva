@@ -130,3 +130,62 @@ i.fa {
 .figure {
     font-size: xx-large;
 }
+
+@keyframes animateSkeleton {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+    100% {
+      opacity: 1;
+    }
+}
+
+.skeleton {
+    background-color: rgba(0, 0, 0, 0.08);
+    height: 40vh;
+    animation: 1.5s ease-in-out infinite animateSkeleton;
+}
+
+.skeletonThumb {
+    height: 75%;
+}
+
+.skeletonText {
+    height: 0.8em;
+    width: 70%;
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+    border-radius: 4px;
+}
+
+.skeletonShortText {
+    height: 0.8em;
+    width: 40%;
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+    border-radius: 4px;
+}
+
+.skeletonTitle {
+    height: 1.2em;
+    width: 50%;
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+    border-radius: 4px;
+}
+
+.skeletonBadge {
+    height: 1em;
+    width: 30%;
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+    padding: .25em .6em;
+    border-radius: 10rem;
+}
+
+.skeleton > img {
+    display: none;
+}
