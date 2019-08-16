@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from portailva.association.api_v1.serializers import CategorySerializer
 from portailva.directory.models import OpeningHour, DirectoryEntry
 from portailva.utils.api_v1.serializers import PlaceSerializer
 
@@ -48,12 +49,18 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
 class PrivateDirectoryEntrySerializer(DirectoryEntrySerializer):
     acronym = serializers.SerializerMethodField()
     logo_url = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+    is_validated = serializers.SerializerMethodField()
+    is_active = serializers.SerializerMethodField()
 
     class Meta(DirectoryEntrySerializer.Meta):
         fields = DirectoryEntrySerializer.Meta.fields + [
             'acronym',
             'contact_address',
             'logo_url',
+            'category',
+            'is_validated',
+            'is_active',
         ]
 
     def get_acronym(self, obj):
@@ -61,3 +68,12 @@ class PrivateDirectoryEntrySerializer(DirectoryEntrySerializer):
 
     def get_logo_url(self, obj):
         return obj.association.logo_url
+
+    def get_category(self, obj):
+        return CategorySerializer(obj.association.category).data
+
+    def get_is_validated(self, obj):
+        return obj.association.is_validated
+
+    def get_is_active(self, obj):
+        return obj.association.is_active
