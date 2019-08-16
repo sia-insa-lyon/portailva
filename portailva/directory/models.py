@@ -64,6 +64,13 @@ class DirectoryEntry(models.Model):
                 'phone': self.phone,
             }
 
+    @property
+    def api_phone(self):
+        if (self.phone.startswith('06') or self.phone.startswith('+336') or self.phone.startswith('336')
+                or self.phone.startswith('07') or self.phone.startswith('+337') or self.phone.startswith('337')):
+            return ''
+        return self.phone
+
 
 class OpeningHour(models.Model):
     """

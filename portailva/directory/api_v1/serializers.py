@@ -16,11 +16,12 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
     short_description = serializers.SerializerMethodField()
     location = serializers.SerializerMethodField()
     schedule = serializers.SerializerMethodField()
+    phone = serializers.SerializerMethodField()
 
     class Meta(object):
         model = DirectoryEntry
-        fields = ('id', 'name', 'short_description', 'description', 'contact_address', 'phone', 'website_url',
-                  'facebook_url', 'twitter_url', 'location', 'schedule',)
+        fields = ['id', 'name', 'short_description', 'description', 'contact_address', 'phone', 'website_url',
+                  'facebook_url', 'twitter_url', 'location', 'schedule',]
 
     def get_id(self, obj):
         return obj.association_id
@@ -37,5 +38,26 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
     def get_location(self, obj):
         return PlaceSerializer(obj.place).data
 
+    def get_phone(self, obj):
+        return obj.api_phone
+
     def get_schedule(self, obj):
         return OpeningHourSerializer(obj.opening_hours.all(), many=True).data
+
+
+class PrivateDirectoryEntrySerializer(DirectoryEntrySerializer):
+    acronym = serializers.SerializerMethodField()
+    logo_url = serializers.SerializerMethodField()
+
+    class Meta(DirectoryEntrySerializer.Meta):
+        fields = DirectoryEntrySerializer.Meta.fields + [
+            'acronym',
+            'contact_address',
+            'logo_url',
+        ]
+
+    def get_acronym(self, obj):
+        return obj.association.acronym
+
+    def get_logo_url(self, obj):
+        return obj.association.logo_url
