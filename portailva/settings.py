@@ -37,7 +37,6 @@ ADMINS = [('Équipe OrgaIF', os.getenv('ADMIN_EMAIL')), ]
 SERVER_EMAIL = os.getenv('SERVER_EMAIL')
 EMAIL_SUBJECT_PREFIX = '[PortailVA] '
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -165,7 +164,6 @@ LOGGING = {
     },
 }
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
@@ -234,7 +232,11 @@ REST_FRAMEWORK = {
     # By default, we only want authenticated requests
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
 PORTAILVA_APP = {
