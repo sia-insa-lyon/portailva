@@ -32,3 +32,11 @@ build:
   except:
     - master
 
+deploy:
+  stage: deploy
+  image: cdrx/rancher-gitlab-deploy
+  script:
+    - upgrade --stack portailva --service portailva --start-before-stopping --environment Production --upgrade-timeout 600
+  only:
+    - master
+  when: manual
