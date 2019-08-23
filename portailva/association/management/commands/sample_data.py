@@ -1,3 +1,4 @@
+import datetime
 import random
 import re
 
@@ -10,6 +11,7 @@ from portailva.association.models import Category, Association
 import logging
 
 from portailva.directory.models import DirectoryEntry
+from portailva.event.models import Event
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +24,7 @@ class Command(BaseCommand):
         parser.add_argument('--associations', help="Number of associations to create", default=0, type=int)
         parser.add_argument('--users', help="Number of users to create", default=0, type=int)
         parser.add_argument('--directory_entries', help="Number of directory entries to create", default=0, type=int)
+        parser.add_argument('--events', help="Number of events entries to create", default=0, type=int)
 
     def handle(self, *args, **options):
         fake = faker.Faker('fr_FR')
@@ -81,3 +84,18 @@ class Command(BaseCommand):
                 is_online=fake.boolean(chance_of_getting_true=80),
             )
         logger.info(f"Created {options['directory_entries']} directory entries")
+
+        for i in range(options['events']):
+            asso = random.choice(assos)
+            start_date = fake.date_time_this_decade(before_now=True, after_now=True)
+            duration = datetime.timedelta(hours=random.randint(1, 5))
+            end_date = start_date + duration
+            Event.objects.create(
+                association=asso,
+                short_description=fake.text(max_nb_chars=150, ext_word_list=None),
+                description=fake.text(max_nb_chars=300, ext_word_list=None),
+                is_online=fake.boolean(chance_of_getting_true=80),
+                begins_at=start_date,
+                ends_at=end_date,
+            )
+        logger.info(f"Created {options['events']} events")
