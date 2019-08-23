@@ -9,6 +9,8 @@ from django.db import IntegrityError
 from portailva.association.models import Category, Association
 import logging
 
+from portailva.directory.models import DirectoryEntry
+
 logger = logging.getLogger(__name__)
 
 
@@ -19,6 +21,7 @@ class Command(BaseCommand):
         parser.add_argument('--categories', help="Number of categories to create", default=0, type=int)
         parser.add_argument('--associations', help="Number of associations to create", default=0, type=int)
         parser.add_argument('--users', help="Number of users to create", default=0, type=int)
+        parser.add_argument('--directory_entries', help="Number of directory entries to create", default=0, type=int)
 
     def handle(self, *args, **options):
         fake = faker.Faker('fr_FR')
@@ -67,3 +70,14 @@ class Command(BaseCommand):
             number_of_users = random.randint(0, 4)
             asso.users.set(random.choices(users, k=number_of_users))
         logger.info(f"Created {options['associations']} associations")
+        assos = Association.objects.all()
+
+        for i in range(options['directory_entries']):
+            asso = random.choice(assos)
+            DirectoryEntry.objects.create(
+                association=asso,
+                description=asso.description[:800],
+                contact_address=fake.email(),
+                is_online=fake.boolean(chance_of_getting_true=80),
+            )
+        logger.info(f"Created {options['directory_entries']} directory entries")
