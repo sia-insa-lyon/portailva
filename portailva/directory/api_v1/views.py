@@ -3,7 +3,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser
 
 from portailva.directory.models import DirectoryEntry
-from .serializers import DirectoryEntrySerializer, PrivateDirectoryEntrySerializer
+from .serializers import DirectoryEntrySerializer, PrivateDirectoryEntrySerializer, DetailDirectoryEntrySerializer
 
 
 class DirectoryAPIView(ListAPIView):
@@ -16,7 +16,7 @@ class DirectoryAPIView(ListAPIView):
 
 class PublicDirectoryByIdAPIView(RetrieveAPIView):
     permission_classes = (AllowAny,)
-    serializer_class = DirectoryEntrySerializer
+    serializer_class = DetailDirectoryEntrySerializer
 
     def get_object(self):
         try:

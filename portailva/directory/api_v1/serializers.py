@@ -1,7 +1,9 @@
+from django.utils import formats
 from rest_framework import serializers
 
 from portailva.association.api_v1.serializers import CategorySerializer
 from portailva.directory.models import OpeningHour, DirectoryEntry
+from portailva.event.models import Event
 from portailva.utils.api_v1.serializers import PlaceSerializer
 
 
@@ -9,6 +11,56 @@ class OpeningHourSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = OpeningHour
         fields = ('day', 'begins_at', 'ends_at',)
+
+
+class DetailOpeningHourSerializer(serializers.ModelSerializer):
+    day = serializers.SerializerMethodField()
+    begins_at = serializers.SerializerMethodField()
+    ends_at = serializers.SerializerMethodField()
+
+    class Meta(object):
+        model = OpeningHour
+        fields = ('day', 'begins_at', 'ends_at',)
+
+    def get_day(self, obj):
+        return obj.get_day_display()
+
+    def get_begins_at(self, obj):
+        return obj.begins_at.strftime('%H:%M')
+
+    def get_ends_at(self, obj):
+        return obj.ends_at.strftime('%H:%M')
+
+
+class DetailEventsSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
+    begins_at = serializers.SerializerMethodField()
+    ends_at = serializers.SerializerMethodField()
+    place = serializers.SerializerMethodField()
+
+    class Meta(object):
+        model = Event
+        fields = ('id', 'name', 'type', 'begins_at', 'description', 'ends_at', 'place', 'website_url')
+
+    def get_id(self, obj):
+        return obj.id
+
+    def get_name(self, obj):
+        return obj.name
+
+    def get_type(self, obj):
+        return str(obj.type)
+
+    def get_begins_at(self, obj):
+        return formats.date_format(obj.begins_at, 'DATETIME_FORMAT')
+
+    def get_ends_at(self, obj):
+        return formats.date_format(obj.ends_at, 'DATETIME_FORMAT')
+
+    def get_place(self, obj):
+        return PlaceSerializer(obj.place).data
 
 
 class DirectoryEntrySerializer(serializers.ModelSerializer):
@@ -22,7 +74,7 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = DirectoryEntry
         fields = ['id', 'name', 'short_description', 'description', 'contact_address', 'phone', 'website_url',
-                  'facebook_url', 'twitter_url', 'location', 'schedule',]
+                  'facebook_url', 'twitter_url', 'location', 'schedule']
 
     def get_id(self, obj):
         return obj.association_id
@@ -44,6 +96,51 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
 
     def get_schedule(self, obj):
         return OpeningHourSerializer(obj.opening_hours.all(), many=True).data
+
+
+class DetailDirectoryEntrySerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    acronym = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+    logo_url = serializers.SerializerMethodField()
+    public_phone = serializers.SerializerMethodField()
+    location = serializers.SerializerMethodField()
+    opening_hours = serializers.SerializerMethodField()
+    related_events = serializers.SerializerMethodField()
+
+    class Meta(object):
+        model = DirectoryEntry
+        fields = ['id', 'name', 'acronym', 'contact_address', 'logo_url', 'category',
+                  'description', 'contact_address', 'public_phone', 'website_url',
+                  'facebook_url', 'twitter_url', 'location', 'opening_hours', 'related_events']
+
+    def get_id(self, obj):
+        return obj.association_id
+
+    def get_name(self, obj):
+        return obj.association.name
+
+    def get_acronym(self, obj):
+        return obj.association.acronym
+
+    def get_category(self, obj):
+        return CategorySerializer(obj.association.category).data
+
+    def get_logo_url(self, obj):
+        return obj.association.logo_url
+
+    def get_location(self, obj):
+        return PlaceSerializer(obj.place).data
+
+    def get_public_phone(self, obj):
+        return obj.public_phone
+
+    def get_opening_hours(self, obj):
+        return DetailOpeningHourSerializer(obj.opening_hours.all(), many=True).data
+
+    def get_related_events(self, obj):
+        return DetailEventsSerializer(obj.association.online_events(), many=True).data
 
 
 class PrivateDirectoryEntrySerializer(DirectoryEntrySerializer):
