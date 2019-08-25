@@ -4,6 +4,6 @@ from .views import DirectoryAPIView, PrivateDirectoryAPIView, PublicDirectoryByI
 
 urlpatterns = [
     url('^private/$', PrivateDirectoryAPIView.as_view(), name='api-v1-directory-private'),
-    url('^public/(?P<association_pk>\d+)/$', PublicDirectoryByIdAPIView.as_view(), name='api-v1-directory-public'),
+    url('^(?P<association_pk>\d+)/$', PublicDirectoryByIdAPIView.as_view(), name='api-v1-directory-detail'),
     url('^$', DirectoryAPIView.as_view(), name='api-v1-directory-index'),
 ]
