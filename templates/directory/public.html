@@ -51,6 +51,7 @@
                 SHORT_TEXT: 'shortText'
             };
 
+           let lastModalAssociationId = 0;
 
            function removeSkeleton(divId){
                $("#"+divId).removeClass("skeleton");
@@ -98,11 +99,11 @@
 
            function getHTMLTitleSection(name, acronym, category){
                const $ref = $("#modal-association-title");
-               $ref.empty().append(name);
+               $ref.empty().append(name + ' ');
                if(acronym){
-                   $ref.append('<small class="text-muted">' + acronym + '</small>');
+                   $ref.append('<small class="text-muted">(' + acronym + ')</small>');
                }
-               $ref.append('<span class="badge badge-pill badge-secondary">' + category.name + '</span>');
+               $ref.append(' <span class="badge badge-pill badge-secondary">' + category.name + '</span>');
            }
 
            function getHTMLDescriptionSection(description, logo){
@@ -113,7 +114,7 @@
                }
 
                if(description){
-                   $ref.append('<p>' + description + '</p>');
+                   $ref.append('<p>' + description.replace(/\r\n/g,"<br/>") + '</p>');
                }else{
                    $ref.append('<p><em>Non défini</em></p>');
                }
@@ -126,8 +127,8 @@
                let contentElement = document.createElement('p');
                const $refContent = $(contentElement);
 
-               $refContent.append('<i class="fa fa-fw fa-location-arrow"></i>');
-               if(name){
+               $refContent.append('<i class="fa fa-fw fa-location-arrow"></i> ');
+               if(name && lat && long){
                    $refContent.append('<a href="http://www.google.com/maps/place/' + lat + ',' + long + '">' + name + '</a>');
                }else{
                    $refContent.append('<em>Non défini</em>');
@@ -143,7 +144,7 @@
                let contentElement = document.createElement('p');
                const $refContent = $(contentElement);
 
-               $refContent.append('<i class="fa fa-fw fa-external-link"></i>');
+               $refContent.append('<i class="fa fa-fw fa-external-link"></i> ');
                if(link){
                     $refContent.append('<a href="' + link +'">' + link + '</a>');
                }else{
@@ -160,13 +161,13 @@
                let contentElement = document.createElement('p');
                const $refContent = $(contentElement);
 
-               $refContent.append('<i class="fa fa-fw fa-facebook-f"></i>');
+               $refContent.append('<i class="fa fa-fw fa-facebook-f"></i> ');
                if(facebook){
                    $refContent.append('<a href="' + facebook + '">Facebook</a><br/>');
                }else{
                    $refContent.append('<em>Non défini</em><br/>');
                }
-               $refContent.append('<i class="fa fa-fw fa-twitter"></i>');
+               $refContent.append('<i class="fa fa-fw fa-twitter"></i> ');
                if(twitter){
                    $refContent.append('<a href="' + twitter + '">Twitter</a>');
                }else{
@@ -183,14 +184,14 @@
                let contentElement = document.createElement('p');
                const $refContent = $(contentElement);
 
-               $refContent.append('<i class="fa fa-fw fa-envelope-o"></i>');
+               $refContent.append('<i class="fa fa-fw fa-envelope-o"></i> ');
                if(mail){
                    $refContent.append('<a href="mailto:' + mail +'">' + mail +'</a><br>');
                }else{
                    $refContent.append('<em>Non défini</em><br>');
                }
 
-               $refContent.append('<i class="fa fa-fw fa-phone"></i>');
+               $refContent.append('<i class="fa fa-fw fa-phone"></i> ');
                if(phone){
                    $refContent.append('<a href="tel:' + phone +'">' + phone +'</a>');
                    if(phoneSource){
@@ -212,7 +213,7 @@
                    const $refList = $(listElement);
 
                    hours.map((opening_hour) => {
-                       $refList.append('<li class="list-group-item">' + opening_hour.day + 'de' + opening_hour.begins_at + 'à' + opening_hour.ends_at + '</li>');
+                       $refList.append('<li class="list-group-item">' + opening_hour.day + ' de ' + opening_hour.begins_at + ' à ' + opening_hour.ends_at + '</li>');
                    });
 
                    $ref.append($refList);
@@ -229,12 +230,13 @@
                        let divRoot = document.createElement('div');
                        divRoot.className = "item";
 
+                       let eventLink = "event-" + event.id;
                        $(divRoot).append('<a data-toggle="collapse" data-parent="#events" ' +
-                                         'href="#event" aria-expanded="true" aria-controls="event">' +
-                                            event.name + '(' + event.type.name + ')' + '</a>');
+                                         'href="#' + eventLink + '" aria-expanded="true" aria-controls="event">' +
+                                            event.name + ' (' + event.type + ')' + '</a>');
 
                        let divChild = document.createElement('div');
-                       divChild.id = "event";
+                       divChild.id = eventLink;
                        if(index === 0){
                            divChild.className = "collapse show";
                        }else{
@@ -243,21 +245,21 @@
                        divChild.setAttribute('role', 'tabpanel');
 
                        const refDivChild = $(divChild);
-                       refDivChild.append('<p>' + event.description + '</p>');
+                       refDivChild.append('<p>' + event.description.replace(/\r\n/g,"<br/>") + '</p>');
                        refDivChild.append('<div class="row mb-2">');
                        refDivChild.find("div.row").append('<div class="col-md-6">');
-                       refDivChild.find("div.col-md-6").append('<i class="fa fa-fw fa-calendar"></i>' + event.begins_at + ' - ' + event.ends_at);
+                       refDivChild.find("div.col-md-6").append('<i class="fa fa-fw fa-calendar"></i> ' + event.begins_at + ' - ' + event.ends_at);
                        refDivChild.find("div.row").append('<div class="col-md-6">');
-                       refDivChild.find("div.col-md-6")[1].append('<i class="fa fa-fw fa-location-arrow"></i>');
+                       refDivChild.find("div.col-md-6:nth-child(2)").append('<i class="fa fa-fw fa-location-arrow"></i> ');
 
-                       if(event.place){
-                           refDivChild.find("div.col-md-6")[1].append('<a href="http://www.google.com/maps/place/' + event.place.lat + ',' + event.place.long +
+                       if(event.place.name && event.place.lat && event.place.long){
+                           refDivChild.find("div.col-md-6:nth-child(2)").append('<a href="http://www.google.com/maps/place/' + event.place.lat + ',' + event.place.long +
                                                                         '">'+ event.place.name + '</a>');
                        }else{
-                           refDivChild.find("div.col-md-6")[1].append('<em>Non défini</em>');
+                           refDivChild.find("div.col-md-6:nth-child(2)").append('<em>Non défini</em>');
                        }
                        refDivChild.append('<div class="row mb-2"><div class="col-12">');
-                       refDivChild.find('div.col-12').append('<i class="fa fa-fw fa-link"></i>');
+                       refDivChild.find('div.col-12').append('<i class="fa fa-fw fa-link"></i> ');
 
                        if(event.website_url){
                            refDivChild.find('div.col-12').append('<a href="' + event.website_url + '">Page web</a>');
@@ -291,21 +293,27 @@
                         resetModal();
                     },
                     complete: () => {
+                        const links = $('#assoDetails div.btn-group a');
+                        for(let i=0; i<links.length; i++){
+                            let url = links[i].href;
+                            let idPos = url.lastIndexOf(lastModalAssociationId);
+                            links[i].setAttribute('href', url.substring(0, idPos) + url.substring(idPos, url.length).replace(lastModalAssociationId,assoId));
+                        }
+                        lastModalAssociationId=assoId;
                         $('#assoDetails').modal('show');
                     }
                }).done( (data) => {
-                    console.debug(data);
-
-                   //$("#modal-association-title").html(getHTMLTitleSection(data.name));
-                   $("#modal-association-description").html(getHTMLDescriptionSection(data.description));
+                   $("#modal-association-title").html(getHTMLTitleSection(data.name, data.acronym, data.category));
+                   $("#modal-association-description").html(getHTMLDescriptionSection(data.description, data.logo_url));
                    $("#modal-association-website").html(getHTMLWebsiteSection(data.website_url));
                    $("#modal-association-network").html(getHTMLNetworkSection(data.facebook_url, data.twitter_url));
-                   /*$("#modal-association-place").html(getHTMLPlaceSection());
-                   $("#modal-association-contact").html(getHTMLContactSection());
-                   $("#hours").html(getHTMLHoursSection());
-                   $("#events").html(getHTMLEventsSection());*/
+                   $("#modal-association-place").html(getHTMLPlaceSection(data.location.name, data.location.lat, data.location.long));
+                   $("#modal-association-contact").html(getHTMLContactSection(data.contact_address, data.public_phone.phone, data.public_phone.source));
+
+                   $("#hours").html(getHTMLHoursSection(data.opening_hours));
+                   $("#events").html(getHTMLEventsSection(data.related_events));
                }).fail( (err) => {
-                    $("#modal-association-title").append(
+                    $("div.modal").prepend(
                         '<div class="alert alert-danger" role="alert">\n' +
                         ' Une erreur est survenue, voici le détail : '+ (err.responseJSON) ? err.responseJSON.detail : 'erreur inattendue' +
                         '</div>');
@@ -413,6 +421,14 @@
                     </div>
                     <div class="modal-footer">
                         <div class="btn-group">
+                            <a href="{% url 'association-print' 0 %}" class="btn btn-light">
+                                Version imprimable
+                            </a>
+                            {% if user.is_superuser %}
+                                <a href="{% url 'association-detail' 0 %}" class="btn btn-light">
+                                    Admin
+                                </a>
+                            {% endif %}
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                         </div>
                     </div>
