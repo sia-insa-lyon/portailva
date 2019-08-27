@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+from random import shuffle
 
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
@@ -10,8 +11,6 @@ from django.views.generic import CreateView, DeleteView, DetailView, TemplateVie
 
 from portailva.association.mixins import AssociationMixin
 from portailva.association.models import Association, Category
-from portailva.event.models import Event
-from portailva.utils.models import Place
 from .forms import DirectoryEntryForm, OpeningHourForm
 from .models import DirectoryEntry, OpeningHour
 from .mixins import AssociationDirectoryEntryMixin, OpeningHourMixin
@@ -267,11 +266,13 @@ class AssociationDirectoryPublicView(ListView):
 
     @property
     def queryset(self):
-        return (Association.objects
-                .filter(is_validated=True)
-                .filter(directory_entries__isnull=False)
-                .filter(directory_entries__is_online=True)
-                .distinct())
+        query = list(Association.objects
+                     .filter(is_validated=True)
+                     .filter(directory_entries__isnull=False)
+                     .filter(directory_entries__is_online=True)
+                     .distinct())
+        shuffle(query)
+        return query
 
     def get_queryset(self):
         queryset = self.queryset
