@@ -13,25 +13,6 @@ class OpeningHourSerializer(serializers.ModelSerializer):
         fields = ('day', 'begins_at', 'ends_at',)
 
 
-class DetailOpeningHourSerializer(serializers.ModelSerializer):
-    day = serializers.SerializerMethodField()
-    begins_at = serializers.SerializerMethodField()
-    ends_at = serializers.SerializerMethodField()
-
-    class Meta(object):
-        model = OpeningHour
-        fields = ('day', 'begins_at', 'ends_at',)
-
-    def get_day(self, obj):
-        return obj.get_day_display()
-
-    def get_begins_at(self, obj):
-        return obj.begins_at.strftime('%H:%M')
-
-    def get_ends_at(self, obj):
-        return obj.ends_at.strftime('%H:%M')
-
-
 class DetailEventsSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
@@ -98,28 +79,19 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
         return OpeningHourSerializer(obj.opening_hours.all(), many=True).data
 
 
-class DetailDirectoryEntrySerializer(serializers.ModelSerializer):
-    id = serializers.SerializerMethodField()
-    name = serializers.SerializerMethodField()
+class DetailDirectoryEntrySerializer(DirectoryEntrySerializer):
     acronym = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     logo_url = serializers.SerializerMethodField()
     public_phone = serializers.SerializerMethodField()
-    location = serializers.SerializerMethodField()
     opening_hours = serializers.SerializerMethodField()
     related_events = serializers.SerializerMethodField()
 
-    class Meta(object):
+    class Meta(DirectoryEntrySerializer.Meta):
         model = DirectoryEntry
-        fields = ['id', 'name', 'acronym', 'contact_address', 'logo_url', 'category',
-                  'description', 'contact_address', 'public_phone', 'website_url',
-                  'facebook_url', 'twitter_url', 'location', 'opening_hours', 'related_events']
-
-    def get_id(self, obj):
-        return obj.association_id
-
-    def get_name(self, obj):
-        return obj.association.name
+        fields = ['id', 'name', 'acronym', 'logo_url', 'category',
+                  'description', 'public_phone', 'contact_address', 'location', 'opening_hours',
+                  'website_url', 'facebook_url', 'twitter_url', 'related_events']
 
     def get_acronym(self, obj):
         return obj.association.acronym
@@ -130,14 +102,11 @@ class DetailDirectoryEntrySerializer(serializers.ModelSerializer):
     def get_logo_url(self, obj):
         return obj.association.logo_url
 
-    def get_location(self, obj):
-        return PlaceSerializer(obj.place).data
-
     def get_public_phone(self, obj):
         return obj.public_phone
 
     def get_opening_hours(self, obj):
-        return DetailOpeningHourSerializer(obj.opening_hours.all(), many=True).data
+        return OpeningHourSerializer(obj.opening_hours.all(), many=True).data
 
     def get_related_events(self, obj):
         return DetailEventsSerializer(obj.association.online_events(), many=True).data
