@@ -4,7 +4,7 @@ module.exports = {
     'es6': true,
   },
   'extends': [
-    'google'
+    'google',
   ],
   'globals': {
     'Atomics': 'readonly',
@@ -17,9 +17,9 @@ module.exports = {
       'comma-dangle': 'off',
       'indent':['error', 4],
       'implicit-arrow-linebreak': 'off',
-      'max-len': ['error', { 'code': 180 }],
+      'require-jsdoc': 'off',
+      'max-len': ["error", { "code": 180 }],
       'no-trailing-spaces': 'off',
       'semi': ['error','always'],
-      'require-jsdoc': 'off',
   },
 };
