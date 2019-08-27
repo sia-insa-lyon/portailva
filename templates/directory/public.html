@@ -64,7 +64,7 @@
                     </h4>
                     <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary" onclick="getModal({{ asso.id }})">
+                        <button type="button" class="btn btn-primary" onclick="getModal('{% url "api-v1-directory-index" %}', {{ asso.id }})">
                             Plus d'infos
                         </button>
                         {% if user.is_superuser or user.is_staff %}
