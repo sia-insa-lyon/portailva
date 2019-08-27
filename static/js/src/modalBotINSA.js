@@ -286,8 +286,3 @@ function getModal(baseURL, assoId) {
                 '</div>');
     });
 }
-
-// Export for test methods
-if (typeof module === 'object' && module.exports) {
-    module.exports = {getModal, resetModal, removeSkeleton};
-}
