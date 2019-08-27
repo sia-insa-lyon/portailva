@@ -266,13 +266,11 @@ class AssociationDirectoryPublicView(ListView):
 
     @property
     def queryset(self):
-        query = list(Association.objects
+        return (Association.objects
                      .filter(is_validated=True)
                      .filter(directory_entries__isnull=False)
                      .filter(directory_entries__is_online=True)
                      .distinct())
-        shuffle(query)
-        return query
 
     def get_queryset(self):
         queryset = self.queryset
@@ -288,7 +286,9 @@ class AssociationDirectoryPublicView(ListView):
             queryset = (queryset
                         .filter(category=self.cat))
 
-        return queryset
+        result = list(queryset)
+        shuffle(result)
+        return result
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
