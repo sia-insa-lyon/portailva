@@ -42,42 +42,101 @@
             </form>
         </div>
     </div>
-    <div class="card-columns">
-        <script src="{% static "js/modalBotINSA.js" %}"></script>
-        {% for asso in associations %}
-            {% if asso.is_active %}
-            <div class="card">
-                {% if asso.logo_url %}
-                    <div id="logo_{{ asso.id }}" class="skeleton">
-                        <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" alt="logo">
-                    </div>
-                {% endif %}
-                <div class="card-body">
-                    <h4 class="card-title">
-                        {{ asso.name }}
-                        {% if asso.acronym %}
-                            <small>
-                                ({{ asso.acronym }})
-                            </small>
-                        {% endif %}
-                        <span class="badge badge-pill badge-secondary">{{ asso.category.name }}</span>
-                    </h4>
-                    <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary" onclick="getModal('{% url "api-v1-directory-index" %}', {{ asso.id }})">
-                            Plus d'infos
-                        </button>
-                        {% if user.is_superuser or user.is_staff %}
-                            <a href="{% url 'association-detail' asso.id %}" class="btn btn-light">
-                                Admin
-                            </a>
-                        {% endif %}
+    <ul class="nav nav-tabs" id="navigation-type-association" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="active-tab" data-toggle="tab" href="#active-association" role="tab" aria-controls="active-association" aria-selected="true">Actives</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="inactive-tab" data-toggle="tab" href="#inactive-association" role="tab" aria-controls="inactive-association" aria-selected="false">Inactives/en sommeil</a>
+        </li>
+    </ul>
+
+    <script src="{% static "js/modalBotINSA.js" %}"></script>
+
+    <div class="tab-content" id="navigation-type-association-content">
+        <div class="tab-pane fade show active" id="active-association" role="tabpanel" aria-labelledby="active-tab">
+            <div class="card-columns">
+            {% for asso in associations %}
+                {% if asso.is_active %}
+                <div class="card">
+                    {% if asso.logo_url %}
+                        <div id="logo_{{ asso.id }}" class="skeleton">
+                            <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" alt="logo">
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            {{ asso.name }}
+                            {% if asso.acronym %}
+                                <small>
+                                    ({{ asso.acronym }})
+                                </small>
+                            {% endif %}
+                            <span class="badge badge-pill badge-secondary">{{ asso.category.name }}</span>
+                        </h4>
+                        <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" onclick="getModal('{% url "api-v1-directory-index" %}', {{ asso.id }})">
+                                Plus d'infos
+                            </button>
+                            {% if user.is_superuser or user.is_staff %}
+                                <a href="{% url 'association-detail' asso.id %}" class="btn btn-light">
+                                    Admin
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+                {% endif %}
+            {% endfor %}
             </div>
-            {% endif %}
-        {% endfor %}
+        </div>
+        <div class="tab-pane fade" id="inactive-association" role="tabpanel" aria-labelledby="inactive-tab">
+            <p>
+                Ces associations sont en sommeil, cela signifie que personne ne s’en occupe actuellement mais qu’elles n’attendent que toi pour les faire revivre!<br/>
+                Certaines possèdent peut­être encore un local et du matériel pour leur fonctionnement alors n’hésite pas à contacter le CVA si tu es intéressé.e
+                ou si tu as une idée de nouvelle association Insalienne à créer!<br/>
+            </p>
+            <div class="card-columns">
+            {% for asso in associations %}
+                {% if asso.is_active is False %}
+                <div class="card">
+                    {% if asso.logo_url %}
+                        <div id="logo_{{ asso.id }}" class="skeleton">
+                            <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" alt="logo">
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            {{ asso.name }}
+                            {% if asso.acronym %}
+                                <small>
+                                    ({{ asso.acronym }})
+                                </small>
+                            {% endif %}
+                            <span class="badge badge-pill badge-secondary">{{ asso.category.name }}</span>
+                        </h4>
+                        <p class="card-text">{{ asso.current_directory_entry.description|linebreaksbr|truncatewords:42 }}</p>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" onclick="getModal('{% url "api-v1-directory-index" %}', {{ asso.id }})">
+                                Plus d'infos
+                            </button>
+                            {% if user.is_superuser or user.is_staff %}
+                                <a href="{% url 'association-detail' asso.id %}" class="btn btn-light">
+                                    Admin
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
     </div>
+
+
+
 
     <!-- Basic modal -->
     <div class="modal fade" id="assoDetails" tabindex="-1" role="dialog"
