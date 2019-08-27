@@ -77,6 +77,12 @@
                     <a class="nav-link" href="{% url 'association-directory-public' %}">Bot'INSA</a>
                 </li>
                 <li class="nav-item">
+                    <script type="application/javascript">
+                        <!--
+                        var myDefaultWhiteList = $.fn.tooltip.Constructor.Default.whiteList;
+                        myDefaultWhiteList.input = ['type', 'value', 'onclick'];
+                        //-->
+                    </script>
                     <a tabindex="0" class="nav-link popover-dismiss" data-toggle="popover"
                        data-placement="bottom" title="Calendrier VA" id="calendar-popover"
                        data-html="true" data-content="{% include 'event/calendar-popover.html' %}">
@@ -228,7 +234,7 @@
             <span class="version">• Version : <a href="{{ git_version.url }}">{{ git_version.name }}</a></span>
         </p>
         <p class="text-muted pull-right">
-            <a href="#">A propos</a>
+            <a href="https://gitlab.com/sia-insa-lyon/portailva">A propos</a>
         </p>
     </div>
 </footer>

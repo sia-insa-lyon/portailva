@@ -9,6 +9,11 @@ to properly manage their structure.
 
 This application can be forked to be tuned or improved.
 
+## Troubleshooting
+
+To report a bug or a dysfunction feel free to submit issues. 
+Alternativly, just send an email to portailva@asso-insa-lyon.fr, it will notify the administrators.
+
 ## Deployment
 
 This app can be deployed using Docker. Just use ``docker-compose`` 
