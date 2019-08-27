@@ -1,0 +1,23 @@
+{
+  "name": "portail-va",
+  "description": "Managing platform for organizations",
+  "version": "17.03.1",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "gitlab",
+    "url": "git://gitlab.com/sia-insa-lyon/portailva.git"
+  },
+  "scripts": {
+    "lint": "eslint \"static/**/*.js\"",
+    "jest": "jest --coverage --logHeapUsage --maxWorkers=2 --no-cache --config ./jest.config.js",
+    "test": "npm run lint && npm run jest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^6.2.2",
+    "eslint-config-google": "^0.13.0",
+    "eslint-config-jquery": "^2.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "jest": "^24.9.0"
+  }
+}
