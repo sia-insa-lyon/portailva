@@ -88,14 +88,16 @@
                     </div>
                 </div>
                 {% endif %}
+            {% empty %}
+                <h4 class="text-center">Aucune association à afficher !</h4>
             {% endfor %}
             </div>
         </div>
         <div class="tab-pane fade" id="inactive-association" role="tabpanel" aria-labelledby="inactive-tab">
-            <p>
-                Ces associations sont en sommeil, cela signifie que personne ne s’en occupe actuellement mais qu’elles n’attendent que toi pour les faire revivre!<br/>
+            <p class="text-justify text-break">
+                Ces associations sont en sommeil, cela signifie que personne ne s’en occupe actuellement mais qu’elles n’attendent que toi pour les faire revivre !<br/>
                 Certaines possèdent peut­être encore un local et du matériel pour leur fonctionnement alors n’hésite pas à contacter le CVA si tu es intéressé.e
-                ou si tu as une idée de nouvelle association Insalienne à créer!<br/>
+                ou si tu as une idée de nouvelle association Insalienne à créer !<br/>
             </p>
             <div class="card-columns">
             {% for asso in associations %}
@@ -130,13 +132,12 @@
                     </div>
                 </div>
                 {% endif %}
+            {% empty %}
+                <h4 class="text-center">Aucune association à afficher !</h4>
             {% endfor %}
             </div>
         </div>
     </div>
-
-
-
 
     <!-- Basic modal -->
     <div class="modal fade" id="assoDetails" tabindex="-1" role="dialog"
