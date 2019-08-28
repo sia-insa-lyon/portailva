@@ -27,16 +27,24 @@ build:
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
   except:
     - master
 
-deploy:
+deploy-prod:
   stage: deploy
   image: cdrx/rancher-gitlab-deploy
   script:
     - upgrade --stack portailva --service portailva --start-before-stopping --environment Production --upgrade-timeout 600
   only:
     - master
+  when: manual
+
+deploy-preprod:
+  stage: deploy
+  image: cdrx/rancher-gitlab-deploy
+  script:
+    - upgrade --stack portailva-preprod --service portailva --start-before-stopping --environment Production --upgrade-timeout 600 --new-image "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
   when: manual
