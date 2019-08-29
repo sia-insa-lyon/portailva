@@ -150,8 +150,8 @@ function getHTMLContactSection(mail, phone, phoneSource) {
     $refContent.append('<i class="fa fa-fw fa-phone"></i> ');
     if (phone) {
         $refContent.append('<a href="tel:' + phone +'">' + phone +'</a>');
-        if (phoneSource) {
-            $refContent.append(phoneSource);
+        if (phoneSource) {            
+            $refContent.append(' (' + phoneSource + ')');
         }
     } else {
         $refContent.append('<em>Non défini</em>');
