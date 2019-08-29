@@ -38,5 +38,6 @@ class HomeView(TemplateView):
                                .filter(ends_at__gte=datetime.now())
                                .order_by('?')[:5])
         context['highlights']['events'] = events
+        context['associations'] = list(association_get_by_query) + list(Association.objects.filter(events__in=events))
 
         return context
