@@ -1,244 +1,76 @@
-{% load l10n %}
-{% for asso in associations %}
-    <div class="modal fade" id="assoDetails{{ asso.id }}" tabindex="-1" role="dialog"
-         aria-labelledby="assoDetailsLabel{{ asso.id }}"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="assoDetailsLabel{{ asso.id }}">
-                        {{ asso.name }}
-                        {% if asso.acronym %}
-                            <small class="text-muted">({{ asso.acronym }})</small>
-                        {% endif %}
-                        <span class="badge badge-pill badge-secondary">{{ asso.category.name }}</span>
-                        {% if not asso.is_active %}
-                            <span class="badge badge-pill badge-dark">
-                                Inactive
-                            </span>
-                        {% endif %}
-                    </h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="info-tab-{{ asso.id }}" data-toggle="tab"
-                               href="#info-{{ asso.id }}" role="tab"
-                               aria-controls="info-{{ asso.id }}" aria-expanded="true">
-                                Infos générales
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="hours-tab-{{ asso.id }}" data-toggle="tab"
-                               href="#hours-{{ asso.id }}" role="tab"
-                               aria-controls="hours-{{ asso.id }}">
-                                Horaires
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="events-tab-{{ asso.id }}" data-toggle="tab"
-                               href="#events-{{ asso.id }}" role="tab"
-                               aria-controls="events-{{ asso.id }}">
-                                Évènements
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="info-{{ asso.id }}" role="tabpanel"
-                             aria-labelledby="info-tab-{{ asso.id }}">
-
-                            <div class="row">
-                                <div class="col-12">
-                                    <h5>Description</h5>
-
-                                    {% if asso.logo_url %}
-                                        <img src="{{ asso.logo_url }}" alt="Logo" class="float-right col-3">
-                                    {% endif %}
-
-                                    <p>
-                                        {% if asso.current_directory_entry.description %}
-                                            {{ asso.current_directory_entry.description|linebreaksbr }}
-                                        {% else %}
-                                            <em>Non défini</em>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                            </div>
-
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h5>Lieu</h5>
-                                    <p>
-                                        <i class="fa fa-fw fa-location-arrow"></i>
-                                        {% if asso.current_directory_entry.place %}
-                                            {% with place=asso.current_directory_entry.place %}
-                                                <a href="http://www.google.com/maps/place/{{ place.lat|unlocalize }},{{ place.long|unlocalize }}">
-                                                    {{ place.name }}
-                                                </a>
-                                            {% endwith %}
-                                        {% else %}
-                                            <em>Non défini</em>
-                                        {% endif %}
-                                    </p>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <h5>Site web</h5>
-                                    <p>
-                                        <i class="fa fa-fw fa-external-link"></i>
-                                        {% if asso.current_directory_entry.website_url %}
-                                            <a href="{{ asso.current_directory_entry.website_url }}">
-                                                {{ asso.current_directory_entry.website_url }}
-                                            </a>
-                                        {% else %}
-                                            <em>Non défini</em>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h5>Contact</h5>
-                                    <p>
-                                        <i class="fa fa-fw fa-envelope-o"></i>
-                                        {% if asso.current_directory_entry.contact_address %}
-                                            <a href="mailto:{{ asso.current_directory_entry.contact_address }}">
-                                                {{ asso.current_directory_entry.contact_address }}
-                                            </a>
-                                        {% else %}
-                                            <em>Non défini</em>
-                                        {% endif %}<br>
-
-                                        <i class="fa fa-fw fa-phone"></i>
-                                        {% if asso.current_directory_entry.public_phone %}
-                                            <a href="tel:{{ asso.current_directory_entry.public_phone.phone }}">
-                                                {{ asso.current_directory_entry.public_phone.phone }}
-                                            </a>{% if asso.current_directory_entry.public_phone.source %} ({{ asso.current_directory_entry.public_phone.source }}){% endif %}
-                                        {% else %}
-                                            <em>Non défini</em>
-                                        {% endif %}
-                                    </p>
-
-                                </div>
-
-                                <div class="col-md-6">
-                                    <h5>Réseaux sociaux</h5>
-                                    <p>
-                                        <i class="fa fa-fw fa-facebook-f"></i>
-                                        {% if asso.current_directory_entry.facebook_url %}
-                                            <a href="{{ asso.current_directory_entry.facebook_url }}">
-                                                Facebook
-                                            </a>
-                                        {% else %}
-                                            <em>Non défini</em>
-                                        {% endif %}
-                                        <br>
-
-                                        <i class="fa fa-fw fa-twitter"></i>
-                                        {% if asso.current_directory_entry.twitter_url %}
-                                            <a href="{{ asso.current_directory_entry.twitter_url }}">
-                                                Twitter
-                                            </a>
-                                        {% else %}
-                                            <em>Non défini</em>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="hours-{{ asso.id }}" role="tabpanel"
-                             aria-labelledby="hours-tab{{ asso.id }}" data-children=".item-{{ asso.id }}">
-                            <h5>Horaires de permanences</h5>
-                            {% if asso.current_directory_entry.opening_hours.all %}
-                                <ul class="list-group">
-                                    {% for opening_hour in asso.current_directory_entry.opening_hours.all %}
-                                        <li class="list-group-item">
-                                            {{ days|get_tuple:opening_hour.day }}
-                                            de {{ opening_hour.begins_at|time:"H:i" }}
-                                            à {{ opening_hour.ends_at|time:"H:i" }}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% else %}
-                                <em>Aucun horaire défini</em>
-                            {% endif %}
-                        </div>
-                        <div class="tab-pane fade" id="events-{{ asso.id }}" role="tabpanel"
-                             aria-labelledby="events-tab{{ asso.id }}" data-children=".item-{{ asso.id }}">
-                            {% for event in asso.online_events %}
-                                <div class="item-{{ asso.id }}">
-                                    <a data-toggle="collapse" data-parent="#events-{{ asso.id }}"
-                                       href="#event-{{ event.id }}" aria-expanded="true"
-                                       aria-controls="event-{{ event.id }}">
-                                        {{ event.name }} ({{ event.type.name }})
-                                    </a>
-                                    <div id="event-{{ event.id }}"
-                                         class="collapse{% if forloop.first %} show{% endif %}"
-                                         role="tabpanel">
-                                        {% if event.picture %}
-                                            {#<img src="" alt="Logo" class="float-right">#}
-                                        {% endif %}
-                                        <p>
-                                            {{ event.description }}
-                                        </p>
-                                        <div class="row mb-2">
-                                            <div class="col-md-6">
-                                                <i class="fa fa-fw fa-calendar"></i> {{ event.begins_at|date:'DATETIME_FORMAT' }}
-                                                - {{ event.ends_at|date:'DATETIME_FORMAT' }}
-                                            </div>
-                                            <div class="col-md-6">
-                                                <i class="fa fa-fw fa-location-arrow"></i>
-                                                {% if event.place %}
-                                                    {% with place=event.place %}
-                                                        <a href="http://www.google.com/maps/place/{{ place.lat|unlocalize }},{{ place.long|unlocalize }}">
-                                                            {{ place.name }}
-                                                        </a>
-                                                    {% endwith %}
-                                                {% else %}
-                                                    <em>Non défini</em>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                <i class="fa fa-fw fa-link"></i>
-                                                {% if event.website_url %}
-                                                    <a href="{{ event.website_url }}">Page web</a>
-                                                {% else %}
-                                                    <em>Non défini</em>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% empty %}
-                                <em>Aucun évènement à venir.</em>
-                            {% endfor %}
-
-                        </div>
-                    </div>
-
-
-                </div>
-                <div class="modal-footer">
-                    <div class="btn-group">
-                        <a href="{% url 'association-print' asso.id %}" class="btn btn-light">
-                            Version imprimable
+<!-- Basic modal -->
+<div class="modal fade" id="assoDetails" tabindex="-1" role="dialog" aria-labelledby="assoDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-association-title" style="height: 100%; width: 100%;"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="info-tab" data-toggle="tab"
+                           href="#info" role="tab"
+                           aria-controls="info" aria-expanded="true">
+                            Infos générales
                         </a>
-                        {% if user.is_superuser %}
-                            <a href="{% url 'association-detail' asso.id %}" class="btn btn-light">
-                                Admin
-                            </a>
-                        {% endif %}
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="hours-tab" data-toggle="tab"
+                           href="#hours" role="tab"
+                           aria-controls="hours">
+                            Horaires
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="events-tab" data-toggle="tab"
+                           href="#events" role="tab"
+                           aria-controls="events">
+                            Évènements
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="info" role="tabpanel"
+                         aria-labelledby="info-tab">
+
+                        <div class="row">
+                            <div class="col-12" id="modal-association-description"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6" id="modal-association-place"></div>
+                            <div class="col-md-6" id="modal-association-website"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6" id="modal-association-contact"></div>
+                            <div class="col-md-6" id="modal-association-network"></div>
+                        </div>
                     </div>
+                    <div class="tab-pane fade" id="hours" role="tabpanel"
+                         aria-labelledby="hours-tab" data-children=".item">
+                    </div>
+                    <div class="tab-pane fade" id="events" role="tabpanel"
+                         aria-labelledby="events-tab" data-children=".item">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="{% url 'association-print' 0 %}" class="btn btn-light">
+                        Version imprimable
+                    </a>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'association-detail' 0 %}" class="btn btn-light">
+                            Admin
+                        </a>
+                    {% endif %}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
     </div>
-{% endfor %}
+</div>
