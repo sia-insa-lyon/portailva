@@ -1,0 +1,76 @@
+<!-- Basic modal -->
+<div class="modal fade" id="assoDetails" tabindex="-1" role="dialog" aria-labelledby="assoDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-association-title" style="height: 100%; width: 100%;"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="info-tab" data-toggle="tab"
+                           href="#info" role="tab"
+                           aria-controls="info" aria-expanded="true">
+                            Infos générales
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="hours-tab" data-toggle="tab"
+                           href="#hours" role="tab"
+                           aria-controls="hours">
+                            Horaires
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="events-tab" data-toggle="tab"
+                           href="#events" role="tab"
+                           aria-controls="events">
+                            Évènements
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="info" role="tabpanel"
+                         aria-labelledby="info-tab">
+
+                        <div class="row">
+                            <div class="col-12" id="modal-association-description"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6" id="modal-association-place"></div>
+                            <div class="col-md-6" id="modal-association-website"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6" id="modal-association-contact"></div>
+                            <div class="col-md-6" id="modal-association-network"></div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="hours" role="tabpanel"
+                         aria-labelledby="hours-tab" data-children=".item">
+                    </div>
+                    <div class="tab-pane fade" id="events" role="tabpanel"
+                         aria-labelledby="events-tab" data-children=".item">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="{% url 'association-print' 0 %}" class="btn btn-light">
+                        Version imprimable
+                    </a>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'association-detail' 0 %}" class="btn btn-light">
+                            Admin
+                        </a>
+                    {% endif %}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

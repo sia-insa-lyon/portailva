@@ -102,7 +102,7 @@ function getHTMLWebsiteSection(link) {
 
     $refContent.append('<i class="fa fa-fw fa-external-link"></i> ');
     if (link) {
-        $refContent.append('<a href="' + link +'">' + link + '</a>');
+        $refContent.append('<a href="' + link +'" style="word-wrap: break-word;">' + link + '</a>');
     } else {
         $refContent.append('<em>Non défini</em>');
     }
@@ -188,7 +188,7 @@ function getHTMLHoursSection(hours) {
     }
 }
 
-function getHTMLEventsSection(eventList) {
+function getHTMLEventsSection(eventList, eventToDisplay = null) {
     const $ref = $('#events');
     $ref.empty();
     if (eventList && eventList.length>0) {
@@ -203,11 +203,20 @@ function getHTMLEventsSection(eventList) {
 
             const divChild = document.createElement('div');
             divChild.id = eventLink;
-            if (index === 0) {
-                divChild.className = 'collapse show';
+            if (eventToDisplay) {
+                if (event.id === eventToDisplay) {
+                    divChild.className = 'collapse show';
+                } else {
+                    divChild.className = 'collapse';
+                }
             } else {
-                divChild.className = 'collapse';
+                if (index === 0) {
+                    divChild.className = 'collapse show';
+                } else {
+                    divChild.className = 'collapse';
+                }
             }
+
             divChild.setAttribute('role', 'tabpanel');
 
             const refDivChild = $(divChild);
@@ -251,8 +260,14 @@ function resetModal() {
     $('#events').html(getHTMLInitialSection(SKELETON_TYPE.TEXT, 3));
 }
 
+/** Function to generate modal for a specific association and open it !
+ *
+ * @param  {string} baseURL  URL of the endpoint to use
+ * @param  {Number} assoId   ID of the association to display
+ * @param  {Number} eventId  (Optional) ID of the event to show directly to user
+ */
 // eslint-disable-next-line no-unused-vars
-function getModal(baseURL, assoId) {
+function getModal(baseURL, assoId, eventId = null) {
     $.ajax({
         url: baseURL + assoId + '/',
         method: 'GET',
@@ -268,6 +283,12 @@ function getModal(baseURL, assoId) {
             }
             lastModalAssociationId=assoId;
             $('#assoDetails').modal('show');
+
+            if ( eventId ) {
+                $('.nav-tabs a[href="#events"]').tab('show');
+            } else {
+                $('.nav-tabs a[href="#info"]').tab('show');
+            }
         }
     }).done( (data) => {
         $('#modal-association-title').html(getHTMLTitleSection(data.name, data.acronym, data.category));
@@ -278,7 +299,7 @@ function getModal(baseURL, assoId) {
         $('#modal-association-contact').html(getHTMLContactSection(data.contact_address, data.public_phone.phone, data.public_phone.source));
 
         $('#hours').html(getHTMLHoursSection(data.opening_hours));
-        $('#events').html(getHTMLEventsSection(data.related_events));
+        $('#events').html(getHTMLEventsSection(data.related_events, eventId));
     }).fail( (err) => {
         $('div.modal').prepend(
             '<div class="alert alert-danger" role="alert">\n' +
