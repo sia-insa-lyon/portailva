@@ -22,6 +22,7 @@ class HomeView(TemplateView):
     def queryset(self):
         return (Association.objects
                 .filter(is_validated=True)
+                .filter(is_active=True)
                 .filter(directory_entries__isnull=False)
                 .filter(directory_entries__is_online=True)
                 .distinct())
