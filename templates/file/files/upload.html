@@ -3,17 +3,30 @@
 {% load crispy_forms_tags %}
 
 {% block page_sub_title %}
-  Uploader un fichier
+    Uploader un fichier
 {% endblock %}
 
 {% block quick_actions %}
-  <a href="{% url 'association-file-tree' association.id current_folder.id %}" class="btn btn-secondary"><i class="fa fa-times"></i> Annuler</a>
-  <button form="associationForm" type="submit" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+    <a href="{% url 'association-file-tree' association.id current_folder.id %}" class="btn btn-secondary"><i class="fa fa-times"></i> Annuler</a>
+    <button form="associationForm" type="submit" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
 {% endblock %}
 
 {% block content_association %}
-  <div class="alert alert-info">
-  Ce fichier sera enregistré dans le dossier <samp>{{ current_folder.name }}</samp>.
-  </div>
-  {% crispy form %}
+    <div class="alert alert-info">
+        Ce fichier sera enregistré dans le dossier <samp>{{ current_folder.name }}</samp>.
+    </div>
+    <div class="alert alert-warning">
+        {% if accepted_type %}
+            Les types suivants de fichiers sont acceptés :
+            {% for type in accepted_type %}
+                <code>
+                    .{{ type.name }}
+                </code>
+            {% endfor %}
+            .
+        {% else %}
+            Aucun type de fichier n'est accepté pour ce dossier.
+        {% endif %}
+    </div>
+    {% crispy form %}
 {% endblock %}

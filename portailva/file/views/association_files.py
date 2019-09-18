@@ -54,6 +54,9 @@ class AssociationFileUploadView(AssociationMixin, CreateView):
     form_class = AssociationFileUploadForm
     current_folder = None
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     def dispatch(self, request, *args, **kwargs):
         try:
             folder_pk = int(self.kwargs.get('folder_pk'))
@@ -71,7 +74,8 @@ class AssociationFileUploadView(AssociationMixin, CreateView):
         return render(request, self.template_name, {
             'form': self.form_class(),
             'association': self.association,
-            'current_folder': self.current_folder
+            'current_folder': self.current_folder,
+            'accepted_type': self.current_folder.allowed_types.all()
         })
 
     def post(self, request, *args, **kwargs):
@@ -81,7 +85,8 @@ class AssociationFileUploadView(AssociationMixin, CreateView):
         return render(request, self.template_name, {
             'association': self.association,
             'form': form,
-            'current_folder': self.current_folder
+            'current_folder': self.current_folder,
+            'accepted_type': self.current_folder.allowed_types.all()
         })
 
     def get_form(self, form_class=AssociationFileUploadForm):
