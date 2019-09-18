@@ -189,3 +189,7 @@ i.fa {
 .skeleton > img {
     display: none;
 }
+
+.invalid-feedback {
+    display: inline;
+}
