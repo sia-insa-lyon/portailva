@@ -16,9 +16,9 @@
         Ce fichier sera enregistré dans le dossier <samp>{{ current_folder.name }}</samp>.
     </div>
     <div class="alert alert-warning">
-        {% if accepted_type %}
-            Les types suivants de fichiers sont acceptés :
-            {% for type in accepted_type %}
+        {% if accepted_types %}
+            Les types de fichier suivants sont acceptés :
+            {% for type in accepted_types %}
                 <code>
                     .{{ type.name }}
                 </code>
