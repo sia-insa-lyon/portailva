@@ -44,7 +44,7 @@ deploy-prod:
   stage: deploy
   image: cdrx/rancher-gitlab-deploy
   script:
-    - upgrade --stack portailva --service portailva --start-before-stopping --environment Production --upgrade-timeout 600
+    - upgrade --stack portailva --service portailva --start-before-stopping --environment Production --upgrade-timeout 600 --new-image "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
   only:
     - master
   when: manual
