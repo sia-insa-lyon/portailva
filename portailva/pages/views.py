@@ -13,9 +13,6 @@ class HomeView(TemplateView):
     template_name = "home.html"
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            if request.user.associations.count() == 1:
-                return redirect('association-detail', request.user.associations.first().id)
         return super().dispatch(request, *args, **kwargs)
 
     @property
