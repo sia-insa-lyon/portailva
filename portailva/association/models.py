@@ -211,7 +211,8 @@ class Requirement(models.Model):
                                    .order_by('-ends_at')[0:1].get()
                 if last_mandate is not None:
                     people = People.objects.filter(mandate__id=last_mandate.id).count()
-                    if people > 2:
+                    #President and treasurer at least
+                    if people >= 2:
                         achieved = True
             except Mandate.DoesNotExist:
                 pass
