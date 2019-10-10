@@ -11,7 +11,9 @@ from .models import Association, Mandate, People
 
 class AssociationForm(forms.ModelForm):
     class Meta:
-        fields = ['category', 'name', 'acronym', 'description', 'active_members_number', 'logo_url', 'iban', 'bic']
+        fields = ['category', 'name', 'acronym', 'description',
+                  'active_members_number', 'all_members_number',
+                  'logo_url', 'iban', 'bic', 'rna', 'siren']
         model = Association
 
     def __init__(self, *args, **kwargs):
@@ -23,7 +25,7 @@ class AssociationForm(forms.ModelForm):
 
 class AssociationAdminForm(AssociationForm):
     class Meta(AssociationForm.Meta):
-        fields = AssociationForm.Meta.fields + ['is_active']
+        fields = AssociationForm.Meta.fields + ['created_officially_at', 'commentary', 'is_active']
 
 
 class MandateForm(forms.Form):

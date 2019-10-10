@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 from portailva.file.models import AssociationFile
 from portailva.utils.fields import LogoURLField
-from portailva.utils.validators import validate_iban
+from portailva.utils.validators import validate_iban, validate_siren
 
 
 class Category(models.Model):
@@ -45,6 +45,7 @@ class Association(models.Model):
         help_text="Cette description n'est pas visible dans le Bot'INSA",
     )
     active_members_number = models.PositiveIntegerField("Nombre de membres actifs", default=0)
+    all_members_number = models.PositiveIntegerField("Nombre de membres adhérents", default=0)
 
     is_active = models.BooleanField("Est active", default=True)
     is_validated = models.BooleanField("Est validée", default=False)
@@ -53,13 +54,24 @@ class Association(models.Model):
     category = models.ForeignKey(Category, verbose_name="Catégorie", on_delete=models.PROTECT)
     users = models.ManyToManyField(User, verbose_name="Utilisateurs", related_name='associations', blank=True)
 
+    commentary = models.TextField(
+        "Commentaires",
+        help_text="Cette description n'est pas visible pour les non-administateurs",
+        blank=True
+    )
+    moderated_by = models.ManyToManyField(User, verbose_name="Référent CVA", related_name='referent', blank=True)
+
     logo_url = LogoURLField("URL du logo", blank=True)
 
     iban = models.CharField("IBAN", max_length=50, blank=True, validators=[validate_iban])
     bic = models.CharField("BIC", max_length=15, blank=True)
+    rna = models.CharField("Numéro RNA", max_length=10, blank=True)
+    siren = models.CharField("Numéro SIREN", max_length=9, blank=True, help_text="Format : XXXXXXXXX où X est un chiffre entre 0 et 9", validators=[validate_siren])
 
     created_at = models.DateTimeField("Date d'ajout", auto_now_add=True)
     updated_at = models.DateTimeField("Dernière mise à jour", auto_now=True)
+
+    created_officially_at = models.DateField("Date de création", help_text="Format : JJ/MM/AAAA", null=True, blank=True)
 
     class Meta(object):
         default_permissions = ('add', 'change', 'delete', 'admin',)
@@ -112,6 +124,7 @@ class Mandate(models.Model):
     """
     begins_at = models.DateField("Début du mandat")
     ends_at = models.DateField("Fin du mandat")
+    share_phone = models.BooleanField("Autoriser le partage du numéro", default=False)
     created_at = models.DateTimeField("Date d'ajout", auto_now_add=True)
 
     association = models.ForeignKey(Association, verbose_name="Association", related_name="mandates",

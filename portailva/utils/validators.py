@@ -3,7 +3,6 @@ import re
 import requests
 from django.core.exceptions import ValidationError
 
-
 def validate_image_url(url):
     res = requests.head(url, allow_redirects=True)
     if 'image' not in res.headers.get('Content-Type'):
@@ -20,9 +19,9 @@ def validate_iban(iban):
     fr_iban_re = re.compile(r'^FR[0-9A-Z]{25}$')
     if not fr_iban_re.match(iban):
         raise ValidationError("L'IBAN saisi n'est pas valide. "
-                                    "Il doit commencer par FR et ne contenir que "
-                                    "des lettres majuscules ou des chiffres (pas d'espace, de tirets, ...). "
-                                    "27 caractères au total.")
+                              "Il doit commencer par FR et ne contenir que "
+                              "des lettres majuscules ou des chiffres (pas d'espace, de tirets, ...). "
+                              "27 caractères au total.")
 
     verif_iban = list(iban[4:] + iban[:4])
     verif_iban_num = ''
@@ -34,3 +33,26 @@ def validate_iban(iban):
 
     if verif_iban_num % 97 != 1:
         raise ValidationError("L'IBAN saisi a la bonne forme mais n'est pas valide.")
+
+
+def validate_siren(siren):
+    _digits_re = re.compile(r'^[0-9]+$')
+    if not bool(_digits_re.match(siren)) or not bool(siren) or len(siren) < 9:
+        raise ValidationError("Le numéro SIREN saisi a un format invalide. "
+                              "Il doit contenir que des chiffres (pas d'espace, de tirets ...). "
+                              "9 chiffres au total.")
+    sum = 0
+    for i in range(len(siren)):
+        if (i % 2) == 1:
+            num_tmp = int(siren[i], 10) * 2
+            if num_tmp > 9:
+                num_tmp -= 9
+        else:
+            num_tmp = int(siren[i], 10)
+        sum += num_tmp
+
+    is_valid = bool((sum % 10) == 0)
+    if not is_valid:
+        raise ValidationError("Le numéro SIREN saisi est invalide. "
+                              "La vérification du dernier chiffre de validation a échoué.")
+

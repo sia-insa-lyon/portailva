@@ -38,9 +38,45 @@
             </div>
         </div>
         <div class="col-md-4">
+            <b>Référent CVA</b>
+            <div class="card bg-light">
+                <div class="card-body">
+                    {% for user in object.moderated_by.all %}
+                        {{ user.email }}
+                    {% empty %}
+                        <i>Non défini</i>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <b>Nombre d'adhérent</b>
+            <div class="card bg-light">
+                <div class="card-body">
+                    {{ object.all_members_number }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
             <b>Nombre de membres actifs</b>
             <div class="card bg-light">
-                <div class="card-body">{{ object.active_members_number }}</div>
+                <div class="card-body">
+                    {{ object.active_members_number }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <b>Date de création</b>
+            <div class="card bg-light">
+                <div class="card-body">
+                    {% if object.created_officially_at %}
+                        {{ object.created_officially_at }}
+                    {% else %}
+                        <i>Non défini</i>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -52,6 +88,16 @@
             </div>
         </div>
     </div>
+    {% if request.user.is_active and request.user.is_staff %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <b>Commentaires <small class="text-muted">(non visible pour les non-administateurs)</small></b>
+            <div class="card bg-light">
+                <div class="card-body">{{ object.commentary }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <div class="row mb-3">
         <div class="col-md-6">
             <b>IBAN</b>
@@ -71,6 +117,32 @@
                 <div class="card-body">
                     {% if object.bic %}
                         {{ object.bic }}
+                    {% else %}
+                        <i>Non défini</i>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <b>Numéro RNA</b>
+            <div class="card bg-light">
+                <div class="card-body">
+                    {% if object.rna %}
+                        {{ object.rna }}
+                    {% else %}
+                        <i>Non défini</i>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <b>Numéro SIREN</b>
+            <div class="card bg-light">
+                <div class="card-body">
+                    {% if object.siren %}
+                        {{ object.siren }}
                     {% else %}
                         <i>Non défini</i>
                     {% endif %}
