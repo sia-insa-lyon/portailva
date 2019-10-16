@@ -65,7 +65,7 @@ class Association(models.Model):
 
     iban = models.CharField("IBAN", max_length=50, blank=True, validators=[validate_iban])
     bic = models.CharField("BIC", max_length=15, blank=True)
-    rna = models.CharField("Numéro RNA", max_length=10, blank=True)
+    rna = models.CharField("Numéro RNA", max_length=10, blank=True, help_text="La date extacte ainsi que les numéros d'identifications ci-dessous peuvent être facilement retrouvés en cherchant votre asso sur le site : entreprise.data.gouv.fr")
     siren = models.CharField("Numéro SIREN", max_length=9, blank=True, help_text="Format : XXXXXXXXX où X est un chiffre entre 0 et 9", validators=[validate_siren])
 
     created_at = models.DateTimeField("Date d'ajout", auto_now_add=True)
