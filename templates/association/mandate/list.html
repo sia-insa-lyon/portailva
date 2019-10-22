@@ -40,7 +40,19 @@
                 <td>{{ people.role.name }}</td>
                 <td>
                   <i class="fa fa-envelope"></i> <a href="mailto:{{ people.email }}">{{ people.email }}</a><br>
-                  <i class="fa fa-phone"></i> {% if people.phone %}{{ people.phone }}{% else %}<i>Non défini</i>{% endif %}
+                  <i class="fa fa-phone"></i>
+                    {% if people.phone %}
+                        {{ people.phone }}
+                        {% if forloop.first %}
+                            {% if mandate.share_phone %}
+                                <i class="fa fa-eye" data-toggle="tooltip" data-placement="bottom" title="Visible dans l'annuaire"></i>
+                            {% else %}
+                                <i class="fa fa-eye-slash" data-toggle="tooltip" data-placement="bottom" title="Non visible dans l'annuaire"></i>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <i>Non défini</i>
+                    {% endif %}
                 </td>
                 <td>
                   <a href="{% url 'association-mandate-people-update' association.id mandate.id people.id %}" data-toggle="tooltip" title="Modifier"><i class="fa fa-pencil"></i></a>
@@ -58,11 +70,22 @@
             </tbody>
           </table>
           {% if forloop.first %}
-            <a class="btn btn-primary btn-xs" href="{% url 'association-mandate-people-new' association.id mandate.id %}"><i class="fa fa-user-plus"></i> Ajouter un membre</a>
+            <div class="d-flex justify-content-start">
+              <a class="btn btn-primary btn-xs" href="{% url 'association-mandate-people-new' association.id mandate.id %}"><i class="fa fa-user-plus"></i> Ajouter un membre</a>
+              {% if request.user.is_active and request.user.is_staff %}
+                <form action="{% url 'association-mandate-change-phone-visibiity' association.id mandate.id %}" method="POST">
+                  {% csrf_token %}
+                  {% if mandate.share_phone %}
+                    <button class="btn btn-danger btn-xs" style="margin-left: 2vw" type="submit"><i class="fa fa-eye-slash"></i>Cacher le téléphone du président</button>
+                  {% else %}
+                    <button class="btn btn-success btn-xs" style="margin-left: 2vw" type="submit"><i class="fa fa-eye"></i>Partager le téléphone du président</button>
+                  {% endif %}
+                </form>
+              {% endif %}
+            </div>
           {% else %}
             <div class="alert alert-warning" role="alert">Ce mandat est clos, vous ne pouvez pas modifier les informations associées.</div>
           {% endif %}
-
         </div>
       </div>
     </div>

@@ -136,6 +136,8 @@ class Mandate(models.Model):
     def __str__(self):
         return "Du " + str(self.begins_at) + " au " + str(self.ends_at)
 
+    def get_president(self):
+        return self.peoples.filter(role__name__istartswith='président')
 
 class PeopleRole(models.Model):
     """

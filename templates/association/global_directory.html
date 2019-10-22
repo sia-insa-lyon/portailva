@@ -12,6 +12,7 @@
             <th>Nom de l'association</th>
             <th>Nom du président</th>
             <th>Email de contact</th>
+            <th>Numéro de téléphone</th>
             <th>Fin du mandat</th>
         </tr>
         </thead>
@@ -20,13 +21,22 @@
             {% with mandate=association.mandates.last %}
                 <tr>
                     <td>{{ association.name }}</td>
-                    <td>{{ mandate.peoples.first }}</td>
-                    <td>
-                        <a href="mailto:{{ association.directory_entries.last.contact_address }}">
-                            {{ association.directory_entries.last.contact_address }}
-                        </a>
-                    </td>
-                    <td>{{ mandate.ends_at|date:'DATE_FORMAT' }}</td>
+                    {% with president=mandate.get_president.first %}
+                        <td>{{ president.first_name|upper }} {{ president.last_name|title }}</td>
+                        <td>
+                            <a href="mailto:{{ association.directory_entries.last.contact_address }}">
+                                {{ association.directory_entries.last.contact_address }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if mandate.share_phone %}
+                                {{ president.phone }}
+                            {% else %}
+                                Privé
+                            {% endif %}
+                        </td>
+                    {% endwith %}
+                    <td data_order="mandate.ends_at">{{ mandate.ends_at|date:'DATE_FORMAT' }}</td>
                 </tr>
             {% endwith %}
         {% endfor %}

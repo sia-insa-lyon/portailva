@@ -139,6 +139,29 @@ class AssociationMandateListView(AssociationMixin, ListView):
             .order_by('-begins_at')
 
 
+class AssociationMandateChangePhoneVisibility(AssociationMixin, UpdateView):
+    model = Mandate
+
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse('association-mandate-list', kwargs={
+            'association_pk': self.association.id
+        }))
+
+    def post(self, request, *args, **kwargs):
+        try:
+            if request.user.is_active and request.user.is_staff:
+                mandate_to_change = Mandate.objects.get(pk=self.kwargs['mandate_pk'])
+                mandate_to_change.share_phone = not mandate_to_change.share_phone
+                mandate_to_change.save()
+            else:
+                raise Exception('Non-admin user try to change mandate photo visibility')
+            return redirect(reverse('association-mandate-list', kwargs={
+                'association_pk': self.association.id
+            }))
+        except Exception as e:
+            raise Http404
+
+
 class AssociationMandateNewView(AssociationMixin, CreateView):
     model = Mandate
     form_class = MandateForm

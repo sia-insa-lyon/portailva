@@ -4,7 +4,7 @@ from portailva.association.views import AssociationDetailView, AssociationUpdate
     AssociationNewView, AssociationDeleteView, AssociationMandateListView, AssociationMandateNewView, \
     AssociationMandatePeopleNewView, AssociationMandatePeopleUpdateView, AssociationMandatePeopleDeleteView, \
     AssociationRequirementListView, AssociationRequirementAchieveView, RequirementListView, RequirementDetailView, \
-    GlobalDirectoryView
+    GlobalDirectoryView, AssociationMandateChangePhoneVisibility
 
 urlpatterns = [
     # Association links
@@ -15,6 +15,8 @@ urlpatterns = [
     # Mandate
     url('^association/(?P<association_pk>\d+)/mandate/$', AssociationMandateListView.as_view(), name='association-mandate-list'),
     url('^association/(?P<association_pk>\d+)/mandate/new/$', AssociationMandateNewView.as_view(), name='association-mandate-new'),
+    url('^association/(?P<association_pk>\d+)/mandate/(?P<mandate_pk>\d+)/change_phone_visibility$', AssociationMandateChangePhoneVisibility.as_view(),
+        name='association-mandate-change-phone-visibiity'),
     url('^association/(?P<association_pk>\d+)/mandate/(?P<mandate_pk>\d+)/people/new/$', AssociationMandatePeopleNewView.as_view(),
         name='association-mandate-people-new'),
     url('^association/(?P<association_pk>\d+)/mandate/(?P<mandate_pk>\d+)/people/(?P<pk>\d+)/edit/$',
