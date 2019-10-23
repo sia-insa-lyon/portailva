@@ -20,9 +20,21 @@
         {% for association in object_list %}
             {% with mandate=association.mandates.last %}
                 <tr>
-                    <td>{{ association.name }}</td>
+                    {% if request.user.is_active and request.user.is_staff %}
+                        {% if not association.acronym %}
+                            <td><a href="{% url 'association-detail' association.id %}">{{ association.name }}</a></td>
+                        {% else %}
+                            <td><a href="{% url 'association-detail' association.id %}">{{ association.acronym }}</a> <small>({{ association.name }})</small></td>
+                        {% endif %}
+                    {% else %}
+                        {% if not association.acronym %}
+                            <td> {{ association.name }} </td>
+                        {% else %}
+                            <td> {{ association.acronym }} <small>({{ association.name }})</small></td>
+                        {% endif %}
+                    {% endif %}
                     {% with president=mandate.get_president.first %}
-                        <td>{{ president.first_name|upper }} {{ president.last_name|title }}</td>
+                        <td>{{ president.last_name|upper }} {{ president.first_name|title }}</td>
                         <td>
                             <a href="mailto:{{ association.directory_entries.last.contact_address }}">
                                 {{ association.directory_entries.last.contact_address }}
