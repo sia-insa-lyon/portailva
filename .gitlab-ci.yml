@@ -25,6 +25,7 @@ build-master:
     - docker push "$CI_REGISTRY_IMAGE"
   only:
     - master
+    - tags
 
 build:
   stage: build
@@ -39,6 +40,7 @@ build:
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
   except:
     - master
+    - tags
 
 deploy-prod:
   stage: deploy
@@ -47,6 +49,7 @@ deploy-prod:
     - upgrade --stack portailva --service portailva --start-before-stopping --environment Production --upgrade-timeout 600 --new-image "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
   only:
     - master
+    - tags
   when: manual
 
 deploy-preprod:
