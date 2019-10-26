@@ -92,7 +92,7 @@ class ExportView(AbleToExportMixin, TemplateView):
 
         # Fetch the set of data
         default_set = Association.objects.all().order_by('name')
-        if category == 'ALIVE':
+        if category == 'ACTIVE':
             default_set = default_set.filter(is_active=True)
         elif category == 'DEAD':
             default_set = default_set.filter(is_active=False)
