@@ -55,7 +55,7 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = DirectoryEntry
         fields = ['id', 'name', 'short_description', 'description', 'contact_address', 'phone', 'website_url',
-                  'facebook_url', 'twitter_url', 'location', 'schedule']
+                  'facebook_url', 'twitter_url', 'acronym', 'logo_url', 'location', 'schedule']
 
     def get_id(self, obj):
         return obj.association_id
