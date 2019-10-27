@@ -51,11 +51,15 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     schedule = serializers.SerializerMethodField()
     phone = serializers.SerializerMethodField()
+    acronym = serializers.SerializerMethodField()
+    logo_url = serializers.SerializerMethodField()
+    is_active = serializers.SerializerMethodField()
 
     class Meta(object):
         model = DirectoryEntry
         fields = ['id', 'name', 'short_description', 'description', 'contact_address', 'phone', 'website_url',
-                  'facebook_url', 'twitter_url', 'acronym', 'logo_url', 'location', 'schedule']
+                  'facebook_url', 'twitter_url', 'acronym', 'logo_url', 'location', 'schedule',
+                    'is_active']
 
     def get_id(self, obj):
         return obj.association_id
@@ -78,11 +82,18 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
     def get_schedule(self, obj):
         return OpeningHourSerializer(obj.opening_hours.all(), many=True).data
 
+    def get_acronym(self, obj):
+        return obj.association.acronym
+
+    def get_logo_url(self, obj):
+        return obj.association.logo_url
+
+    def get_is_active(self, obj):
+        return obj.association.is_active
+
 
 class DetailDirectoryEntrySerializer(DirectoryEntrySerializer):
-    acronym = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
-    logo_url = serializers.SerializerMethodField()
     public_phone = serializers.SerializerMethodField()
     opening_hours = serializers.SerializerMethodField()
     related_events = serializers.SerializerMethodField()
@@ -91,10 +102,8 @@ class DetailDirectoryEntrySerializer(DirectoryEntrySerializer):
         model = DirectoryEntry
         fields = ['id', 'name', 'acronym', 'logo_url', 'category',
                   'description', 'public_phone', 'contact_address', 'location', 'opening_hours',
-                  'website_url', 'facebook_url', 'twitter_url', 'related_events']
-
-    def get_acronym(self, obj):
-        return obj.association.acronym
+                  'website_url', 'facebook_url', 'twitter_url', 'related_events',
+                    'is_active']
 
     def get_category(self, obj):
         return CategorySerializer(obj.association.category).data
@@ -117,7 +126,6 @@ class PrivateDirectoryEntrySerializer(DirectoryEntrySerializer):
     logo_url = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     is_validated = serializers.SerializerMethodField()
-    is_active = serializers.SerializerMethodField()
 
     class Meta(DirectoryEntrySerializer.Meta):
         fields = DirectoryEntrySerializer.Meta.fields + [
