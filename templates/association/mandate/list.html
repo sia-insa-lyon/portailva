@@ -72,13 +72,17 @@
           {% if forloop.first %}
             <div class="d-flex justify-content-start">
               <a class="btn btn-primary btn-xs" href="{% url 'association-mandate-people-new' association.id mandate.id %}"><i class="fa fa-user-plus"></i> Ajouter un membre</a>
-              {% if request.user.is_active and request.user.is_staff %}
+              {% if request.user.is_active %}
                 <form action="{% url 'association-mandate-change-phone-visibiity' association.id mandate.id %}" method="POST">
                   {% csrf_token %}
                   {% if mandate.share_phone %}
-                    <button class="btn btn-danger btn-xs" style="margin-left: 2vw" type="submit"><i class="fa fa-eye-slash"></i>Cacher le téléphone du président</button>
+                    <button class="btn btn-danger btn-xs" style="margin-left: 2vw" type="submit" data-toggle="tooltip" data-placement="bottom" title="Seul les responsables d'association connectés peuvent voir ce numéro dans l'annuaire">
+                        <i class="fa fa-eye-slash"></i>Cacher le téléphone du président
+                    </button>
                   {% else %}
-                    <button class="btn btn-success btn-xs" style="margin-left: 2vw" type="submit"><i class="fa fa-eye"></i>Partager le téléphone du président</button>
+                    <button class="btn btn-success btn-xs" style="margin-left: 2vw" type="submit" data-toggle="tooltip" data-placement="bottom" title="Seul les responsables d'association connectés pourront voir ce numéro dans l'annuaire">
+                        <i class="fa fa-eye"></i>Partager le téléphone du président
+                    </button>
                   {% endif %}
                 </form>
               {% endif %}

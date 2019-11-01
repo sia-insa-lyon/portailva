@@ -149,12 +149,12 @@ class AssociationMandateChangePhoneVisibility(AssociationMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         try:
-            if request.user.is_active and request.user.is_staff:
+            if request.user.is_active:
                 mandate_to_change = Mandate.objects.get(pk=self.kwargs['mandate_pk'])
                 mandate_to_change.share_phone = not mandate_to_change.share_phone
                 mandate_to_change.save()
             else:
-                raise Exception('Non-admin user try to change mandate photo visibility')
+                raise Exception('A non-active user try to change mandate phone visibility')
             return redirect(reverse('association-mandate-list', kwargs={
                 'association_pk': self.association.id
             }))
