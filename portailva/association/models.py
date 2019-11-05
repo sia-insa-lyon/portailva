@@ -83,7 +83,7 @@ class Association(models.Model):
         return self.directory_entries.filter(is_online=True).last()
 
     def online_events(self):
-        return self.events.filter(is_online=True).filter(ends_at__gte=datetime.now())
+        return self.events.filter(is_online=True).filter(ends_at__gte=datetime.now()).order_by('begins_at')
 
     def can_admin(self, user):
         """
