@@ -38,8 +38,8 @@ class Association(models.Model):
     """
     An Association.
     """
-    name = models.CharField("Nom", max_length=50)
-    acronym = models.CharField("Acronyme", max_length=20, null=True, blank=True)
+    name = models.CharField("Nom officiel", max_length=50)
+    acronym = models.CharField("Nom usuel ou acronyme", max_length=20, null=True, blank=True)
     description = models.TextField(
         "Description",
         help_text="Cette description n'est pas visible dans le Bot'INSA",

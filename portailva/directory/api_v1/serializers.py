@@ -48,6 +48,7 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
     short_description = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
     location = serializers.SerializerMethodField()
     schedule = serializers.SerializerMethodField()
     phone = serializers.SerializerMethodField()
@@ -57,7 +58,7 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = DirectoryEntry
-        fields = ['id', 'name', 'short_description', 'description', 'contact_address', 'phone', 'website_url',
+        fields = ['id', 'name', 'short_description', 'description', 'category', 'contact_address', 'phone', 'website_url',
                   'facebook_url', 'twitter_url', 'acronym', 'logo_url', 'location', 'schedule',
                     'is_active']
 
@@ -66,6 +67,9 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
 
     def get_name(self, obj):
         return obj.association.name
+
+    def get_category(self, obj):
+        return CategorySerializer(obj.association.category).data
 
     def get_short_description(self, obj):
         if len(obj.description) > 150:
@@ -93,7 +97,6 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
 
 
 class DetailDirectoryEntrySerializer(DirectoryEntrySerializer):
-    category = serializers.SerializerMethodField()
     public_phone = serializers.SerializerMethodField()
     opening_hours = serializers.SerializerMethodField()
     related_events = serializers.SerializerMethodField()
@@ -104,9 +107,6 @@ class DetailDirectoryEntrySerializer(DirectoryEntrySerializer):
                   'description', 'public_phone', 'contact_address', 'location', 'opening_hours',
                   'website_url', 'facebook_url', 'twitter_url', 'related_events',
                     'is_active']
-
-    def get_category(self, obj):
-        return CategorySerializer(obj.association.category).data
 
     def get_logo_url(self, obj):
         return obj.association.logo_url
