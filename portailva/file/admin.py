@@ -1,11 +1,16 @@
 from django.contrib import admin
 
 # Register your models here.
+from django.urls import reverse
+from django.utils.html import format_html
+
 from portailva.file.models import File, FileVersion, AssociationFile, FileType, FileFolder, ResourceFile
 
 
 class FileAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'name', 'created_at')
+    list_display_links = ('id', 'name')
+    list_per_page = 50
 
 
 admin.site.register(File, FileAdmin)
@@ -21,7 +26,22 @@ class FileVersionAdmin(admin.ModelAdmin):
 
 admin.site.register(FileVersion, FileVersionAdmin)
 
-admin.site.register(AssociationFile)
+
+class AssociationFileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'association', 'folder', 'created_at', 'link_file')
+    list_display_links = ('name', 'association', 'folder')
+    search_fields = ('association__name', 'name', 'folder__name')
+    list_per_page = 50
+
+    def link_file(self, obj):
+        return format_html(
+            '<a class="button" href="{}" rel="noreferrer noopener" target="_blank">Ouvrir</a>',
+            reverse('file-view', args=[obj.uuid])
+        )
+    link_file.short_description = "Action"
+
+
+admin.site.register(AssociationFile, AssociationFileAdmin)
 admin.site.register(ResourceFile)
 
 
