@@ -25,7 +25,7 @@ class AssociationForm(forms.ModelForm):
 
 class AssociationAdminForm(AssociationForm):
     class Meta(AssociationForm.Meta):
-        fields = AssociationForm.Meta.fields + ['commentary', 'is_active']
+        fields = AssociationForm.Meta.fields + ['commentary', 'is_active', 'is_validated']
 
 
 class MandateForm(forms.Form):
