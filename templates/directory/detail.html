@@ -162,6 +162,21 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-12">
+                <b>URL fil Instagram</b>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        {% if object.instagram_url %}
+                            <a href="{{ object.instagram_url }}">{{ object.instagram_url }}</a>
+                        {% else %}
+                            <i>Non défini</i>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <p>
             <small><i>Dernière modification : {{ object.updated_at|date:'DATETIME_FORMAT' }}</i></small>
         </p>

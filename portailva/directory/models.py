@@ -31,6 +31,7 @@ class DirectoryEntry(models.Model):
     website_url = models.URLField("URL site web", null=True, blank=True)
     facebook_url = models.URLField("URL page Facebook", null=True, blank=True)
     twitter_url = models.URLField("URL fil Twitter", null=True, blank=True)
+    instagram_url = models.URLField("URL fil Instagram", null=True, blank=True)
 
     association = models.ForeignKey(Association, verbose_name="Association", related_name="directory_entries",
                                     on_delete=models.CASCADE)

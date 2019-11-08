@@ -113,6 +113,16 @@
                     {% else %}
                         <em>Non défini</em>
                     {% endif %}
+                    <br>
+
+                    <i class="fa fa-fw fa-instagram"></i>
+                    {% if association.current_directory_entry.instagram_url %}
+                        <a href="{{ association.current_directory_entry.instagram_url }}">
+                            Instagram
+                        </a>
+                    {% else %}
+                        <em>Non défini</em>
+                    {% endif %}
                 </p>
             </div>
         </div>

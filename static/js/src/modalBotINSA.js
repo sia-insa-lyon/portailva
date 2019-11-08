@@ -110,7 +110,7 @@ function getHTMLWebsiteSection(link) {
     $ref.append($refContent);
 }
 
-function getHTMLNetworkSection(facebook, twitter) {
+function getHTMLNetworkSection(facebook, twitter, instagram) {
     const $ref = $('#modal-association-network');
     $ref.empty().append('<h5>Réseaux sociaux</h5>');
 
@@ -125,7 +125,13 @@ function getHTMLNetworkSection(facebook, twitter) {
     }
     $refContent.append('<i class="fa fa-fw fa-twitter"></i> ');
     if (twitter) {
-        $refContent.append('<a href="' + twitter + '">Twitter</a>');
+        $refContent.append('<a href="' + twitter + '">Twitter</a><br/>');
+    } else {
+        $refContent.append('<em>Non défini</em><br/>');
+    }
+    $refContent.append('<i class="fa fa-fw fa-instagram"></i> ');
+    if (instagram) {
+        $refContent.append('<a href="' + instagram + '">Instagram</a>');
     } else {
         $refContent.append('<em>Non défini</em>');
     }
@@ -254,7 +260,7 @@ function resetModal() {
     $('#modal-association-description').html(getHTMLInitialSection(SKELETON_TYPE.TEXT_WITH_THUMB, 4, 'Description'));
     $('#modal-association-place').html(getHTMLInitialSection(SKELETON_TYPE.SHORT_TEXT, 1, 'Lieu'));
     $('#modal-association-website').html(getHTMLInitialSection(SKELETON_TYPE.SHORT_TEXT, 1, 'Site web'));
-    $('#modal-association-network').html(getHTMLInitialSection(SKELETON_TYPE.SHORT_TEXT, 2, 'Réseaux sociaux'));
+    $('#modal-association-network').html(getHTMLInitialSection(SKELETON_TYPE.SHORT_TEXT, 3, 'Réseaux sociaux'));
     $('#modal-association-contact').html(getHTMLInitialSection(SKELETON_TYPE.SHORT_TEXT, 2, 'Contact'));
     $('#hours').html(getHTMLInitialSection(SKELETON_TYPE.SHORT_TEXT, 2, 'Horaires de permanences'));
     $('#events').html(getHTMLInitialSection(SKELETON_TYPE.TEXT, 3));
@@ -294,7 +300,7 @@ function getModal(baseURL, assoId, eventId = null) {
         $('#modal-association-title').html(getHTMLTitleSection(data.name, data.acronym, data.category));
         $('#modal-association-description').html(getHTMLDescriptionSection(data.description, data.logo_url));
         $('#modal-association-website').html(getHTMLWebsiteSection(data.website_url));
-        $('#modal-association-network').html(getHTMLNetworkSection(data.facebook_url, data.twitter_url));
+        $('#modal-association-network').html(getHTMLNetworkSection(data.facebook_url, data.twitter_url, data.instagram_url));
         $('#modal-association-place').html(getHTMLPlaceSection(data.location.name, data.location.lat, data.location.long));
         $('#modal-association-contact').html(getHTMLContactSection(data.contact_address, data.public_phone.phone, data.public_phone.source));
 
