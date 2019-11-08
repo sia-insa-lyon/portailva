@@ -59,7 +59,7 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = DirectoryEntry
         fields = ['id', 'name', 'short_description', 'description', 'category', 'contact_address', 'phone', 'website_url',
-                  'facebook_url', 'twitter_url', 'acronym', 'logo_url', 'location', 'schedule',
+                  'facebook_url', 'twitter_url', 'instagram_url', 'acronym', 'logo_url', 'location', 'schedule',
                     'is_active']
 
     def get_id(self, obj):
@@ -105,7 +105,7 @@ class DetailDirectoryEntrySerializer(DirectoryEntrySerializer):
         model = DirectoryEntry
         fields = ['id', 'name', 'acronym', 'logo_url', 'category',
                   'description', 'public_phone', 'contact_address', 'location', 'opening_hours',
-                  'website_url', 'facebook_url', 'twitter_url', 'related_events',
+                  'website_url', 'facebook_url', 'twitter_url', 'instagram_url', 'related_events',
                     'is_active']
 
     def get_logo_url(self, obj):

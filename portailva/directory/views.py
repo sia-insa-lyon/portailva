@@ -41,6 +41,7 @@ class AssociationDirectoryEntryUpdateView(AssociationDirectoryEntryMixin, Update
                 website_url=form.data.get('website_url'),
                 facebook_url=form.data.get('facebook_url'),
                 twitter_url=form.data.get('twitter_url'),
+                instagram_url=form.data.get('instagram_url'),
                 association_id=self.association.id,
                 place_id=form.data.get('place')
             )
