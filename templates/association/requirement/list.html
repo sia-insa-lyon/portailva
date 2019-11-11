@@ -18,8 +18,8 @@
           <a data-toggle="tooltip" data-placement="right" title="{{ requirement.help_text }}"><i class="fa fa-question-circle"></i></a>
           {% endif %}
         </td>
-        {% if perms.association.can_achieve_requirement %}
-          <td class="text-right">
+        <td class="text-right">
+          {% if perms.association.can_achieve_requirement %}
             {% if requirement.type == 'accomplishment' %}
               {% if not requirement|is_achieved:association.id %}
                 <form action="{% url 'association-requirement-achieve' association.id requirement.id %}" method="post">
@@ -33,8 +33,14 @@
                 </form>
               {% endif %}
             {% endif %}
-          </td>
-        {% endif %}
+          {% endif %}
+
+          {% if requirement.type == 'file' and requirement|is_achieved:association.id %}
+            <a href="{% url 'association-file-tree' association.id requirement.get_folder_id %}" class="btn btn-sm btn-primary">
+              <i class="fa fa-eye"></i> Voir
+            </a>
+          {% endif %}
+        </td>
       </tr>
     {% endfor %}
   </tbody>
