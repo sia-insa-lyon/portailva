@@ -10,25 +10,34 @@
 {% endblock %}
 
 {% block content %}
-  <table id="prettyTable" class="table table-bordered table-stripped">
+  <table id="prettyTable" class="table table-bordered table-stripped" data-page-length="100">
     <thead>
       <tr>
         <th>Association</th>
+        {% if not object.type == 'accomplishment' %}
         <th>Etat</th>
+        {% endif %}
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
       {% for association in associations %}
         <tr>
-          <td><a href="{% url 'association-detail' association.id %}">{{ association.name }}</a></td>
-          <td class="text-center">
+          {% if not association.acronym %}
+            <td><a href="{% url 'association-detail' association.id %}">{{ association.name }}</a></td>
+          {% else %}
+            <td><a href="{% url 'association-detail' association.id %}">{{ association.acronym }}</a> <small>({{ association.name }})</small></td>
+          {% endif %}
+
+          {% if not object.type == 'accomplishment' %}
+            <td class="text-center">
             {% if object|is_achieved:association.id %}
               <span class="label label-success">Validé</span>
             {% else %}
               <span class="label label-danger">Non validé</span>
             {% endif %}
-          </td>
+            </td>
+          {% endif %}
           <td class="text-center">
             {% if object.type == 'accomplishment' %}
               {% if not requirement|is_achieved:association.id %}
