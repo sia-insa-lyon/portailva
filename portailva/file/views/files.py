@@ -1,4 +1,5 @@
 import magic
+from urllib.parse import quote
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse
@@ -44,6 +45,16 @@ class FileView(DetailView):
             mime_type = mime.from_file(version.data.path)
 
             response = HttpResponse(version.data.read(), content_type=mime_type)
+
+            # See RFC 5987, this allow the handling of problematic file name for some browser like safari
+            file_name_utf = quote(self.object.name)
+            try:
+                file_name_ascii = self.object.name.encode('ascii')
+                response['Content-Disposition'] = 'inline; filename="{}"'.format(file_name_ascii) + \
+                                                  "; filename*=UTF-8''{}".format(file_name_utf)
+            except UnicodeEncodeError:
+                response['Content-Disposition'] = "inline; filename*=UTF-8''{}".format(file_name_utf)
+
             return response
         except FileVersion.DoesNotExist:
             raise Http404
