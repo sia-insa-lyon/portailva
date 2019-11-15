@@ -1,0 +1,39 @@
+{% extends 'association/base_association.html' %}
+
+{% block page_sub_title %}
+  Renommage d'un fichier
+{% endblock %}
+
+{% block quick_actions %}
+  <a href="{% url 'association-file-tree' association.id object.folder.id %}" class="btn btn-secondary">Annuler</a>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                <b>Attention !</b> Vous vous apprêtez à renommer le fichier <i>{{ object.name }}</i>.
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_name">Nom du fichier</label>
+                    <input type="text" class="form-control" name="name" value="{{ object.name }}"
+                           maxlength="200" required="" id="id_name" aria-describedby="nameHelp">
+                    <small id="nameHelp" class="form-text text-muted">N'oubliez pas de préciser l'extension du fichier avant de renommer votre fichier.</small>
+                </div>
+                <script type="application/javascript">
+                    $('#id_name').focusin(
+                        function(event){
+                            let pos = event.target.value.indexOf('.');
+                            event.target.setSelectionRange(0, (pos!==-1) ? pos : event.target.value.length);
+                        }
+                    );
+                </script>
+                <p class="text-center">
+                    <input class="btn btn-primary" type="submit" value="Renommer le fichier" />
+                </p>
+            </form>
+        </div>
+  </div>
+{% endblock %}

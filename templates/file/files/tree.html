@@ -50,11 +50,16 @@
                 <td class="text-right">
                     <div class="btn-group">
                         {% if file.folder.id %}
+                            <a href="{% url 'association-file-rename' association.id file.id %}"
+                               data-toggle="tooltip"
+                               class="btn btn-sm btn-warning"
+                               title="Renommer le fichier"><i
+                                    class="fa fa-pencil"></i></a>
                             <a href="{% url 'association-file-delete' association.id file.id %}"
                                data-toggle="tooltip"
                                class="btn btn-sm btn-danger"
                                title="Supprimer le fichier"><i
-                                    class="fa fa-times"></i></a>
+                                    class="fa fa-trash-o"></i></a>
                         {% endif %}
                     </div>
                 </td>

@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
-from django.views.generic import DetailView, CreateView, DeleteView
+from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
 
 from portailva.association.mixins import AssociationMixin
@@ -116,6 +116,23 @@ class AssociationFileUploadView(AssociationMixin, CreateView):
             'association_pk': self.association.id,
             'folder_pk': self.current_folder.id
         }))
+
+
+class AssociationFileRenameView(AssociationMixin, UpdateView):
+    model = AssociationFile
+    fields = ['name']
+    template_name = 'file/files/rename.html'
+    success_url = None
+
+    def post(self, request, *args, **kwargs):
+        self.success_url = reverse('association-file-tree', kwargs={
+            'association_pk': self.association.id,
+            'folder_pk': self.get_object().folder_id
+        })
+
+        messages.add_message(self.request, messages.SUCCESS, "Le fichier \"{}\" a correctement été renommé.".format(self.get_object().name))
+
+        return super(AssociationFileRenameView, self).post(request, *args, **kwargs)
 
 
 class AssociationFileDeleteView(AssociationMixin, DeleteView):
