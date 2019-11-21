@@ -3,11 +3,13 @@ from django.conf.urls import url
 from .views import AssociationEventListView, AssociationEventNewView, AssociationEventUpdateView, \
     AssociationEventDetailView, AssociationEventDeleteView, AssociationEventPriceNewView, \
     AssociationEventPriceUpdateView, AssociationEventPriceDeleteView, AssociationEventPublishView, EventDetailView, \
-    AllEventsCalendarView
+    AllEventsCalendarView, EventCalendarPublicView
 
 urlpatterns = [
     url('^events/(?P<pk>\d+)$',
         EventDetailView.as_view(), name='event-about'),
+    url('^events/calendarDetails$',
+        EventCalendarPublicView.as_view(), name='public-calendar-view'),
     url('^events/calendar$',
         AllEventsCalendarView.as_view(), name='event-calendar'),
     url('^association/(?P<association_pk>\d+)/event/$', AssociationEventListView.as_view(),

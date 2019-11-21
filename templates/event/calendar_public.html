@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css_js_header %}
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css' rel='stylesheet' />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css' rel='stylesheet' />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/bootstrap/main.min.css' rel='stylesheet' />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.css' rel='stylesheet' />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.css' rel='stylesheet' />
+    <style>
+        #calendar {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px){
+            .fc-toolbar {
+                display: inherit !important;
+                max-width: 95vw;
+            }
+        }
+    </style>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/locales/fr.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/bootstrap/main.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js'></script>
+
+    <script src='{% static 'js/src/modalCalendar.js' %}'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [ 'dayGrid', 'bootstrap', 'list', 'timeGrid' ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                contentHeight: 'auto',
+                defaultView: (window.innerWidth < 768) ? "listWeek" : "timeGridWeek",
+                themeSystem: 'bootstrap',
+                locale: 'fr',
+                eventLimit: true,
+                events: [
+                {% for event in object_list.all_events %}
+                    {
+                        id: {{ event.id }},
+                    {% if event.association.acronym %}
+                        title: '{{ event.name|escapejs|safe }} ({{ event.type.name }} - {{ event.association.acronym|escapejs|safe }})',
+                    {% else %}
+                        title: '{{ event.name|escapejs|safe }} ({{ event.type.name }} - {{ event.association.name|escapejs|safe }})',
+                    {% endif %}
+                        start: '{{ event.begins_at.isoformat }}',
+                        end: '{{ event.ends_at.isoformat }}',
+                        extendedProps: {
+                            idAPI: {{ event.id }}
+                        }
+                    },
+                {% endfor %}
+                ],
+                eventMouseEnter: function(info) {
+                    info.el.style.cursor = "pointer";
+                },
+                eventMouseLeave: function(info) {
+                    info.el.style.cursor = "inherit";
+                },
+                eventClick: function(info) {
+                    getEventModal('{% url "api-v1-event-index" %}', info.event.extendedProps.idAPI);
+                }
+
+                });
+
+                calendar.render();
+        });
+
+        function copyICSLink() {
+            document.getElementById('ics-link').select();
+            document.execCommand("copy");
+        }
+    </script>
+{% endblock %}
+
+{% block page_title %}
+	Calendrier des évènements
+{% endblock %}
+
+{% block content %}
+	<p>Abonnez-vous à ce calendrier pour vous tenir au courant des évènements à venir</p>
+    <div class="input-group mb-3">
+        <input type='text' onclick='this.setSelectionRange(0, this.value.length)'
+               id="ics-link" class='form-control'
+               value='https://{{ request.get_host }}{% url 'event-calendar' %}'>
+        <div class="input-group-append">
+            <button type="button" class="btn btn-primary" onclick="copyICSLink()">
+                <i class="fa fa-copy"></i> Copier
+            </button>
+        </div>
+    </div>
+    <br/>
+    <p>Pour utiliser ce lien ICS, vous pouvez utiliser l'application Agenda ou Calendrier intégrée à votre téléphone Android ou iOS.<br/>
+        Vous pouvez utiliser <a href="https://www.thunderbird.net/en-US/thunderbird/all/" rel="noreferrer noopener" target="_blank">Thunderbird</a>, ou directement Zimbra
+        en suivant ce petit <a href="{% static "pdf/Guide-ICS.pdf" %}" rel="noreferrer noopener" target="_blank">PDF</a> qui explique la procédure.
+    </p>
+    <hr>
+	<h4>Évènements à venir</h4>
+
+    <div class="tab-pane" id="events" role="tabpanel" aria-labelledby="events-tab" data-children=".item">
+    {% for event in object_list.recent_events %}
+        <div class="item">
+            <a data-toggle="collapse" data-parent="#events"
+               href="#event-{{ event.id }}" aria-expanded="true"
+               aria-controls="event-{{ event.id }}">
+                {{ event.name }} ({{ event.type.name }})
+            </a>
+            <div id="event-{{ event.id }}"
+                 class="collapse"
+                 role="tabpanel">
+                {% if event.logo_url %}
+                    <img src="{{ event.logo_url }}" alt="Logo {{ event.name }}" class="float-right col-3 img-fluid">
+                {% endif %}
+                <p>
+                    {{ event.description }}
+                </p>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <i class="fa fa-fw fa-calendar"></i> {{ event.begins_at|date:'DATETIME_FORMAT' }}
+                        - {{ event.ends_at|date:'DATETIME_FORMAT' }}
+                    </div>
+                    <div class="col-md-6">
+                        <i class="fa fa-fw fa-location-arrow"></i>
+                        {% if event.place %}
+                            {% with place=event.place %}
+                                <a href="http://www.google.com/maps/place/{{ place.lat }},{{ place.long }}">
+                                    {{ place.name }}
+                                </a>
+                            {% endwith %}
+                        {% else %}
+                            <em>Non défini</em>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <i class="fa fa-fw fa-link"></i>
+                        {% if event.website_url %}
+                            <a href="{{ event.website_url }}">Page web</a>
+                        {% else %}
+                            <em>Non défini</em>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <em>Aucun évènement à venir.</em>
+    {% endfor %}
+    </div>
+    <hr/>
+    <h4>Calendrier des évènements</h4>
+    <p>Cliquez sur les évènements pour obtenir plus de détails sur eux.</p>
+    <div id="calendar"></div>
+
+    <div id="modal-event" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="modal-event-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="modal-event-title" class="modal-title">Modal title</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="modal-event-content" class="container-fluid"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

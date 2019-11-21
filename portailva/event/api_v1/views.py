@@ -1,8 +1,9 @@
 import datetime
 
 from django.db.models import Q
+from django.http import Http404
 from rest_framework.exceptions import ParseError
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
 
 from portailva.event.api_v1.serializers import EventSerializer
@@ -53,3 +54,14 @@ class EventListAPIView(ListAPIView):
             except ValueError:
                 raise ParseError("Bad format for since/until parameters. Accepted format : %Y-%m-%d.")
         return queryset
+
+
+class EventByIdAPIView(RetrieveAPIView):
+    serializer_class = EventSerializer
+    permission_classes = (AllowAny,)
+
+    def get_object(self):
+        try:
+            return Event.objects.get(id=self.kwargs.get('events_pk'))
+        except IndexError:
+            raise Http404

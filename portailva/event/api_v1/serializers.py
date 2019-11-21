@@ -34,7 +34,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Event
         fields = ('name', 'short_description', 'description', 'type', 'association', 'location', 'begins_at', 'ends_at',
-                  'prices',)
+                  'prices', 'website_url', 'logo_url')
 
     def get_location(self, obj):
         return PlaceSerializer(obj.place).data

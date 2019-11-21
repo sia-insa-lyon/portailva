@@ -13,6 +13,7 @@ from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 import icalendar
+from icalendar import vText, vGeo
 
 from portailva.association.mixins import AssociationMixin
 from portailva.event.forms import EventForm, EventPriceForm
@@ -183,6 +184,14 @@ class AssociationEventPublishView(AssociationEventMixin, TemplateView):
         return get_object_or_404(self.model, pk=self.kwargs.get('event_pk'))
 
 
+class EventCalendarPublicView(ListView):
+    model = Event
+    template_name = 'event/calendar_public.html'
+
+    def get_queryset(self):
+        return Event.objects.filter(is_online=True).filter(begins_at__gte=datetime.now() - timedelta(days=90)).order_by('begins_at')
+
+
 class EventDetailView(DetailView):
     model = Event
     template_name = 'event/public_detail.html'
@@ -206,11 +215,20 @@ class AllEventsCalendarView(View):
 
         for event in events:
             ev = icalendar.Event()
-            ev.add('summary', event.name)
+            if event.association.acronym:
+                ev.add('summary', event.name + ' (' + event.association.acronym+ ')')
+            else:
+                ev.add('summary', event.name + ' (' + event.association.name+ ')')
+            ev.add('description', event.description)
+            # Use vText to prevent iCalendar to handle the string as a dictionary and not as a text
+            # See https://icalendar.readthedocs.io/en/latest/usage.html#example
+            ev.add('categories', vText(event.type.name))
             ev.add('dtstart', event.begins_at.replace(tzinfo=tz))
             ev.add('dtend', event.ends_at.replace(tzinfo=tz))
             if event.place:
                 ev.add('location', event.place.name)
+                ev.add('geo', vGeo([event.place.lat, event.place.long]))
+
             ev.add('uid', event.id)
             cal.add_component(ev)
 

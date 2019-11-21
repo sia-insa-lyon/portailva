@@ -6,7 +6,7 @@ from portailva.association.models import Association, Category
 class ShortAssociationSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Association
-        fields = ('id', 'name',)
+        fields = ('id', 'name', 'acronym')
 
 
 class CategorySerializer(serializers.ModelSerializer):

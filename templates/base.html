@@ -21,6 +21,8 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
     <link rel="stylesheet" href="{% static "css/main.css" %}">
 
+    {% block css_js_header %}{% endblock %}
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -77,17 +79,7 @@
                     <a class="nav-link" href="{% url 'association-directory-public' %}">Bot'INSA</a>
                 </li>
                 <li class="nav-item">
-                    <script type="application/javascript">
-                        <!--
-                        var myDefaultWhiteList = $.fn.tooltip.Constructor.Default.whiteList;
-                        myDefaultWhiteList.input = ['type', 'value', 'onclick'];
-                        //-->
-                    </script>
-                    <a tabindex="0" class="nav-link popover-dismiss" data-toggle="popover"
-                       data-placement="bottom" title="Calendrier VA" id="calendar-popover"
-                       data-html="true" data-content="{% include 'event/calendar-popover.html' %}">
-                        Calendrier
-                    </a>
+                    <a class="nav-link" href="{% url 'public-calendar-view' %}">Calendrier</a>
                 </li>
 
                 {% if user.is_active %}
