@@ -189,7 +189,15 @@ class EventCalendarPublicView(ListView):
     template_name = 'event/calendar_public.html'
 
     def get_queryset(self):
-        return Event.objects.filter(is_online=True).filter(begins_at__gte=datetime.now() - timedelta(days=90)).order_by('begins_at')
+        return {
+            'all_events': Event.objects.filter(is_online=True)
+            .filter(begins_at__gte=datetime.now() - timedelta(days=90))
+            .order_by('begins_at'),
+
+            'recent_events': Event.objects.filter(is_online=True)
+            .filter(begins_at__gte=datetime.now())
+            .order_by('begins_at')[:8]
+        }
 
 
 class EventDetailView(DetailView):
