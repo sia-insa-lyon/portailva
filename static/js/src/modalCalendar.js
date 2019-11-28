@@ -31,7 +31,11 @@ function formateDate(date) {
 function getHTMLEventsSection(event) {
     let title = event.name;
     if (event.type) {
-        title += ' <span class="badge badge-pill badge-secondary">' + event.type.name + '</span>';
+        if (event.type.color) {
+            title += ' <span class="badge badge-pill" style="color: #fff; background-color: ' + event.type.color + '">' + event.type.name + '</span>';
+        } else {
+            title += ' <span class="badge badge-pill badge-secondary">' + event.type.name + '</span>';
+        }
     }
     title += ' <small class="text-muted">(';
     if (event.association.acronym) {

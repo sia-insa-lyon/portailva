@@ -8,7 +8,7 @@ from portailva.utils.api_v1.serializers import PlaceSerializer
 class EventTypeSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = EventType
-        fields = ('name',)
+        fields = ('name', 'color')
 
 
 class EventPriceSerializer(serializers.ModelSerializer):

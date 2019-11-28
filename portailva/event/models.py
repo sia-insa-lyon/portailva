@@ -11,6 +11,7 @@ from portailva.utils.models import Place
 
 class EventType(models.Model):
     name = models.CharField("Nom", max_length=50)
+    color = models.CharField("Couleur", max_length=7, default="#007bff")
 
     class Meta(object):
         default_permissions = ('add', 'change', 'delete', 'admin',)

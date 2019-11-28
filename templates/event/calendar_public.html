@@ -40,10 +40,22 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                 },
-                contentHeight: 'auto',
                 defaultView: (window.innerWidth < 768) ? "listWeek" : "timeGridWeek",
                 themeSystem: 'bootstrap',
                 locale: 'fr',
+                nowIndicator: true,
+                businessHours: [
+                    {
+                        daysOfWeek: [ 1, 2, 3, 4, 5 ],
+                        startTime: '12:00',
+                        endTime: '23:00'
+                    },
+                    {
+                        daysOfWeek: [ 6, 7 ],
+                        startTime: '08:00',
+                        endTime: '23:00'
+                    },
+                ],
                 eventLimit: true,
                 events: [
                 {% for event in object_list.all_events %}
@@ -56,6 +68,8 @@
                     {% endif %}
                         start: '{{ event.begins_at.isoformat }}',
                         end: '{{ event.ends_at.isoformat }}',
+                        backgroundColor: '{{ event.type.color }}',
+                        borderColor: '{{ event.type.color }}',
                         extendedProps: {
                             idAPI: {{ event.id }}
                         }
@@ -71,7 +85,6 @@
                 eventClick: function(info) {
                     getEventModal('{% url "api-v1-event-index" %}', info.event.extendedProps.idAPI);
                 }
-
                 });
 
                 calendar.render();
@@ -114,7 +127,11 @@
             <a data-toggle="collapse" data-parent="#events"
                href="#event-{{ event.id }}" aria-expanded="true"
                aria-controls="event-{{ event.id }}">
-                {{ event.name }} ({{ event.type.name }})
+                {% if event.association.acronym %}
+                {{ event.name }} ({{ event.type.name }} - {{ event.association.acronym }})
+                {% else %}
+                {{ event.name }} ({{ event.type.name }} - {{ event.association.name }})
+                {% endif %}
             </a>
             <div id="event-{{ event.id }}"
                  class="collapse"
