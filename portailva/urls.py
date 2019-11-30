@@ -18,7 +18,7 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-from portailva.pages.views import HomeView
+from portailva.pages.views import HomeView, DashBoardView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -34,6 +34,7 @@ urlpatterns = [
     # REST API
     url(r'^api/', include('portailva.api_urls')),
 
-    url(r'^$', HomeView.as_view(), name='homepage'),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
+    url(r'^dashboard/$', DashBoardView.as_view(), name='admin-dashboard'),
+    url(r'^$', HomeView.as_view(), name='homepage'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

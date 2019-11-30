@@ -119,9 +119,9 @@
                         <div class="dropdown-menu">
                             {% if perms.association.admin_requirement %}
                                 <a class="dropdown-item"
+                                   href="{% url 'admin-dashboard' %}">Tableau de bord</a>
+                                <a class="dropdown-item"
                                    href="{% url 'requirement-list' %}">Situation administrative</a>
-                            {% endif %}
-                            {% if perms.association.admin_requirement %}
                                 <a class="dropdown-item"
                                    href="{% url 'export' %}">Exporter les données</a>
                             {% endif %}

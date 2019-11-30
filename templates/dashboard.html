@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load statistic_extras %}
+
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3" type="application/javascript"></script>
+    <script type="application/javascript">
+        function generateCircleGraph(canevasId, data, colors, labels){
+            const ctx = document.getElementById(canevasId).getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors
+                    }],
+                    labels: labels
+                },
+                options: {
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+
+        generateCircleGraph('chart-members', [{{ association_stats.members.active_members_number__sum }}, {{ association_stats.members.all_members_number__sum|subtract:association_stats.members.active_members_number__sum }}],
+                                              ['rgb(61,174,227)', 'rgb(235,217,79)'],
+                                              ['Membres actifs', 'Adhérents "non-actifs"']);
+
+        generateCircleGraph('chart-location', [{{ association_stats.place }}, {{ association_stats.active|subtract:association_stats.place}}],
+                                                    ['rgb(241,19,123)', 'rgb(157,61,214)'],
+                                                    ['Associations avec local', 'Associations sans local']);
+
+        generateCircleGraph('chart-event-publish', [{{ events_stats.published }}, {{ events_stats.unpublished}}],
+                                                    ['rgb(27,160,21)', 'rgb(144,147,214)'],
+                                                    ['Evènements publiés', 'Evènements non-publiés']);
+
+        {% for req in requirement_stats %}
+        generateCircleGraph('chart-requirement-{{ req.id }}', [{{ req.validate }}, {{ association_stats.active|subtract:req.validate}}],
+                                                    ['rgb(30,241,27)', 'rgb(231,25,47)'],
+                                                    ['Ont validées', "N'ont pas validées"]);
+        {% endfor %}
+
+    </script>
+{% endblock %}
+
+{% block page_title %}
+    Tableau de bord - supervision
+{% endblock %}
+
+{% block content %}
+    <div class="accordion" id="accordionDashboard">
+        <div class="card">
+            <h5 class="card-header dashboard-section" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <i class="fa fa-bar-chart-o"></i>Statistiques - Associations et évènements
+            </h5>
+            <div class="card-body collapse show" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordionDashboard">
+                <h5 class="card-title">Chiffres</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p class="card-text text-center">
+                            <strong class="figure">{{ association_stats.active }}</strong>
+                            <br/> associations actives
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="card-text text-center">
+                            <strong class="figure">{{ association_stats.members.all_members_number__sum }}</strong>
+                            <br/> membres dans les associations
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="card-text text-center">
+                            <strong class="figure">{{ events_stats.published }}</strong>
+                            <br/> évènements publiés (depuis 180 jours)
+                        </p>
+                    </div>
+                </div>
+                <br/>
+
+                <h5 class="card-title">Statistiques</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="chart-container">
+                            <canvas id="chart-members"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="chart-container">
+                            <canvas id="chart-location"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="chart-container">
+                            <canvas id="chart-event-publish"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <h5 class="card-title">Situation adminstative</h5>
+                <div class="row justify-content-between align-items-center">
+                    {% for requirement in requirement_stats %}
+                    <div class="col-md-4">
+                        <br/>
+                        <p class="card-text text-center">{{ requirement.name }}</p>
+                        <div class="chart-container">
+                            <canvas id="chart-requirement-{{ requirement.id }}"></canvas>
+                        </div>
+                        <br/>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="card">
+            <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
+                id="headingSecond" data-toggle="collapse" data-target="#collapseSecond" aria-expanded="false" aria-controls="collapseSecond">
+                <i class="fa fa-building-o"></i>
+                Associations supervisées
+                <span class="ml-auto badge badge-primary badge-pill">{{ supervised_assos|length }}</span>
+            </h5>
+            <div class="card-body collapse" id="collapseSecond" aria-labelledby="headingSecond" data-parent="#accordionDashboard">
+                {% if supervised_assos %}
+                    <h5 class="card-title">Liste de vos associations</h5>
+                    <ul class="list-group">
+                    {% for asso in supervised_assos %}
+                        <a href="{% url 'association-detail' asso.id %}" class="list-group-item list-group-item-action flex-column">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-md-6">
+                                    {% if asso.acronym %}
+                                        {{ asso.acronym }} <small class="text-muted">({{ asso.name }})</small>
+                                    {% else %}
+                                        {{ asso.name }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <h5 class="card-title text-center">Aucune association vous est affiliée</h5>
+                {% endif %}
+            </div>
+        </div>
+        <br/>
+        <div class="card">
+            <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
+                id="headingThird" data-toggle="collapse" data-target="#collapseThird" aria-expanded="false" aria-controls="collapseThird">
+                <i class="fa fa-warning"></i>
+                Indicateur d'alerte (expérimental)
+                <span class="ml-auto badge
+                {% if alert.sum > 5 %}
+                    badge-danger
+                {% elif alert.sum > 0 %}
+                    badge-warning
+                {% else %}
+                    badge-success
+                {% endif %} badge-pill">{{ alert.sum }}</span>
+            </h5>
+            <div class="card-body collapse" id="collapseThird" aria-labelledby="headingThird" data-parent="#accordionDashboard">
+                <h5 class="card-title">{{ alert.user|length }} associations sans utilisateur (inclut les associations non-validées)</h5>
+                {% if alert.user %}
+                    <ul class="list-group">
+                    {% for asso in alert.user %}
+                        <a href="{% url 'association-detail' asso.id %}" class="list-group-item list-group-item-action flex-column">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-md-6">
+                                    {% if asso.acronym %}
+                                        {{ asso.acronym }} <small class="text-muted">({{ asso.name }})</small>
+                                    {% else %}
+                                        {{ asso.name }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                <br/>
+
+                <h5 class="card-title">{{ alert.disconnected|length }} associations où un des utilisateurs ne s'est pas connecté en 180 jours</h5>
+                {% if alert.disconnected %}
+                    <ul class="list-group">
+                    {% for asso in alert.disconnected %}
+                        <a href="{% url 'association-detail' asso.id %}" class="list-group-item list-group-item-action flex-column">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-md-6">
+                                    {% if asso.acronym %}
+                                        {{ asso.acronym }} <small class="text-muted">({{ asso.name }})</small>
+                                    {% else %}
+                                        {{ asso.name }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                <br/>
+
+                <h5 class="card-title">{{ alert.no_referent|length }} associations sans référent</h5>
+                {% if alert.no_referent %}
+                    <ul class="list-group">
+                    {% for asso in alert.no_referent %}
+                        <a href="{% url 'association-detail' asso.id %}" class="list-group-item list-group-item-action flex-column">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-md-6">
+                                    {% if asso.acronym %}
+                                        {{ asso.acronym }} <small class="text-muted">({{ asso.name }})</small>
+                                    {% else %}
+                                        {{ asso.name }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                <br/>
+
+                <h5 class="card-title">{{ alert.user_privilege|length }} associations où un référent est aussi un utilisateur de l'asso</h5>
+                {% if alert.user_privilege %}
+                    <ul class="list-group">
+                    {% for asso in alert.user_privilege %}
+                        <a href="{% url 'association-detail' asso.id %}" class="list-group-item list-group-item-action flex-column">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-md-6">
+                                    {% if asso.acronym %}
+                                        {{ asso.acronym }} <small class="text-muted">({{ asso.name }})</small>
+                                    {% else %}
+                                        {{ asso.name }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+        <br/>
+        <div class="card">
+            <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
+                id="headingFourth" data-toggle="collapse" data-target="#collapseFourth" aria-expanded="false" aria-controls="collapseFourth">
+                <i class="fa fa-calendar-o"></i>
+                Validations d'évènements
+                <span class="ml-auto badge
+                {% if events_stats.unpublished > 5 %}
+                    badge-danger
+                {% elif events_stats.unpublished > 0 %}
+                    badge-warning
+                {% else %}
+                    badge-success
+                {% endif %} badge-pill">{{ events_stats.unpublished }}</span>
+            </h5>
+            <div class="card-body collapse" id="collapseFourth" aria-labelledby="headingFourth" data-parent="#accordionDashboard">
+                <h5 class="card-title">Evènements à valider</h5>
+                {% if events %}
+                    <ul class="list-group">
+                    {% for event in events %}
+                        <a href="{% url 'association-event-detail' event.association.id event.id %}"
+                           class="list-group-item list-group-item-action flex-column">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-md-6">
+                                    {{ event.name }}
+                                </div>
+                                <div class="col-md-6">
+                                    <i class="fa fa-fw fa-calendar"></i><span class="text-muted">Du {{ event.begins_at }} au {{ event.ends_at }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="card-text text-center">Aucun évènement à valider</p>
+                {% endif %}
+            </div>
+        </div>
+        <br/>
+        <div class="card">
+            <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
+                id="headingFifth" data-toggle="collapse" data-target="#collapseFifth" aria-expanded="false" aria-controls="collapseFifth">
+                <i class="fa fa-book"></i>
+                Validations de page Bot'INSA
+                <span class="ml-auto badge
+                {% if directory|length > 5 %}
+                    badge-danger
+                {% elif directory|length > 0 %}
+                    badge-warning
+                {% else %}
+                    badge-success
+                {% endif %} badge-pill">{{ directory|length }}</span>
+            </h5>
+            <div class="card-body collapse" id="collapseFifth" aria-labelledby="headingFifth" data-parent="#accordionDashboard">
+                <h5 class="card-title">Vues à valider</h5>
+                {% if events %}
+                    <ul class="list-group">
+                    {% for botinsa in directory %}
+                        <a href="{% url 'association-directory-detail' botinsa.association.id %}" class="list-group-item list-group-item-action flex-column">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-md-6">
+                                    {% if botinsa.association.acronym %}
+                                        {{ botinsa.association.acronym }} <small class="text-muted">({{ botinsa.association.name }})</small>
+                                    {% else %}
+                                        {{ botinsa.association.name }}
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <i class="fa fa-fw fa-pencil"></i><span class="text-muted">Mis à jour le {{ botinsa.updated_at }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="card-text text-center">Aucune vue à valider</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
