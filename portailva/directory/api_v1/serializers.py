@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from portailva.association.api_v1.serializers import CategorySerializer
 from portailva.directory.models import OpeningHour, DirectoryEntry
+from portailva.event.api_v1.serializers import EventPriceSerializer
 from portailva.event.models import Event
 from portailva.utils.api_v1.serializers import PlaceSerializer
 
@@ -20,10 +21,11 @@ class DetailEventsSerializer(serializers.ModelSerializer):
     begins_at = serializers.SerializerMethodField()
     ends_at = serializers.SerializerMethodField()
     place = serializers.SerializerMethodField()
+    prices = serializers.SerializerMethodField()
 
     class Meta(object):
         model = Event
-        fields = ('id', 'name', 'type', 'begins_at', 'description', 'ends_at', 'place', 'website_url')
+        fields = ('id', 'name', 'type', 'begins_at', 'description', 'ends_at', 'place', 'prices', 'website_url', 'logo_url')
 
     def get_id(self, obj):
         return obj.id
@@ -42,6 +44,9 @@ class DetailEventsSerializer(serializers.ModelSerializer):
 
     def get_place(self, obj):
         return PlaceSerializer(obj.place).data
+
+    def get_prices(self, obj):
+        return EventPriceSerializer(obj.prices, many=True).data
 
 
 class DirectoryEntrySerializer(serializers.ModelSerializer):

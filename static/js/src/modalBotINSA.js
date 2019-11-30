@@ -225,28 +225,53 @@ function getHTMLEventsSection(eventList, eventToDisplay = null) {
 
             divChild.setAttribute('role', 'tabpanel');
 
-            const refDivChild = $(divChild);
-            refDivChild.append('<p>' + event.description.replace(/\r\n/g, '<br/>') + '</p>');
-            refDivChild.append('<div class="row mb-2">');
-            refDivChild.find('div.row').append('<div class="col-md-6">');
-            refDivChild.find('div.col-md-6').append('<i class="fa fa-fw fa-calendar"></i> ' + event.begins_at + ' - ' + event.ends_at);
-            refDivChild.find('div.row').append('<div class="col-md-6">');
-            refDivChild.find('div.col-md-6:nth-child(2)').append('<i class="fa fa-fw fa-location-arrow"></i> ');
+            const $refDivChild = $(divChild);
+
+            if (event.logo_url) {
+                $refDivChild.append('<img src="' + event.logo_url + '" alt="Logo" class="float-right col-3" />');
+            }
+            $refDivChild.append('<p>' + event.description.replace(/\r\n/g, '<br/>') + '</p>');
+            $refDivChild.append('<div class="row mb-2">');
+            $refDivChild.find('div.row').append('<div class="col-md-6">');
+            $refDivChild.find('div.col-md-6').append('<i class="fa fa-fw fa-calendar"></i> ' + event.begins_at + ' - ' + event.ends_at);
+            $refDivChild.find('div.row').append('<div class="col-md-6">');
+            $refDivChild.find('div.col-md-6:nth-child(2)').append('<i class="fa fa-fw fa-location-arrow"></i> ');
 
             if (event.place.name && event.place.lat && event.place.long) {
                 const {lat, long, name} = event.place;
-                refDivChild.find('div.col-md-6:nth-child(2)').append('<a href="http://www.google.com/maps/place/' + lat + ',' + long + '">' + name + '</a>');
+                $refDivChild.find('div.col-md-6:nth-child(2)').append('<a href="http://www.google.com/maps/place/' + lat + ',' + long + '">' + name + '</a>');
             } else {
-                refDivChild.find('div.col-md-6:nth-child(2)').append('<em>Non défini</em>');
+                $refDivChild.find('div.col-md-6:nth-child(2)').append('<em>Non défini</em>');
             }
-            refDivChild.append('<div class="row mb-2"><div class="col-12">');
-            refDivChild.find('div.col-12').append('<i class="fa fa-fw fa-link"></i> ');
 
             if (event.website_url) {
-                refDivChild.find('div.col-12').append('<a href="' + event.website_url + '">Page web</a>');
-            } else {
-                refDivChild.find('div.col-12').append('<em>Non défini</em>');
+                $refDivChild.append('<div class="row mb-2"><div class="col-12">');
+                $refDivChild.find('div.col-12').append('<i class="fa fa-fw fa-link"></i> ');
+                $refDivChild.find('div.col-12').append('<a href="' + event.website_url + '">Page web</a>');
             }
+
+            if (event.prices && event.prices.length>0) {
+                $refDivChild.append('<hr/><h6><i class="fa fa-fw fa-money"></i> Tarifs de l\'évènement</h6>');
+                const listElement = document.createElement('ul');
+                listElement.className = 'list-group';
+                const $refList = $(listElement);
+
+                event.prices.map((priceElement) => {
+                    $refList.append('<li class="list-group-item list-group-item-action flex-column">' +
+                                        '<div class="row justify-content-between align-items-center">' +
+                                            '<div class="col-md-6"><strong>' + priceElement.name + '</strong></div>' +
+                                            '<div class="col-md-6">'
+                                            + (priceElement.price && !priceElement.is_variable ? ('<strong>' + priceElement.price + ' €</strong>') : '')
+                                            + (priceElement.is_variable ? 'Prix libre' : '')
+                                            + (priceElement.is_va ? ' - (Tarif VA)' : '') +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</li>');
+                });
+                $refDivChild.append($refList);
+                $refDivChild.append('<br/>');
+            }
+
             $(divRoot).append(divChild);
             $ref.append(divRoot);
         });

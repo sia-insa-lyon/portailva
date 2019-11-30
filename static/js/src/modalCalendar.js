@@ -49,38 +49,58 @@ function getHTMLEventsSection(event) {
     $ref.empty();
 
     const divRoot = document.createElement('div');
-    const refRoot= $(divRoot);
+    const $refRoot= $(divRoot);
 
     if (event.logo_url) {
-        refRoot.append('<img src="' + event.logo_url + '" alt="Logo" class="float-right col-3" />');
+        $refRoot.append('<img src="' + event.logo_url + '" alt="Logo" class="float-right col-3" />');
     }
 
     if (event.description) {
-        refRoot.append('<p>' + event.description.replace(/\r\n/g, '<br/>') + '</p>');
+        $refRoot.append('<p>' + event.description.replace(/\r\n/g, '<br/>') + '</p>');
     } else {
         $ref.append('<p><em>Non défini</em></p>');
     }
 
-    refRoot.append('<div class="row mb-2">');
-    refRoot.find('div.row').append('<div class="col-md-6">');
+    $refRoot.append('<div class="row mb-2">');
+    $refRoot.find('div.row').append('<div class="col-md-6">');
 
-    refRoot.find('div.col-md-6').append('<i class="fa fa-fw fa-calendar"></i> ' + formateDate(event.begins_at) + ' - ' + formateDate(event.ends_at));
-    refRoot.find('div.row').append('<div class="col-md-6">');
-    refRoot.find('div.col-md-6:nth-child(2)').append('<i class="fa fa-fw fa-location-arrow"></i> ');
+    $refRoot.find('div.col-md-6').append('<i class="fa fa-fw fa-calendar"></i> ' + formateDate(event.begins_at) + ' - ' + formateDate(event.ends_at));
+    $refRoot.find('div.row').append('<div class="col-md-6">');
+    $refRoot.find('div.col-md-6:nth-child(2)').append('<i class="fa fa-fw fa-location-arrow"></i> ');
 
     if (event.location.name && event.location.lat && event.location.long) {
         const {lat, long, name} = event.location;
-        refRoot.find('div.col-md-6:nth-child(2)').append('<a href="http://www.google.com/maps/place/' + lat + ',' + long + '">' + name + '</a>');
+        $refRoot.find('div.col-md-6:nth-child(2)').append('<a href="http://www.google.com/maps/place/' + lat + ',' + long + '">' + name + '</a>');
     } else {
-        refRoot.find('div.col-md-6:nth-child(2)').append('<em>Non défini</em>');
+        $refRoot.find('div.col-md-6:nth-child(2)').append('<em>Non défini</em>');
     }
-    refRoot.append('<div class="row mb-2"><div class="col-12">');
-    refRoot.find('div.col-12').append('<i class="fa fa-fw fa-link"></i> ');
 
     if (event.website_url) {
-        refRoot.find('div.col-12').append('<a href="' + event.website_url + '">Page web</a>');
-    } else {
-        refRoot.find('div.col-12').append('<em>Non défini</em>');
+        $refRoot.append('<div class="row mb-2"><div class="col-md-12">');
+        $refRoot.find('div.col-md-12').append('<i class="fa fa-fw fa-link"></i> ');
+        $refRoot.find('div.col-md-12').append('<a href="' + event.website_url + '">Page web</a>');
+    }
+
+    if (event.prices && event.prices.length>0) {
+        $refRoot.append('<hr/><h6><i class="fa fa-fw fa-money"></i> Tarifs de l\'évènement</h6>');
+        const listElement = document.createElement('ul');
+        listElement.className = 'list-group';
+        const $refList = $(listElement);
+
+        event.prices.map((priceElement) => {
+            $refList.append('<li class="list-group-item list-group-item-action flex-column">' +
+                                '<div class="row justify-content-between align-items-center">' +
+                                    '<div class="col-md-6"><strong>' + priceElement.name + '</strong></div>' +
+                                    '<div class="col-md-6">'
+                                    + (priceElement.price && !priceElement.is_variable ? ('<strong>' + priceElement.price + ' €</strong>') : '')
+                                    + (priceElement.is_variable ? 'Prix libre' : '')
+                                    + (priceElement.is_va ? ' - (Tarif VA)' : '') +
+                                    '</div>' +
+                                '</div>' +
+                            '</li>');
+        });
+        $refRoot.append($refList);
+        $refRoot.append('<br/>');
     }
     $ref.append(divRoot);
 }
