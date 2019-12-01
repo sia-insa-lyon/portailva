@@ -63,7 +63,7 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = DirectoryEntry
-        fields = ['id', 'name', 'short_description', 'description', 'category', 'contact_address', 'phone', 'website_url',
+        fields = ['id', 'name', 'short_description', 'description', 'category', 'phone', 'website_url',
                   'facebook_url', 'twitter_url', 'instagram_url', 'acronym', 'logo_url', 'location', 'schedule',
                     'is_active']
 
