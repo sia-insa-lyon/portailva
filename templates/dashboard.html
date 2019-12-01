@@ -23,9 +23,9 @@
         }
 
 
-        generateCircleGraph('chart-members', [{{ association_stats.members.active_members_number__sum }}, {{ association_stats.members.all_members_number__sum|subtract:association_stats.members.active_members_number__sum }}],
+        generateCircleGraph('chart-members', [{{ association_stats.members.active_members_number__sum }}, {{ association_stats.members.all_members_number__sum }}],
                                               ['rgb(61,174,227)', 'rgb(235,217,79)'],
-                                              ['Membres actifs', 'Adhérents "non-actifs"']);
+                                              ['Membres actifs', 'Adhérents']);
 
         generateCircleGraph('chart-location', [{{ association_stats.place }}, {{ association_stats.active|subtract:association_stats.place}}],
                                                     ['rgb(241,19,123)', 'rgb(157,61,214)'],
@@ -41,6 +41,21 @@
                                                     ['Ont validées', "N'ont pas validées"]);
         {% endfor %}
 
+    function setStyleCollapse(sectionId){
+        $('#' + sectionId).on('hidden.bs.collapse', function () {
+            $(this).parent().removeClass('dashboard-card-top-round')
+                            .addClass('dashboard-card-round');
+        }).on('show.bs.collapse', function () {
+            $(this).parent().addClass('dashboard-card-top-round')
+                            .removeClass('dashboard-card-round');
+        });
+    }
+
+    setStyleCollapse("collapseOne");
+    setStyleCollapse("collapseSecond");
+    setStyleCollapse("collapseThird");
+    setStyleCollapse("collapseFourth");
+    setStyleCollapse("collapseFifth");
     </script>
 {% endblock %}
 
@@ -50,8 +65,9 @@
 
 {% block content %}
     <div class="accordion" id="accordionDashboard">
-        <div class="card">
-            <h5 class="card-header dashboard-section" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <div class="card dashboard-card-top-round">
+            <h5 class="card-header dashboard-section" id="headingOne"
+                data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 <i class="fa fa-bar-chart-o"></i>Statistiques - Associations et évènements
             </h5>
             <div class="card-body collapse show" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordionDashboard">
@@ -66,7 +82,7 @@
                     <div class="col-md-4">
                         <p class="card-text text-center">
                             <strong class="figure">{{ association_stats.members.all_members_number__sum }}</strong>
-                            <br/> membres dans les associations
+                            <br/> adhérents dans les associations
                         </p>
                     </div>
                     <div class="col-md-4">
@@ -113,7 +129,7 @@
             </div>
         </div>
         <br/>
-        <div class="card">
+        <div class="card dashboard-card-round">
             <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
                 id="headingSecond" data-toggle="collapse" data-target="#collapseSecond" aria-expanded="false" aria-controls="collapseSecond">
                 <i class="fa fa-building-o"></i>
@@ -144,7 +160,7 @@
             </div>
         </div>
         <br/>
-        <div class="card">
+        <div class="card dashboard-card-round">
             <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
                 id="headingThird" data-toggle="collapse" data-target="#collapseThird" aria-expanded="false" aria-controls="collapseThird">
                 <i class="fa fa-warning"></i>
@@ -219,7 +235,7 @@
                 {% endif %}
                 <br/>
 
-                <h5 class="card-title">{{ alert.user_privilege|length }} associations où un référent est aussi un utilisateur de l'asso</h5>
+                <h5 class="card-title">{{ alert.user_privilege|length }} associations où un référent est aussi un de ses utilisateurs</h5>
                 {% if alert.user_privilege %}
                     <ul class="list-group">
                     {% for asso in alert.user_privilege %}
@@ -240,7 +256,7 @@
             </div>
         </div>
         <br/>
-        <div class="card">
+        <div class="card dashboard-card-round">
             <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
                 id="headingFourth" data-toggle="collapse" data-target="#collapseFourth" aria-expanded="false" aria-controls="collapseFourth">
                 <i class="fa fa-calendar-o"></i>
@@ -278,7 +294,7 @@
             </div>
         </div>
         <br/>
-        <div class="card">
+        <div class="card dashboard-card-round">
             <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
                 id="headingFifth" data-toggle="collapse" data-target="#collapseFifth" aria-expanded="false" aria-controls="collapseFifth">
                 <i class="fa fa-book"></i>
@@ -294,7 +310,7 @@
             </h5>
             <div class="card-body collapse" id="collapseFifth" aria-labelledby="headingFifth" data-parent="#accordionDashboard">
                 <h5 class="card-title">Vues à valider</h5>
-                {% if events %}
+                {% if directory %}
                     <ul class="list-group">
                     {% for botinsa in directory %}
                         <a href="{% url 'association-directory-detail' botinsa.association.id %}" class="list-group-item list-group-item-action flex-column">

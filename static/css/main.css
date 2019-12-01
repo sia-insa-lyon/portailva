@@ -201,6 +201,24 @@ i.fa {
 .dashboard-section:hover {
     transition: background 0.4s ease;
     background-color: #cccccc !important;
-    border-radius: 5px;
-    word-break: normal;
+}
+
+.dashboard-card-round {
+    border-radius: 0.25rem !important;
+    border: 1px solid rgba(0,0,0,.125) !important;
+}
+
+.dashboard-card-round > .card-header {
+    transition: background 0.4s ease;
+    background-color: #ffc4ff;
+}
+
+.dashboard-card-top-round {
+    border-radius: 0.25rem 0.25rem 0 0 !important;
+    border: 1px solid rgba(0,0,0,.125) !important;
+}
+
+.dashboard-card-top-round > .card-header {
+    transition: background 0.4s ease;
+    background-color: #d05ce3;
 }
