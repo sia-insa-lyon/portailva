@@ -59,7 +59,8 @@ class Event(models.Model):
         if not user.has_perm('event.admin_event'):
             if not user in self.association.users.all():
                 return False
-            elif self.is_online:
+            # Forbid non-admin user to change events which are already started or finished
+            elif self.begins_at.replace(tzinfo=None) <= datetime.now().replace(tzinfo=None):
                 return False
             else:
                 return True

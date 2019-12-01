@@ -87,13 +87,22 @@ class AssociationEventUpdateView(AssociationMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
-        # Can't update event after its validation
         if not self.object.can_update(request.user):
             raise PermissionDenied
         self.success_url = reverse('association-event-list', kwargs={
             'association_pk': kwargs.get('association_pk')
         })
         return super(AssociationEventUpdateView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # Event is offline after update to enforce a new validation
+        self.object = form.save(commit=False)
+        self.object.is_online = False
+        self.object.save()
+
+        return redirect(reverse('association-event-list', kwargs={
+            'association_pk': self.association.id
+        }))
 
     def get_form_kwargs(self):
         kwargs = super(AssociationEventUpdateView, self).get_form_kwargs()

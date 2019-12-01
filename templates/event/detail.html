@@ -22,17 +22,13 @@
 {% endblock %}
 
 {% block content_association %}
-    {% if not object.is_online and object.prices.all|length < 1 %}
-        <div class="alert alert-danger" role="alert">
-            Cet événement ne sera pas publié tant qu'aucun tarif n'aura été paramétré.
-        </div>
-    {% elif not object.is_online %}
+    {% if not object.is_online %}
         <div class="alert alert-warning" role="alert">
-            Cet événement n'a pas encore été validé. Il n'est donc pas en ligne.
+            Cet événement est en attente de validation par un modérateur. Il n'est donc pas en ligne.
         </div>
     {% else %}
         <div class="alert alert-success" role="alert">
-            Cet événement est validé et en ligne. Vous ne pouvez pas le modifier.
+            Cet événement est validé et en ligne.
         </div>
     {% endif %}
 
@@ -189,7 +185,13 @@
             {% endif %}
         </div>
     </div>
-
+    <br/>
+    <div class="alert alert-secondary" role="alert">
+        L’évènement apparaîtra dans le <a href="{% url 'public-calendar-view' %}">calendrier de la VA</a>, et sera diffusé dans les newsletters VA,
+        il est aussi recommandé d'ajouter un visuel sur <a href="https://affichage.bde-insa-lyon.fr/">l'affichage dynamique</a>
+        et de l'ajouter aussi sur <a href="https://www.insa-lyon.fr/fr/proposer-un-evenement/">le site de l'INSA</a>
+        pour qu'il soit affiché dans l'agenda officiel de l'INSA et potentiellement mis en avant par la DIRCOM (sur facebook ou autre).
+    </div>
     <p>
         <small><i>Dernière modification : {{ object.updated_at|date:'DATETIME_FORMAT' }}</i></small>
     </p>
