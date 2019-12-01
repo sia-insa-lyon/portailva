@@ -3,19 +3,25 @@
 
 # This file is a template, and might need editing before it works on your project.
 # Official docker image.
-image: docker:latest
 
-services:
-  - docker:dind
+stages:
+  - build
+  - test
+  - deploy
 
-variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_DRIVER: overlay2
-
-build-master:
+.build: &build
+  image: docker:latest
   stage: build
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+
+build-master:
+  <<: *build
   script:
     - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" || true
     - docker pull "$CI_REGISTRY_IMAGE" || true
@@ -28,9 +34,7 @@ build-master:
     - tags
 
 build:
-  stage: build
-  before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  <<: *build
   script:
     - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" || true
     - docker pull "$CI_REGISTRY_IMAGE:master" || true
@@ -42,19 +46,41 @@ build:
     - master
     - tags
 
-deploy-prod:
+test:
+  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  stage: test
+  services:
+    - postgres
+  variables:
+    DATABASE_URL: postgres://postgres:postgres@postgres/postgres
+    SECRET_KEY: test
+    GIT_STRATEGY: none
+  before_script:
+    - cd /app
+    - pipenv install coverage
+    - pipenv run python manage.py migrate
+  script:
+    - pipenv run coverage run --source='.' manage.py test
+    - pipenv run coverage report
+
+
+.deploy: &deploy
   stage: deploy
   image: cdrx/rancher-gitlab-deploy
+  when: manual
+  variables:
+    GIT_STRATEGY: none
+
+deploy-prod:
+  <<: *deploy
   script:
     - upgrade --stack portailva --service portailva --start-before-stopping --environment Production --upgrade-timeout 600 --new-image "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
   only:
     - master
     - tags
-  when: manual
 
 deploy-preprod:
-  stage: deploy
-  image: cdrx/rancher-gitlab-deploy
+  <<: *deploy
   script:
     - upgrade --stack portailva-preprod --service portailva --start-before-stopping --environment Production --upgrade-timeout 600 --new-image "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-  when: manual
+
