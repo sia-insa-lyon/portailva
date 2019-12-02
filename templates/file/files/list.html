@@ -6,18 +6,30 @@
 
 {% block content %}
     <div class="row">
-        <table id="prettyTable" class="table table-bordered table-stripped">
+        <table id="prettyTable" class="table table-bordered table-stripped" data-page-length="50">
             <thead>
             <tr>
                 <th>Nom</th>
-                <th data-orderable="false">Action</th>
+                <th>Association</th>
+                <th>Localisation</th>
+                <th>Date d'ajout</th>
             </tr>
             </thead>
             <tbody>
             {% for file in object_list %}
                 <tr>
                     <td><a href="{% url 'file-view' file.uuid %}" rel="noreferrer noopener" target="_blank">{{ file.name }}</a></td>
-                    <td>-</td>
+                    <td>
+                        <a href="{% url 'association-detail' file.association.id %}">
+                        {% if not file.association.acronym %}
+                            {{ file.association.name }}
+                        {% else %}
+                            {{ file.association.acronym }} <small>({{ file.association.name }})</small>
+                        {% endif %}
+                        </a>
+                    </td>
+                    <td>{{ file.folder.name }}</td>
+                    <td>{{ file.created_at|date:"d/m/Y H:m:s" }}</td>
                 </tr>
             {% endfor %}
             </tbody>

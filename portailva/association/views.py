@@ -25,7 +25,7 @@ class AssociationListView(LoginRequiredMixin, ListView):
         return super(AssociationListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = Association.objects.all().order_by('-is_active', 'name')
+        queryset = Association.objects.all().order_by('-is_active', '-is_validated', 'name')
         return queryset
 
     def get_context_data(self, **kwargs):

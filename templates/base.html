@@ -39,6 +39,7 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.20/filtering/type-based/accent-neutralise.js"></script>
     <script type="text/javascript"
             src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
@@ -122,6 +123,7 @@
                                    href="{% url 'admin-dashboard' %}">Tableau de bord</a>
                                 <a class="dropdown-item"
                                    href="{% url 'requirement-list' %}">Situation administrative</a>
+                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item"
                                    href="{% url 'export' %}">Exporter les données</a>
                             {% endif %}
@@ -133,7 +135,7 @@
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-haspopup="true"
-                           aria-expanded="false">Admin<span class="caret"></span></a>
+                           aria-expanded="false">Gestion<span class="caret"></span></a>
                         <div class="dropdown-menu">
                             {% if perms.association.admin_association %}
                                 <a class="dropdown-item"
@@ -142,8 +144,6 @@
                             {% if perms.file.can_admin_file %}
                                 <a class="dropdown-item"
                                    href="{% url 'file-list' %}">Fichiers</a>
-                            {% endif %}
-                            {% if perms.file.can_admin_file %}
                                 <a class="dropdown-item"
                                    href="{% url 'resource-folder-list' %}">Ressources</a>
                             {% endif %}
@@ -154,6 +154,10 @@
                             {% if perms.utils.can_admin_newsletter %}
                                 <a class="dropdown-item"
                                    href="{% url 'newsletter-list' %}">Newsletters</a>
+                            {% endif %}
+                            {% if user.is_staff %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'admin:index' %}">Interface Django</a>
                             {% endif %}
                         </div>
                     </li>
@@ -167,12 +171,9 @@
                            aria-haspopup="true"
                            aria-expanded="false">{{ user.email }} <span class="caret"></span></a>
                         <div class="dropdown-menu">
-                            {% if user.is_staff %}
-                                <a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
-                                <div class="dropdown-divider"></div>
-                            {% endif %}
                             <a class="dropdown-item"
                                href="{% url 'member-change-password' %}">Changer le mot de passe</a>
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item"
                                href="{% url 'member-logout' %}">Déconnexion</a>
                         </div>

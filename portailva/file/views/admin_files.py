@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView
 
-from portailva.file.models import File
+from portailva.file.models import AssociationFile
 
 
 class FileListView(LoginRequiredMixin, ListView):
@@ -14,7 +14,7 @@ class FileListView(LoginRequiredMixin, ListView):
         return super(FileListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = File.objects.all()
+        queryset = AssociationFile.objects.all()
         return queryset
 
     def get_context_data(self, **kwargs):
