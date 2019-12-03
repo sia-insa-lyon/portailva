@@ -2,15 +2,58 @@
 
 {% load crispy_forms_tags %}
 
+{% block css_js_header %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+{% endblock %}
+
 {% block page_sub_title %}
   Nouvel événement
 {% endblock %}
 
 {% block quick_actions %}
-  <a href="{% url 'association-event-list' association.id %}" class="btn btn-secondary"><i class="fa fa-times"></i> Annuler</a>
-  <button form="eventForm" type="submit" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+    <a href="{% url 'association-event-list' association.id %}" class="btn btn-secondary"><i class="fa fa-times"></i> Annuler</a>
+    <button form="eventForm" type="submit" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
 {% endblock %}
 
 {% block content_association %}
   {% crispy form %}
+{% endblock %}
+
+{% block js %}
+    <script type="application/javascript">
+    <!--
+        "use strict";
+        $('#id_place').select2({
+            width: '100%',
+            dropdownAutoWidth: true,
+            quietMillis: 100,
+            minimumResultsForSearch: 10,
+            formatSelection: function(object, container) {
+                text = object.text;
+                if (object.element[0].parentElement.nodeName === 'OPTGROUP') {
+                    text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
+                }
+                return text;
+            },
+            formatResult: function(result, container) {
+                container.attr('title', result.title || result.element[0].title);
+                return result.text;
+            },
+            sorter: function(data) {
+                return data.sort(function(a, b) {
+                    return (a.text < b.text) ? -1 : (a.text > b.text ? 1 : 0);
+                });
+            },
+            language: {
+                noResults: function(){
+                    return "Aucun lieu correspond à (ou contient) ce nom !";
+               }
+            },
+        }).bind('setValue', function(e, value) {
+            $('#id_place').val(value).trigger('change');
+        });
+        $('label[for=id_place]').on('click', function() { $('#id_place').select2('open'); });
+    //-->
+    </script>
 {% endblock %}

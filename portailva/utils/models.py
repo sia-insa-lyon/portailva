@@ -14,4 +14,4 @@ class Place(models.Model):
         default_permissions = ('add', 'change', 'delete', 'admin',)
 
     def __str__(self):
-        return self.name + " (" + str(self.lat) + ", " + str(self.long) + ")"
+        return self.name
