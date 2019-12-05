@@ -51,6 +51,11 @@ class AssociationEventDetailView(AssociationMixin, DetailView):
     model = Event
     template_name = 'event/detail.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if not self.get_object().association.can_access(request.user):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(AssociationEventDetailView, self).get_context_data()
         context.update({

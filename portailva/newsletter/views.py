@@ -64,6 +64,8 @@ class AssociationArticleDetailView(AssociationMixin, DetailView):
     template_name = 'newsletter/article/detail.html'
 
     def dispatch(self, request, *args, **kwargs):
+        if not self.get_object().association.can_access(request.user):
+            raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
