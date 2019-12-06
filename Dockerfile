@@ -2,15 +2,13 @@ FROM python:3.7
 
 EXPOSE 8000
 
-RUN apt-get update && \
-    apt-get install -y libpq-dev python-dev gcc g++ libxslt-dev libtiff5-dev \
-                       libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev \
-                       libwebp-dev tcl8.6-dev tk8.6-dev python-tk
+RUN apt update && apt install -y git curl build-essential libreadline-dev zlib1g-dev libssl-dev libbz2-dev libsqlite3-dev libffi-dev libmagic-dev
+
 ENV LIBRARY_PATH=/lib:/usr/lib
 
 WORKDIR /app
 
-RUN pip install pipenv
+RUN pip install -U pip && pip install pipenv
 COPY Pipfile Pipfile.lock /app/
 RUN pipenv install
 
