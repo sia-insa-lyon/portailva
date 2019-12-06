@@ -1,5 +1,6 @@
 [![Licence GPL](http://img.shields.io/badge/license-GPL-green.svg)](http://www.gnu.org/licenses/quick-guide-gplv3.fr.html)
 [![coverage report](https://gitlab.com/sia-insa-lyon/portailva/badges/master/coverage.svg)](https://gitlab.com/sia-insa-lyon/portailva/commits/master)
+[![pipeline status](https://gitlab.com/sia-insa-lyon/portailva/badges/master/pipeline.svg)](https://gitlab.com/sia-insa-lyon/portailva/commits/master)
 [![Requirements Status](https://requires.io/github/BdEINSALyon/portailva/requirements.svg?branch=master)](https://requires.io/github/BdEINSALyon/portailva/requirements/?branch=master)
 
 # PortailVA
