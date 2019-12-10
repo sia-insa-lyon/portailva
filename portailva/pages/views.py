@@ -1,15 +1,14 @@
+import shutil
 from datetime import datetime, timedelta
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum, Q
-from django.shortcuts import redirect
-from django.template.defaultfilters import register
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+from portailva import settings
 from portailva.association.models import Association, Requirement
 from portailva.directory.models import DirectoryEntry
 from portailva.event.models import Event
@@ -88,6 +87,11 @@ class DashBoardView(TemplateView):
 
         context['alert']['sum'] = (len(context['alert']['user']) + len(context['alert']['user_privilege'])
                                    + len(context['alert']['no_referent']) + len(context['alert']['disconnected']))
+        disk_stats = shutil.disk_usage(settings.MEDIA_ROOT)
+        # Get size in MB. Warning: theses stats concern the whole disk
+        context['alert']['disk_free'] = int(disk_stats.free / 1000 ** 2)
+        context['alert']['disk_used'] = int(disk_stats.used / 1000 ** 2)
+        context['alert']['disk_total'] = int(disk_stats.total / 1000 ** 2)
 
         context['events'] = Event.objects.filter(is_online=False)
         context['events_stats'] = {}
