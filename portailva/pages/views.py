@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum, Q
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
@@ -12,6 +13,58 @@ from portailva import settings
 from portailva.association.models import Association, Requirement
 from portailva.directory.models import DirectoryEntry
 from portailva.event.models import Event
+
+
+class Handler400(TemplateView):
+    template_name = 'error/400.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context, status=400)
+
+
+class Handler401(TemplateView):
+    template_name = 'error/401.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context, status=401)
+
+
+class Handler403(TemplateView):
+    template_name = 'error/403.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context, status=403)
+
+
+class Handler404(TemplateView):
+    template_name = 'error/404.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context, status=404)
+
+
+def handler500(request):
+    return render(request, 'error/500.html')
+
+
+class Handler502(TemplateView):
+    template_name = 'error/502.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context, status=502)
+
+
+class Handler503(TemplateView):
+    template_name = 'error/503.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context, status=503)
 
 
 class HomeView(TemplateView):

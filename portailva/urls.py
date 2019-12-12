@@ -18,7 +18,8 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-from portailva.pages.views import HomeView, DashBoardView
+from portailva.pages.views import HomeView, DashBoardView, Handler400, Handler503, Handler404, Handler403, Handler401, \
+    Handler502
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -38,3 +39,11 @@ urlpatterns = [
     url(r'^dashboard/$', DashBoardView.as_view(), name='admin-dashboard'),
     url(r'^$', HomeView.as_view(), name='homepage'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler400 = Handler400.as_view() # Bad Request
+handler401 = Handler401.as_view() # Unauthorized
+handler403 = Handler403.as_view() # Forbidden
+handler404 = Handler404.as_view() # Not Found
+handler500 = 'portailva.pages.views.handler500' # Internal Server Error
+handler502 = Handler502.as_view() # Bad Gateway
+handler503 = Handler503.as_view() # Service Unavailable
