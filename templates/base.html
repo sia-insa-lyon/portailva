@@ -117,12 +117,12 @@
                         <div class="dropdown-menu">
                             {% if perms.association.admin_requirement %}
                                 <a class="dropdown-item"
-                                   href="{% url 'admin-dashboard' %}">Tableau de bord</a>
+                                   href="{% url 'admin-dashboard' %}"><i class="fa fa-tachometer"></i> Tableau de bord</a>
                                 <a class="dropdown-item"
-                                   href="{% url 'requirement-list' %}">Situation administrative</a>
+                                   href="{% url 'requirement-list' %}"><i class="fa fa-list-alt"></i> Situation administrative</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item"
-                                   href="{% url 'export' %}">Exporter les données</a>
+                                   href="{% url 'export' %}"><i class="fa fa-file-text"></i> Exporter les données</a>
                             {% endif %}
                         </div>
                     </li>
@@ -136,25 +136,25 @@
                         <div class="dropdown-menu">
                             {% if perms.association.admin_association %}
                                 <a class="dropdown-item"
-                                   href="{% url 'association-list' %}">Associations</a>
+                                   href="{% url 'association-list' %}"><i class="fa fa-university"></i> Associations</a>
                             {% endif %}
                             {% if perms.file.can_admin_file %}
                                 <a class="dropdown-item"
-                                   href="{% url 'file-list' %}">Fichiers</a>
+                                   href="{% url 'file-list' %}"><i class="fa fa-file"></i> Fichiers</a>
                                 <a class="dropdown-item"
-                                   href="{% url 'resource-folder-list' %}">Ressources</a>
+                                   href="{% url 'resource-folder-list' %}"><i class="fa fa-folder-open"></i> Ressources</a>
                             {% endif %}
                             {% if perms.utils.can_admin_place %}
                                 <a class="dropdown-item"
-                                   href="{% url 'place-list' %}">Lieux</a>
+                                   href="{% url 'place-list' %}"><i class="fa fa-map-marker"></i> Lieux</a>
                             {% endif %}
                             {% if perms.utils.can_admin_newsletter %}
                                 <a class="dropdown-item"
-                                   href="{% url 'newsletter-list' %}">Newsletters</a>
+                                   href="{% url 'newsletter-list' %}"><i class="fa fa-envelope"></i> Newsletters</a>
                             {% endif %}
                             {% if user.is_staff %}
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'admin:index' %}">Interface Django</a>
+                                <a class="dropdown-item" href="{% url 'admin:index' %}"><i class="fa fa-cogs"></i> Interface Django</a>
                             {% endif %}
                         </div>
                     </li>
@@ -169,10 +169,21 @@
                            aria-expanded="false">{{ user.email }} <span class="caret"></span></a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item"
-                               href="{% url 'member-change-password' %}">Changer le mot de passe</a>
+                               href="{% url 'member-change-password' %}"><i class="fa fa-key"></i> Changer le mot de passe</a>
+                            {% if user.is_staff %}
+                            <a class="dropdown-item"
+                               href="{% static "pdf/Guide_complet.pdf" %}" rel="noreferrer noopener" target="_blank">
+                                <i class="fa fa-life-ring"></i> Aide
+                            </a>
+                            {% else %}
+                            <a class="dropdown-item"
+                               href="{% static "pdf/Guide_utilisateur.pdf" %}" rel="noreferrer noopener" target="_blank">
+                                <i class="fa fa-life-ring"></i> Aide
+                            </a>
+                            {% endif %}
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item"
-                               href="{% url 'member-logout' %}">Déconnexion</a>
+                               href="{% url 'member-logout' %}"><i class="fa fa-sign-out"></i> Déconnexion</a>
                         </div>
                     </li>
                 {% else %}
