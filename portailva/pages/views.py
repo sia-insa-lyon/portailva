@@ -98,6 +98,16 @@ class HomeView(TemplateView):
                       .order_by('?')[:5])
         context['highlights']['events'] = events
         context['associations'] = list(association_get_by_query) + list(Association.objects.filter(events__in=events))
+        context['active_associations_count'] = Association.objects.filter(is_active=True)\
+                                            .order_by('name', 'acronym').count()
+
+        context['school_year'] = datetime.now().year
+        if datetime.now().month < 9 : # Si on n'est pas encore en Septembre, l'année scolaire est l'année civile précédente
+            context['school_year'] -= 1
+
+        context['recent_events_count'] = Event.objects.filter(is_online=True)\
+                                            .filter(ends_at__gte=datetime(context['school_year'], 9,1))\
+                                            .count()
 
         return context
 
