@@ -160,12 +160,20 @@
                         {% endif %}
                     </div>
                 </div>
-                {% if event.website_url %}
+                {% if event.website_url or event.facebook_url %}
                 <div class="row mb-2">
-                    <div class="col-12">
+                    {% if event.website_url %}
+                    <div class="col-6">
                         <i class="fa fa-fw fa-link"></i>
                             <a href="{{ event.website_url }}">Page web</a>
                     </div>
+                    {% endif %}
+                    {% if event.facebook_url %}
+                    <div class="col-6">
+                        <i class="fa fa-fw fa-facebook"></i>
+                            <a href="{{ event.facebook_url }}">Evènement Facebook</a>
+                    </div>
+                    {% endif %}
                 </div>
                 {% endif %}
             {% with prices=event.prices.all %}

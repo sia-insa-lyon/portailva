@@ -75,10 +75,16 @@ function getHTMLEventsSection(event) {
         $refRoot.find('div.col-md-6:nth-child(2)').append('<em>Non défini</em>');
     }
 
-    if (event.website_url) {
-        $refRoot.append('<div class="row mb-2"><div class="col-md-12">');
-        $refRoot.find('div.col-md-12').append('<i class="fa fa-fw fa-link"></i> ');
-        $refRoot.find('div.col-md-12').append('<a href="' + event.website_url + '">Page web</a>');
+    if (event.website_url || event.facebook_url) {
+        $refRoot.append('<div class="row mb-2">');
+        if (event.website_url) {
+            $refRoot.find('div.row').last()
+                .append('<div class="col-md-6"><i class="fa fa-fw fa-link"></i> <a href="' + event.website_url + '">Page web</a>');
+        }
+        if (event.facebook_url) {
+            $refRoot.find('div.row').last()
+                .append('<div class="col-md-6"><i class="fa fa-fw fa-facebook"></i> <a href="' + event.facebook_url + '">Evènement Facebook</a>');
+        }
     }
 
     if (event.prices && event.prices.length>0) {

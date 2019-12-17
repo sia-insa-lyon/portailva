@@ -244,10 +244,16 @@ function getHTMLEventsSection(eventList, eventToDisplay = null) {
                 $refDivChild.find('div.col-md-6:nth-child(2)').append('<em>Non défini</em>');
             }
 
-            if (event.website_url) {
-                $refDivChild.append('<div class="row mb-2"><div class="col-12">');
-                $refDivChild.find('div.col-12').append('<i class="fa fa-fw fa-link"></i> ');
-                $refDivChild.find('div.col-12').append('<a href="' + event.website_url + '">Page web</a>');
+            if (event.website_url || event.facebook_url) {
+                $refDivChild.append('<div class="row mb-2">');
+                if (event.website_url) {
+                    $refDivChild.find('div.row').last()
+                        .append('<div class="col-md-6"><i class="fa fa-fw fa-link"></i> <a href="' + event.website_url + '">Page web</a>');
+                }
+                if (event.facebook_url) {
+                    $refDivChild.find('div.row').last()
+                        .append('<div class="col-md-6"><i class="fa fa-fw fa-facebook"></i> <a href="' + event.facebook_url + '">Evènement Facebook</a>');
+                }
             }
 
             if (event.prices && event.prices.length>0) {

@@ -46,6 +46,7 @@ class Event(models.Model):
     updated_at = models.DateTimeField("Dernière mise à jour", auto_now=True)
 
     website_url = models.URLField("Page web", blank=True)
+    facebook_url = models.URLField("Evènement Facebook", blank=True)
 
     objects = EventManager()
 

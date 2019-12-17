@@ -25,7 +25,8 @@ class DetailEventsSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Event
-        fields = ('id', 'name', 'type', 'begins_at', 'description', 'ends_at', 'place', 'prices', 'website_url', 'logo_url')
+        fields = ('id', 'name', 'type', 'begins_at', 'description', 'ends_at', 'place',
+                  'prices', 'website_url', 'facebook_url', 'logo_url')
 
     def get_id(self, obj):
         return obj.id
