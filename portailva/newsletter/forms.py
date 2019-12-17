@@ -43,8 +43,7 @@ class NewsletterForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.form_id = 'newsletterForm'
 
-        self.fields['articles'].queryset = Article.objects.annotate(newsletter_count=Count('newsletter')) \
-            .filter(newsletter_count__lte=0)
+        self.fields['articles'].queryset = Article.objects.order_by('-created_at')[:8]
 
         self.fields['events'].queryset = Event.objects.filter(ends_at__gt=
                                                               datetime.datetime.today() - datetime.timedelta(days=1))\

@@ -13,4 +13,10 @@
 
 {% block content %}
   {% crispy form %}
+
+    <script type="text/javascript">
+        window.addEventListener('load', function() {
+            document.getElementById('id_title').value = '{{ newsletter_title }}';
+        })
+    </script>
 {% endblock %}

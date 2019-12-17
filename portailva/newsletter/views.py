@@ -130,6 +130,12 @@ class NewsletterUpdateView(CreateView):
             raise PermissionDenied
         return super(NewsletterUpdateView, self).dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super(NewsletterUpdateView, self).get_context_data()
+        context.update({'newsletter_title' : self.get_object().title})
+
+        return context
+
 
 class NewsletterDetailView(DetailView):
     model = Newsletter
