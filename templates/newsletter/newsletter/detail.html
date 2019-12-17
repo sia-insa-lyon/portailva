@@ -50,4 +50,7 @@
     <p>
         <small><i>Dernière modification : {{ object.updated_at|date:'DATETIME_FORMAT' }}</i></small>
     </p>
+
+    <a href="{% url 'newsletter-online' object.id %}" class="btn btn-info" target="_blank">
+        <i class="fa fa-share-square"></i>Consulter le mail</a>
 {% endblock %}
