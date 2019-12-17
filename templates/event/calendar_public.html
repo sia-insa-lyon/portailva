@@ -51,7 +51,8 @@
                         endTime: '18:00'
                     },
                 ],
-                scrollTime: '14:00:00',
+                scrollTime: '13:00:00', <!-- to scroll down by default to the end of the day when most of the events are planned-->
+                height: 700, <!-- to limit the size of the calendar and make it usable on 1080p screens -->
                 eventLimit: true,
                 events: [
                 {% for event in object_list.all_events %}
