@@ -47,15 +47,11 @@
                 businessHours: [
                     {
                         daysOfWeek: [ 1, 2, 3, 4, 5 ],
-                        startTime: '12:00',
-                        endTime: '23:00'
-                    },
-                    {
-                        daysOfWeek: [ 6, 7 ],
                         startTime: '08:00',
-                        endTime: '23:00'
+                        endTime: '18:00'
                     },
                 ],
+                scrollTime: '14:00:00',
                 eventLimit: true,
                 events: [
                 {% for event in object_list.all_events %}
