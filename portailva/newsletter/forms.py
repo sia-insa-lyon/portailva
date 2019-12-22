@@ -43,7 +43,10 @@ class NewsletterForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.form_id = 'newsletterForm'
 
-        self.fields['articles'].queryset = Article.objects.order_by('-created_at')[:8]
+        # Can't use directly a slice because the queryset is filtered again afterwise,
+        # So we get the pk of the last 8 articles and filter using this list (avoids using splice directly)
+        pks = Article.objects.order_by('-created_at').values('pk')[:8]
+        self.fields['articles'].queryset = Article.objects.filter(pk__in=pks)
 
         self.fields['events'].queryset = Event.objects.filter(ends_at__gt=
                                                               datetime.datetime.today() - datetime.timedelta(days=1))\
