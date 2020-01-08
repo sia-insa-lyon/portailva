@@ -42,11 +42,17 @@ class AssociationFileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AssociationFile, AssociationFileAdmin)
-admin.site.register(ResourceFile)
+
+
+class ResourceFileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'is_public')
+
+
+admin.site.register(ResourceFile, ResourceFileAdmin)
 
 
 class FileFolderAdmin(admin.ModelAdmin):
-    list_display = 'name', 'parent', 'position', 'is_writable', 'is_public'
+    list_display = ('name', 'parent', 'position', 'is_writable', 'is_public')
 
 
 admin.site.register(FileFolder, FileFolderAdmin)

@@ -47,6 +47,7 @@ class UploadResourceView(LoginRequiredMixin, FolderScoped, View):
             file = ResourceFile.objects.create(
                 name=file_name,
                 published=True,
+                is_public=(request.POST["public"] == 'on'),
                 folder=folder
             )
             # Then file version
