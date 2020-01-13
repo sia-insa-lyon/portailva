@@ -18,6 +18,7 @@ class EventListAPIView(ListAPIView):
         queryset = Event.objects.get_online()
         since = self.request.query_params.get('since', None)
         until = self.request.query_params.get('until', None)
+        asso_id = self.request.query_params.get('id', None)
 
         if since is None and until is None:
             # We return event for the next two days
@@ -53,6 +54,10 @@ class EventListAPIView(ListAPIView):
                 )
             except ValueError:
                 raise ParseError("Bad format for since/until parameters. Accepted format : %Y-%m-%d.")
+
+        if asso_id is not None:
+            queryset = queryset.filter(association__id=asso_id)
+
         return queryset
 
 
