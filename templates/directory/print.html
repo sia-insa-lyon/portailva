@@ -14,9 +14,6 @@
 {% endblock %}
 
 {% block content %}
-    <div class="mb-2">
-        Cette page a été imprimée le {{ now|date }} à {{ now|time }}.
-    </div>
     <h2>
         Informations générales
     </h2>
@@ -81,13 +78,15 @@
                     {% endif %}<br>
 
                     <i class="fa fa-fw fa-phone"></i>
-                    {% if association.current_directory_entry.public_phone %}
-                        <a href="tel:{{ association.current_directory_entry.public_phone.phone }}">
-                            {{ association.current_directory_entry.public_phone.phone }}
-                        </a>{% if association.current_directory_entry.public_phone.source %} ({{ association.current_directory_entry.public_phone.source }}){% endif %}
-                    {% else %}
-                        <em>Non défini</em>
-                    {% endif %}
+                    {% with public_phone=association.current_directory_entry.public_phone %}
+                        {% if public_phone and public_phone.phone %}
+                            <a href="tel:{{ public_phone.phone }}">
+                                {{ public_phone.phone }}
+                            </a>{% if public_phone.source %} ({{ public_phone.source }}){% endif %}
+                        {% else %}
+                            <em>Non défini</em>
+                        {% endif %}
+                    {% endwith %}
                 </p>
 
             </div>
@@ -127,17 +126,120 @@
             </div>
         </div>
     </div>
-
+    <hr/>
     <h2>
         Horaires de permanences
     </h2>
-    <ul class="list-group">
-        {% for opening_hour in association.current_directory_entry.opening_hours.all %}
-            <li class="list-group-item">
-                {{ days|get_tuple:opening_hour.day }}
-                de {{ opening_hour.begins_at|time:"H:i" }}
-                à {{ opening_hour.ends_at|time:"H:i" }}
-            </li>
-        {% endfor %}
-    </ul>
+    {% with list_opening_hour=association.current_directory_entry.opening_hours.all %}
+        {% if list_opening_hour %}
+            <ul class="list-group">
+            {% for opening_hour in list_opening_hour %}
+                <li class="list-group-item">
+                    {{ days|get_tuple:opening_hour.day }}
+                    de {{ opening_hour.begins_at|time:"H:i" }}
+                    à {{ opening_hour.ends_at|time:"H:i" }}
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <em>Aucun horaire défini</em>
+        {% endif %}
+    {% endwith %}
+
+    <hr/>
+    <h2>Évènements à venir</h2>
+    <div class="tab-pane" id="events" role="tabpanel" aria-labelledby="events-tab" data-children=".item">
+    {% for event in association.online_events %}
+        <div class="item">
+            <a data-toggle="collapse" data-parent="#events"
+               href="#event-{{ event.id }}" aria-expanded="true"
+               aria-controls="event-{{ event.id }}">
+                {% if event.association.acronym %}
+                {{ event.name }} ({{ event.type.name }} - {{ event.association.acronym }})
+                {% else %}
+                {{ event.name }} ({{ event.type.name }} - {{ event.association.name }})
+                {% endif %}
+            </a>
+            <div id="event-{{ event.id }}"
+                 class="collapse{% if forloop.first %} show{% endif %}"
+                 role="tabpanel">
+                {% if event.logo_url %}
+                    <img src="{{ event.logo_url }}" alt="Logo {{ event.name }}" class="float-right col-3 img-fluid">
+                {% endif %}
+                <p>
+                    {{ event.description|linebreaksbr }}
+                </p>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <i class="fa fa-fw fa-calendar"></i> {{ event.begins_at|date:'DATETIME_FORMAT' }}
+                        - {{ event.ends_at|date:'DATETIME_FORMAT' }}
+                    </div>
+                    <div class="col-md-6">
+                        <i class="fa fa-fw fa-location-arrow"></i>
+                        {% if event.place %}
+                            {% with place=event.place %}
+                                <a href="http://www.google.com/maps/place/{{ place.lat }},{{ place.long }}">
+                                    {{ place.name }}
+                                </a>
+                            {% endwith %}
+                        {% else %}
+                            <em>Non défini</em>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if event.website_url or event.facebook_url %}
+                <div class="row mb-2">
+                    {% if event.website_url %}
+                    <div class="col-6">
+                        <i class="fa fa-fw fa-link"></i>
+                            <a href="{{ event.website_url }}">Page web</a>
+                    </div>
+                    {% endif %}
+                    {% if event.facebook_url %}
+                    <div class="col-6">
+                        <i class="fa fa-fw fa-facebook"></i>
+                            <a href="{{ event.facebook_url }}">Evènement Facebook</a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% with prices=event.prices.all %}
+            {% if prices|length > 0 %}
+                <hr/><h6><i class="fa fa-fw fa-money"></i> Tarifs de l'évènement</h6>
+                <ul class="list-group">
+                {% for priceElement in prices %}
+                    <li class="list-group-item list-group-item-action flex-column">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-md-6">
+                                <strong>{{priceElement.name}}</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {% if priceElement.price and not priceElement.is_variable %}
+                                <strong>{{priceElement.price}} €</strong>
+                                {% endif %}
+
+                                {% if priceElement.is_variable %}
+                                <span>Prix libre</span>
+                                {% endif %}
+
+                                {% if priceElement.is_va %}
+                                    <span> - (Tarif VA)</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul><br/>
+            {% endif %}
+            {% endwith %}
+            </div>
+        </div>
+    {% empty %}
+        <em>Aucun évènement à venir.</em>
+    {% endfor %}
+    </div>
+    <hr/>
+    <div class="mb-2">
+        Cette page a été imprimée le {{ now|date }} à {{ now|time }}.
+    </div>
 {% endblock %}
