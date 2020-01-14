@@ -19,6 +19,7 @@ class EventListAPIView(ListAPIView):
         since = self.request.query_params.get('since', None)
         until = self.request.query_params.get('until', None)
         asso_id = self.request.query_params.get('id', None)
+        place_id = self.request.query_params.get('place', None)
 
         if since is None and until is None:
             # We return event for the next two days
@@ -57,6 +58,9 @@ class EventListAPIView(ListAPIView):
 
         if asso_id is not None:
             queryset = queryset.filter(association__id=asso_id)
+
+        if place_id is not None:
+            queryset = queryset.filter(place__id=place_id)
 
         return queryset
 
