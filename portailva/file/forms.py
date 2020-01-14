@@ -89,6 +89,11 @@ class ResourceFolderForm(forms.ModelForm):
 
 
 class ResourceFileForm(forms.Form):
+    public = forms.BooleanField(
+        label="Public",
+        help_text="Un fichier public sera accessible en lecture à un utilisateur non authentifié",
+        required=False
+    )
 
     data = forms.FileField(
         label="Fichier",

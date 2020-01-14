@@ -41,12 +41,19 @@ class UploadResourceView(LoginRequiredMixin, FolderScoped, View):
         form = ResourceFileForm(folder=folder, data=self.request.POST, files=self.request.FILES)
         file_name = request.FILES['data'].name
         files = ResourceFile.objects.filter(folder=folder, name=file_name).first()
+
+        public = False
+        if 'public' in request.POST:
+            if request.POST['public'] == 'on':
+                public = True
+
         if files is not None:
             messages.add_message(request, messages.ERROR, 'Un fichier existe déjà avec ce nom')
         elif form.is_valid():
             file = ResourceFile.objects.create(
                 name=file_name,
                 published=True,
+                is_public=public,
                 folder=folder
             )
             # Then file version
