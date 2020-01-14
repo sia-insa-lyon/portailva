@@ -24,7 +24,7 @@ class ExportView(AbleToExportMixin, TemplateView):
             title += alist[mod]
         return title[::-1]
 
-    def export_xlsx(self, category='ALL', datas=('BASIC', 'VALIDATIONS', 'PRESIDENT', 'BANK')):
+    def export_xlsx(self, category='ALL', datas=('BASIC', 'VALIDATIONS', 'PRESIDENT', 'REGISTRATION', 'BANK')):
 
         # Create the Excel file
         import openpyxl
@@ -51,6 +51,9 @@ class ExportView(AbleToExportMixin, TemplateView):
             columns.append(ExportColumn('Président (Nom)', 'mandates.last().peoples.first().__str__()'))
             columns.append(ExportColumn('Président (Téléphone)', 'mandates.last().peoples.first().phone'))
             columns.append(ExportColumn('Président (Email)', 'mandates.last().peoples.first().email'))
+        if 'REGISTRATION' in datas:
+            columns.append(ExportColumn('SIREN', 'siren'))
+            columns.append(ExportColumn('RNA', 'rna'))
         if 'BANK' in datas:
             columns.append(ExportColumn('IBAN', 'iban'))
             columns.append(ExportColumn('BIC', 'bic'))
