@@ -33,6 +33,8 @@ class File(models.Model):
         return self.name
 
     def can_access(self, user):
+        if hasattr(self, 'resourcefile') and self.resourcefile.is_public:
+            return True
         if isinstance(self, AssociationFile) and self.folder.is_public:
             return True
         if hasattr(self, 'associationfile') and self.associationfile.folder.is_public:
@@ -154,7 +156,7 @@ class ResourceFile(File):
     is_public = models.BooleanField("Public", default=False, blank=True)
 
     def can_access(self, user):
-        if (user is not None and user.is_authenticated) or self.is_public :
+        if (user is not None and user.is_authenticated) or self.is_public:
             return self.published
         return False
 
