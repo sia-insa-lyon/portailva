@@ -148,8 +148,17 @@ class DashBoardView(TemplateView):
                                             .order_by('name', 'acronym')
                                             .distinct())
 
+        # Quel requirement expire dans 30 jours ou moins ?
+        context['alert']['requirement_expiration'] = (Requirement.objects
+                                            .filter(active_until__lte=datetime.now() + timedelta(days=30))
+                                            .filter(active_until__gte=datetime.now())
+                                            .order_by('active_until', 'name')
+                                            .distinct())
+
         context['alert']['sum'] = (len(context['alert']['user']) + len(context['alert']['user_privilege'])
-                                   + len(context['alert']['no_referent']) + len(context['alert']['disconnected']))
+                                   + len(context['alert']['no_referent']) + len(context['alert']['disconnected'])
+                                   + len(context['alert']['requirement_expiration']))
+
         disk_stats = shutil.disk_usage(settings.MEDIA_ROOT)
         # Get size in MB. Warning: theses stats concern the whole disk
         context['alert']['disk_free'] = int(disk_stats.free / 1000 ** 2)
