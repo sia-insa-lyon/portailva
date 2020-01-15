@@ -324,6 +324,22 @@
                     {% endfor %}
                     </ul>
                 {% endif %}
+                <br/>
+
+                <h5 class="card-title">{{ alert.requirement_expiration|length }} conditions expirant dans 30 jours ou moins</h5>
+                {% if alert.requirement_expiration %}
+                    <ul class="list-group">
+                    {% for requirement in alert.requirement_expiration %}
+                        <a href="{% url 'requirement-detail' requirement.id %}" class="list-group-item list-group-item-action flex-column">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-md-10">
+                                    {{ requirement.name }} <small class="text-muted">({{ requirement.active_until }})</small>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
         </div>
         <br/>
