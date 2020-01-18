@@ -22,13 +22,17 @@
     </thead>
     <tbody>
       {% for association in associations %}
-        <tr>
+
+      <!-- Coloring the row -->
+  <tr class="table-{% if requirement|is_achieved:association.id %}success{% else %}danger{% endif %}">
+      <!-- Filling the first cell for each row -->
           {% if not association.acronym %}
             <td><a href="{% url 'association-detail' association.id %}">{{ association.name }}</a></td>
           {% else %}
             <td><a href="{% url 'association-detail' association.id %}">{{ association.acronym }}</a> <small>({{ association.name }})</small></td>
           {% endif %}
-
+          
+      <!-- Filling the other cells for each row -->
           {% if not object.type == 'accomplishment' %}
             <td class="text-center">
             {% if object|is_achieved:association.id %}
@@ -56,6 +60,14 @@
                 -
               {% else %}
                 <a href="{% url 'association-file-tree' association.id object.get_folder_id %}" class="btn btn-xs btn-primary">
+                  <i class="fa fa-eye"></i> Voir
+                </a>
+              {% endif %}
+            {% elif object.type == 'mandate' %}
+              {% if not requirement|is_achieved:association.id %}
+                -
+              {% else %}
+                <a href="{% url 'association-mandate-list' association.id %}" class="btn btn-xs btn-primary">
                   <i class="fa fa-eye"></i> Voir
                 </a>
               {% endif %}
