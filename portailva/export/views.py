@@ -1,4 +1,5 @@
 import string
+from datetime import *
 
 import unicodedata
 from django.http import HttpResponse
@@ -24,7 +25,7 @@ class ExportView(AbleToExportMixin, TemplateView):
             title += alist[mod]
         return title[::-1]
 
-    def export_xlsx(self, category='ALL', datas=('BASIC', 'VALIDATIONS', 'PRESIDENT', 'REGISTRATION', 'BANK')):
+    def export_xlsx(self, category='ALL', datas=('BASIC', 'VALIDATIONS', 'PRESIDENT', 'REGISTRATION','SUPPLEMENTARY', 'BANK')):
 
         # Create the Excel file
         import openpyxl
@@ -41,6 +42,7 @@ class ExportView(AbleToExportMixin, TemplateView):
         if 'BASIC' in datas:
             columns.append(ExportColumn('Acronyme', 'acronym'))
             columns.append(ExportColumn('Categorie', 'category.name', 22))
+            columns.append(ExportColumn('ID', 'id'))
             if category == 'ALL':
                 columns.append(ExportColumn('Active', 'is_active'))
             columns.append(ExportColumn('Validé', 'is_validated'))
@@ -57,6 +59,12 @@ class ExportView(AbleToExportMixin, TemplateView):
         if 'BANK' in datas:
             columns.append(ExportColumn('IBAN', 'iban'))
             columns.append(ExportColumn('BIC', 'bic'))
+        if 'SUPPLEMENTARY' in datas:
+            columns.append(ExportColumn('Mail public', 'directory_entries.last().contact_address', 30))
+            columns.append(ExportColumn('Local', 'directory_entries.last().place', 25))
+            columns.append(ExportColumn('Date de création', 'created_at.strftime("%d/%m/%Y")', 15))
+            columns.append(ExportColumn('Site web', 'directory_entries.last().website_url', 30))
+            columns.append(ExportColumn('Facebook', 'directory_entries.last().facebook_url'))
         if 'BNP' in datas:
             columns = [ExportColumn('TIERS - NOM OU RAISON SOCIALE', 'name', options=['caps', 'accents']),
                        ExportColumn('TIERS - TYPE', value='Autre'),
