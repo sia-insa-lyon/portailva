@@ -55,6 +55,8 @@ test:
     DATABASE_URL: postgres://postgres:postgres@postgres/postgres
     SECRET_KEY: test
     GIT_STRATEGY: none
+    # See https://github.com/docker-library/postgres/issues/681
+    POSTGRES_HOST_AUTH_METHOD: trust
   before_script:
     - cd /app
     - pipenv install coverage

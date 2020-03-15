@@ -218,6 +218,8 @@ PICKER_DATETIME_OPTIONS['format'] = 'DD/MM/YYYY HH:mm'
 FILE_UPLOAD_HANDLERS = [
     'django.core.files.uploadhandler.TemporaryFileUploadHandler'
 ]
+# See https://stackoverflow.com/questions/608579/django-file-uploads-permissions
+FILE_UPLOAD_PERMISSIONS = 0o644
 MAGIC_BIN = os.environ.get("MAGIC_BIN")
 
 # Mail

@@ -13,6 +13,7 @@ from portailva import settings
 from portailva.association.models import Association, Requirement
 from portailva.directory.models import DirectoryEntry
 from portailva.event.models import Event
+from portailva.newsletter.models import Article
 
 
 class Handler400(TemplateView):
@@ -98,16 +99,16 @@ class HomeView(TemplateView):
                       .order_by('?')[:5])
         context['highlights']['events'] = events
         context['associations'] = list(association_get_by_query) + list(Association.objects.filter(events__in=events))
-        context['active_associations_count'] = Association.objects.filter(is_active=True)\
-                                            .order_by('name', 'acronym').count()
+        context['active_associations_count'] = Association.objects.filter(is_active=True) \
+            .order_by('name', 'acronym').count()
 
         context['school_year'] = datetime.now().year
-        if datetime.now().month < 9 : # Si on n'est pas encore en Septembre, l'année scolaire est l'année civile précédente
+        if datetime.now().month < 9:  # Si on n'est pas encore en Septembre, l'année scolaire est l'année civile précédente
             context['school_year'] -= 1
 
-        context['recent_events_count'] = Event.objects.filter(is_online=True)\
-                                            .filter(ends_at__gte=datetime(context['school_year'], 9,1))\
-                                            .count()
+        context['recent_events_count'] = Event.objects.filter(is_online=True) \
+            .filter(ends_at__gte=datetime(context['school_year'], 9, 1)) \
+            .count()
 
         return context
 
@@ -172,6 +173,10 @@ class DashBoardView(TemplateView):
                                                 .count())
 
         context['events_stats']['unpublished'] = len(context['events'])
+
+        context['articles'] = (Article.objects.filter(validated=False)
+                              .filter(updated_at__gte=datetime(2020, 1, 1))
+                              .order_by('-updated_at'))
 
         context['directory'] = DirectoryEntry.objects.filter(is_online=False).order_by('updated_at')
 

@@ -11,33 +11,83 @@
 
 {% block content_association %}
     <div>
-        <table class="table table-bordered table-stripped">
-            <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Statut</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for article in object_list %}
-                <tr>
-                    <td>
-                        <a href="{% url 'association-article-detail' association.id article.id %}">{{ article.title }}</a>
-                    </td>
-                    <td>
-                        {% if event.validated %}
-                            <a data-toggle="tooltip" title="Validé"><i class="fa fa-check"></i></a>
-                        {% else %}
-                            <a data-toggle="tooltip" title="Non validé"><i class="fa fa-times"></i></a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5"><i>Aucun article.</i></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+         <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="nav-item">
+                <a class="nav-link active" href="#to_validate" aria-controls="home" role="tab" data-toggle="tab">En attente de validation</a>
+            </li>
+            <li role="presentation" class="nav-item">
+                <a class="nav-link" href="#validated" aria-controls="profile" role="tab" data-toggle="tab">Validés</a>
+            </li>
+        </ul>
+
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="to_validate">
+                <table class="table table-bordered table-stripped">
+                    <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Date de mise à jour</th>
+                        <th>Statut</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for article in to_validate %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'association-article-detail' association.id article.id %}">{{ article.title }}</a>
+                            </td>
+                            <td>{{ article.updated_at|date }}</td>
+                            <td>
+                                {% if article.validated %}
+                                    <a data-toggle="tooltip" title="Validé"><i class="fa fa-check"></i></a>
+                                {% else %}
+                                    <a data-toggle="tooltip" title="Non validé"><i class="fa fa-times"></i></a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5"><i>Aucun article à valider.</i></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="validated">
+                <table id="prettyTable2" class="table table-bordered table-stripped">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Date de mise à jour</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for article in validated %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'association-article-detail' association.id article.id %}">{{ article.title }}</a>
+                            </td>
+                            <td>{{ article.updated_at|date }}</td>
+                            <td>
+                                {% if article.validated %}
+                                    <a data-toggle="tooltip" title="Validé"><i class="fa fa-check"></i></a>
+                                {% else %}
+                                    <a data-toggle="tooltip" title="Non validé"><i class="fa fa-times"></i></a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5"><i>Aucun article validé.</i></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load humanize %}
+{% load static %}
+
+{% block page_title %}
+    Brèves d'assos
+{% endblock %}
+
+{% block content %}
+    <p class="text-justify text-break">
+       Retrouvez des articles sur l'actualité, l'histoire et les projets des associations insaliennes !<br/>
+    </p>
+    <div>
+        <script type="application/javascript">
+            function removeSkeleton(divId) {
+                $('#'+divId).removeClass('skeleton');
+            }
+        </script>
+        {% for article in object_list %}
+        <div class="card">
+            <div class="row no-gutters">
+                <div class="col-md-4 align-middle text-center skeleton" id="article_{{ article.id }}">
+                    {% if article.featured_image %}
+                    <img src="{% get_media_prefix %}{{ article.featured_image }}" alt="Image introuvable" class="card-img-top img-fluid"
+                         style="max-height: 50vh; max-width: 100%; margin: auto" onload="removeSkeleton('article_{{ article.id }}')" onerror="removeSkeleton('article_{{ article.id }}')"/>
+                    {% else %}
+                    <img src="{{ article.association.logo_url }}" alt="Image introuvable" class="card-img-top img-fluid"
+                         style="max-height: 30vh; max-width: 100%; width: auto; margin: auto" onload="removeSkeleton('article_{{ article.id }}')" onerror="removeSkeleton('article_{{ article.id }}')"/>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{% url 'public-article-detail' article.id %}">{{ article.title }}</a></h5>
+                        <p class="card-text"><small class="text-muted">
+                            Publié le {{ article.updated_at }} -
+                            {% if article.association.acronym %}
+                            {{ article.association.acronym }} ({{ article.association.name }})
+                            {% else %}
+                            {{ article.association.name }}
+                            {% endif %}
+                        </small></p>
+                        <p class="card-text">{{ article.short_content }}</p>
+                        <a href="{% url 'public-article-detail' article.id %}" class="btn btn-primary">Voir l'article</a>
+                        {% if user.is_superuser %}
+                        <a href="{% url 'association-article-detail' article.association_id article.id %}"  rel="noreferrer noopener" target="_blank" class="btn btn-light">Admin - Voir l'article</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        {% empty %}
+            <i>Aucun article.</i>
+        {% endfor %}
+
+        {% if page_obj.has_other_pages %}
+        <br/>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'public-article-list' %}?page={{ page_obj.previous_page_number }}" aria-label="Précédent">
+                        <span aria-hidden="true">Précédent</span>
+                        <span class="sr-only">Précédent</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-label="Précédent">
+                        <span aria-hidden="true">Précédent</span>
+                        <span class="sr-only">Précédent</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#">
+                            <span>{{ i }} <span class="sr-only">(actuelle)</span></span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="{% url 'public-article-list' %}?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'public-article-list' %}?page={{ page_obj.next_page_number }}">
+                        <span aria-hidden="true">Suivant</span>
+                        <span class="sr-only">Suivant</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-label="Suivant">
+                        <span aria-hidden="true">Suivant</span>
+                        <span class="sr-only">Suivant</span>
+                    </a>
+                </li>
+            {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+{% endblock %}

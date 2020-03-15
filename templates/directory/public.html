@@ -61,7 +61,7 @@
                 <div class="card">
                     {% if asso.logo_url %}
                         <div id="logo_{{ asso.id }}" class="skeleton">
-                            <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" alt="logo">
+                            <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" onerror="removeSkeleton('logo_{{ asso.id }}')" alt="Logo introuvable">
                         </div>
                     {% endif %}
                     <div class="card-body">
@@ -105,7 +105,7 @@
                 <div class="card">
                     {% if asso.logo_url %}
                         <div id="logo_{{ asso.id }}" class="skeleton">
-                            <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" alt="logo">
+                            <img class="card-img-top" src="{{ asso.logo_url }}" onload="removeSkeleton('logo_{{ asso.id }}')" onerror="removeSkeleton('logo_{{ asso.id }}')" alt="Logo introuvable">
                         </div>
                     {% endif %}
                     <div class="card-body">

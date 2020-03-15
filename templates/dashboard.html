@@ -55,11 +55,12 @@
         });
     }
 
-    setStyleCollapse("collapseOne");
-    setStyleCollapse("collapseSecond");
-    setStyleCollapse("collapseThird");
-    setStyleCollapse("collapseFourth");
-    setStyleCollapse("collapseFifth");
+    setStyleCollapse("collapseEvent");
+    setStyleCollapse("collapseBotInsa");
+    setStyleCollapse("collapseArticle");
+    setStyleCollapse("collapseStats");
+    setStyleCollapse("collapseAlert");
+    setStyleCollapse("collapseSupervised");
     </script>
 {% endblock %}
 
@@ -81,7 +82,7 @@
     <div class="accordion" id="accordionDashboard">
         <div class="card dashboard-card-top-round">
             <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
-                id="headingFourth" data-toggle="collapse" data-target="#collapseFourth" aria-expanded="true" aria-controls="collapseFourth">
+                id="headingEvent" data-toggle="collapse" data-target="#collapseEvent" aria-expanded="true" aria-controls="collapseEvent">
                 <i class="fa fa-calendar-o"></i>
                 Validations d'évènements
                 <span class="ml-auto badge
@@ -93,7 +94,7 @@
                     badge-success
                 {% endif %} badge-pill">{{ events_stats.unpublished }}</span>
             </h5>
-            <div class="card-body collapse show" id="collapseFourth" aria-labelledby="headingFourth" data-parent="#accordionDashboard">
+            <div class="card-body collapse show" id="collapseEvent" aria-labelledby="headingEvent" data-parent="#accordionDashboard">
                 <h5 class="card-title">Evènements à valider</h5>
                 {% if events %}
                     <ul class="list-group">
@@ -119,7 +120,7 @@
         <br/>
         <div class="card dashboard-card-round">
             <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
-                id="headingFifth" data-toggle="collapse" data-target="#collapseFifth" aria-expanded="false" aria-controls="collapseFifth">
+                id="headingBotInsa" data-toggle="collapse" data-target="#collapseBotInsa" aria-expanded="false" aria-controls="collapseBotInsa">
                 <i class="fa fa-book"></i>
                 Validations de page Bot'INSA
                 <span class="ml-auto badge
@@ -131,7 +132,7 @@
                     badge-success
                 {% endif %} badge-pill">{{ directory|length }}</span>
             </h5>
-            <div class="card-body collapse" id="collapseFifth" aria-labelledby="headingFifth" data-parent="#accordionDashboard">
+            <div class="card-body collapse" id="collapseBotInsa" aria-labelledby="headingBotInsa" data-parent="#accordionDashboard">
                 <h5 class="card-title">Vues à valider</h5>
                 {% if directory %}
                     <ul class="list-group">
@@ -159,11 +160,48 @@
         </div>
         <br/>
         <div class="card dashboard-card-round">
-            <h5 class="card-header dashboard-section" id="headingOne"
-                data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
+                id="headingArticle" data-toggle="collapse" data-target="#collapseArticle" aria-expanded="false" aria-controls="collapseArticle">
+                <i class="fa fa-bullhorn"></i>
+                Validations d'articles
+                <span class="ml-auto badge
+                {% if articles|length > 5 %}
+                    badge-danger
+                {% elif articles|length > 0 %}
+                    badge-warning
+                {% else %}
+                    badge-success
+                {% endif %} badge-pill">{{ articles|length }}</span>
+            </h5>
+            <div class="card-body collapse" id="collapseArticle" aria-labelledby="headingArticle" data-parent="#accordionDashboard">
+                <h5 class="card-title">Articles à valider</h5>
+                {% if articles %}
+                    <ul class="list-group">
+                    {% for article in articles %}
+                        <a href="{% url 'association-article-detail' article.association.id article.id %}" class="list-group-item list-group-item-action flex-column">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-md-6">
+                                    {{ article.title }}
+                                </div>
+                                <div class="col-md-6">
+                                    <i class="fa fa-fw fa-calendar"></i><span class="text-muted">Crée le {{ article.created_at }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="card-text text-center">Aucun article à valider</p>
+                {% endif %}
+            </div>
+        </div>
+        <br/>
+        <div class="card dashboard-card-round">
+            <h5 class="card-header dashboard-section" id="headingStats"
+                data-toggle="collapse" data-target="#collapseStats" aria-expanded="false" aria-controls="collapseStats">
                 <i class="fa fa-bar-chart-o"></i>Statistiques - Associations et évènements
             </h5>
-            <div class="card-body collapse" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordionDashboard">
+            <div class="card-body collapse" id="collapseStats" aria-labelledby="headingStats" data-parent="#accordionDashboard">
                 <h5 class="card-title">Chiffres</h5>
                 <div class="row">
                     <div class="col-md-4">
@@ -224,7 +262,7 @@
         <br/>
         <div class="card dashboard-card-round">
             <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
-                id="headingThird" data-toggle="collapse" data-target="#collapseThird" aria-expanded="false" aria-controls="collapseThird">
+                id="headingAlert" data-toggle="collapse" data-target="#collapseAlert" aria-expanded="false" aria-controls="collapseAlert">
                 <i class="fa fa-warning"></i>
                 Indicateurs d'alerte (expérimental)
                 <span class="ml-auto badge
@@ -236,7 +274,7 @@
                     badge-success
                 {% endif %} badge-pill">{{ alert.sum }}</span>
             </h5>
-            <div class="card-body collapse" id="collapseThird" aria-labelledby="headingThird" data-parent="#accordionDashboard">
+            <div class="card-body collapse" id="collapseAlert" aria-labelledby="headingAlert" data-parent="#accordionDashboard">
                 <h5 class="card-title">Statistiques sur l'instance</h5>
                 <div class="row">
                     <div class="col-md-4">
@@ -345,12 +383,12 @@
         <br/>
         <div class="card dashboard-card-round">
             <h5 class="card-header dashboard-section d-flex justify-content-between align-items-center"
-                id="headingSecond" data-toggle="collapse" data-target="#collapseSecond" aria-expanded="false" aria-controls="collapseSecond">
+                id="headingSupervised" data-toggle="collapse" data-target="#collapseSupervised" aria-expanded="false" aria-controls="collapseSupervised">
                 <i class="fa fa-building-o"></i>
                 Associations supervisées
                 <span class="ml-auto badge badge-primary badge-pill">{{ supervised_assos|length }}</span>
             </h5>
-            <div class="card-body collapse" id="collapseSecond" aria-labelledby="headingSecond" data-parent="#accordionDashboard">
+            <div class="card-body collapse" id="collapseSupervised" aria-labelledby="headingSupervised" data-parent="#accordionDashboard">
                 {% if supervised_assos %}
                     <h5 class="card-title">Liste de vos associations</h5>
                     <ul class="list-group">

@@ -1,7 +1,10 @@
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import render
+from django.core.paginator import Paginator
+from django.http import Http404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView, TemplateView
+from datetime import datetime, timedelta
 
 from portailva.association.mixins import AssociationMixin
 from portailva.newsletter.forms import ArticleForm, NewsletterForm
@@ -12,14 +15,26 @@ class AssociationArticleListView(AssociationMixin, ListView):
     model = Article
     template_name = 'newsletter/article/list.html'
 
-    def get_queryset(self):
-        return Article.objects.filter(association=self.association)
+    def get_context_data(self, **kwargs):
+        context = super(AssociationArticleListView, self).get_context_data()
+        context.update({
+            'to_validate': Article.objects.filter(association=self.association)
+                .filter(validated=False)
+                .order_by('-updated_at'),
+            'validated': Article.objects.filter(association=self.association)
+                .filter(validated=True)
+                .order_by('-updated_at')
+        })
+        return context
 
 
 class AssociationArticleNewView(AssociationMixin, CreateView):
     model = Article
     form_class = ArticleForm
     template_name = 'newsletter/article/new.html'
+
+    def get_success_url(self):
+        return reverse('association-article-detail', kwargs={'association_pk': self.association.id, 'pk': self.object.id})
 
     def dispatch(self, request, *args, **kwargs):
         self.success_url = reverse('association-article-list', kwargs={
@@ -50,6 +65,17 @@ class AssociationArticleUpdateView(AssociationMixin, UpdateView):
         })
         return super(AssociationArticleUpdateView, self).dispatch(request, *args, **kwargs)
 
+    def form_valid(self, form):
+        # Event is offline after update to enforce a new validation
+        self.object = form.save(commit=False)
+        self.object.validated = False
+        self.object.save()
+
+        return redirect(reverse('association-article-detail', kwargs={
+            'association_pk': self.association.id,
+            'pk': self.object.id
+        }))
+
     def get_form_kwargs(self):
         kwargs = super(AssociationArticleUpdateView, self).get_form_kwargs()
         kwargs.update({
@@ -57,6 +83,31 @@ class AssociationArticleUpdateView(AssociationMixin, UpdateView):
         })
 
         return kwargs
+
+
+class AssociationArticlePublishView(AssociationMixin, TemplateView):
+    model = Article
+    template_name = 'newsletter/article/publish.html'
+    http_method_names = ['get', 'post']
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm('article.admin_article'):
+            raise PermissionDenied
+        self.object = self.get_object()
+        if self.object.validated:
+            raise Http404
+        return super(AssociationArticlePublishView, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object.validated = True
+        self.object.save()
+        return redirect(reverse('association-article-detail', kwargs={
+            'association_pk': self.association.id,
+            'pk': self.object.id
+        }))
+
+    def get_object(self):
+        return get_object_or_404(self.model, pk=self.kwargs.get('article_pk'))
 
 
 class AssociationArticleDetailView(AssociationMixin, DetailView):
@@ -72,7 +123,8 @@ class AssociationArticleDetailView(AssociationMixin, DetailView):
         context = super(AssociationArticleDetailView, self).get_context_data()
         context.update({
             'can_update': self.object.can_update(self.request.user),
-            'can_delete': self.object.can_delete(self.request.user)
+            'can_delete': self.object.can_delete(self.request.user),
+            'can_publish': self.object.can_publish(self.request.user)
         })
         return context
 
@@ -89,6 +141,30 @@ class AssociationArticleDeleteView(AssociationMixin, DeleteView):
             'association_pk': kwargs.get('association_pk')
         })
         return super(AssociationArticleDeleteView, self).dispatch(request, *args, **kwargs)
+
+
+class ValidatedArticleListView(ListView):
+    model = Article
+    template_name = 'newsletter/article/list_public.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Article.objects.filter(validated=True).filter(
+            updated_at__gte=datetime.now() - timedelta(days=180)).order_by('-updated_at')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ValidatedArticleListView, self).dispatch(request, *args, **kwargs)
+
+
+class ValidatedArticleDetailView(DetailView):
+    model = Article
+    template_name = 'newsletter/article/detail_public.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.validated:
+            raise Http404
+        return super(ValidatedArticleDetailView, self).dispatch(request, *args, **kwargs)
 
 
 class NewsletterListView(ListView):
@@ -132,7 +208,7 @@ class NewsletterUpdateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(NewsletterUpdateView, self).get_context_data()
-        context.update({'newsletter_title' : self.get_object().title})
+        context.update({'newsletter_title': self.get_object().title})
 
         return context
 

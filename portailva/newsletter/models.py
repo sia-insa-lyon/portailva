@@ -1,5 +1,4 @@
 from ckeditor.fields import RichTextField
-from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 
 from portailva.association.models import Association
@@ -26,16 +25,17 @@ class Article(models.Model):
     def __str__(self):
         return "{} - {}".format(self.association.name, self.title)
 
+    def can_publish(self, user):
+        return user.has_perm('article.admin_article')
+
     def can_update(self, user):
         if not user.has_perm('article.admin_article'):
             if user not in self.association.users.all():
                 return False
-            elif self.validated:
-                return False
             else:
                 return True
         else:
-            return not self.validated
+            return True
 
     def can_delete(self, user):
         if not user.has_perm('article.admin_article'):

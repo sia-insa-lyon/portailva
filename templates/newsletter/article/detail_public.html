@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load humanize %}
+{% load static %}
+
+{% block page_title %}
+    {{ article.title }}
+{% endblock %}
+
+{% block quick_actions %}
+    <a href="{% url 'public-article-list' %}" class="btn btn-primary"><i class="fa fa-chevron-left"></i>Revenir à la liste</a>
+{% endblock %}
+
+{% block content %}
+    <br/>
+    <div>
+        <div class="row">
+            <div class="col-md-4">
+                {% if article.featured_image %}
+                <img src="{% get_media_prefix %}{{ article.featured_image }}" alt="Image introuvable" class="card-img-top img-responsive"/>
+                {% else %}
+                <img src="{{ article.association.logo_url }}" alt="Image introuvable" class="card-img-top img-responsive"/>
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <p class="card-text"><small class="text-muted">
+                    Publié le {{ article.updated_at }} -
+                    {% if article.association.acronym %}
+                    {{ article.association.acronym }} ({{ article.association.name }})
+                    {% else %}
+                    {{ article.association.name }}
+                    {% endif %}
+                </small></p>
+                {% autoescape off %}
+                    {{ article.content }}
+                {% endautoescape %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

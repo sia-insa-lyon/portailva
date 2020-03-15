@@ -9,23 +9,24 @@
 
 {% block quick_actions %}
     {% if can_delete %}
-        <a href="{% url 'association-article-delete' association.id object.id %}" class="btn btn-danger"><i
-                class="fa fa-trash"></i> Supprimer</a>
+        <a href="{% url 'association-article-delete' association.id object.id %}" class="btn btn-danger"><i class="fa fa-trash"></i> Supprimer</a>
+    {% endif %}
+    {% if not object.validated and can_publish %}
+        <a href="{% url 'association-article-publish' association.id object.id %}" class="btn btn-success"><i class="fa fa-check"></i> Publier</a>
     {% endif %}
     {% if can_update %}
-        <a href="{% url 'association-article-update' association.id object.id %}" class="btn btn-primary"><i
-                class="fa fa-pencil"></i> Mettre à jour</a>
+        <a href="{% url 'association-article-update' association.id object.id %}" class="btn btn-primary"><i class="fa fa-pencil"></i> Mettre à jour</a>
     {% endif %}
 {% endblock %}
 
 {% block content_association %}
     {% if not object.validated %}
         <div class="alert alert-danger" role="alert">
-            Cet article n'a pas encore été validé. Il n'est donc pas en ligne.
+            Cet article est en attente de validation par un modérateur. Il n'est donc pas en ligne.
         </div>
     {% else %}
         <div class="alert alert-success" role="alert">
-            Cet événement est validé et en ligne. Vous ne pouvez pas le modifier.
+            Cet article est validé et en ligne.
         </div>
     {% endif %}
 
@@ -43,7 +44,7 @@
             <div class="col-12">
                 <b>Image</b>
                 <div class="card bg-light">
-                    <div class="card-body"><img src="{% get_media_prefix %}{{ object.featured_image }}"></div>
+                    <div class="card-body"><img src="{% get_media_prefix %}{{ object.featured_image }}" class="img-fluid" alt="Image introuvable" /></div>
                 </div>
             </div>
         </div>
