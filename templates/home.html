@@ -149,7 +149,10 @@
                                     </div>
                                     <div class="col-9 col-md-9">
                                 {% else %}
-                                    <div class="col-12">
+                                    <div class="col-3 col-md-3 text-center">
+                                        <img src="{{ event.association.logo_url }}" alt="Logo asso" class="img-fluid">
+                                    </div>
+                                    <div class="col-9 col-md-9">
                                 {% endif %}
                                 <h4>
                                     {{ event.name }}

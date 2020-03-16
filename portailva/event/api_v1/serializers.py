@@ -30,6 +30,7 @@ class EventSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
     association = serializers.SerializerMethodField()
     prices = serializers.SerializerMethodField()
+    logo_url = serializers.SerializerMethodField()
 
     class Meta(object):
         model = Event
@@ -47,3 +48,8 @@ class EventSerializer(serializers.ModelSerializer):
 
     def get_prices(self, obj):
         return EventPriceSerializer(obj.prices, many=True).data
+
+    def get_logo_url(self, obj):
+        if not obj.logo_url or obj.logo_url == '':
+            return obj.association.logo_url
+        return obj.logo_url

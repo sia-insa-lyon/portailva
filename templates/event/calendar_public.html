@@ -133,12 +133,21 @@
             <div id="event-{{ event.id }}"
                  class="collapse"
                  role="tabpanel">
-                {% if event.logo_url %}
-                    <img src="{{ event.logo_url }}" alt="Logo {{ event.name }}" class="float-right col-3 img-fluid">
-                {% endif %}
-                <p>
-                    {{ event.description }}
-                </p>
+
+                <div class="row mb-2">
+                    <div class="col-md-9">
+                    <p>
+                        {{ event.description }}
+                    </p>
+                    </div>
+                    <div class="col-md-3">
+                    {% if event.logo_url %}
+                        <img src="{{ event.logo_url }}" alt="Logo {{ event.name }}" class="img-fluid">
+                    {% else %}
+                        <img src="{{ event.association.logo_url }}" alt="Logo {{ event.association.name }}" class="img-fluid">
+                    {% endif %}
+                    </div>
+                </div>
                 <div class="row mb-2">
                     <div class="col-md-6">
                         <i class="fa fa-fw fa-calendar"></i> {{ event.begins_at|date:'DATETIME_FORMAT' }}
