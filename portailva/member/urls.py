@@ -1,5 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+from django.views.generic import RedirectView
 
 from portailva.member.forms import ResetPasswordForm
 from portailva.member.views import PasswordUpdateView, ForgotPasswordView, LoginView
@@ -9,6 +11,7 @@ urlpatterns = [
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='member-logout'),
 
     url(r'^forgot-password/$', ForgotPasswordView.as_view(), name='member-forgot-password'),
+    url(r'^redirect/$', RedirectView.as_view(url=reverse_lazy('member-login'), permanent=True), name='password_reset_complete'),
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z-]+)/$',
         auth_views.PasswordResetConfirmView.as_view(), {
             'template_name': 'member/password_reset.html',
