@@ -111,6 +111,7 @@ class DirectoryEntrySerializer(serializers.ModelSerializer):
 class DetailDirectoryEntrySerializer(DirectoryEntrySerializer):
     public_phone = serializers.SerializerMethodField()
     opening_hours = serializers.SerializerMethodField()
+    logo_url = serializers.SerializerMethodField()
     related_events = serializers.SerializerMethodField()
 
     class Meta(DirectoryEntrySerializer.Meta):

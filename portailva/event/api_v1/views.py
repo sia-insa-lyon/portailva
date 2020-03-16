@@ -6,8 +6,8 @@ from rest_framework.exceptions import ParseError
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
 
-from portailva.event.api_v1.serializers import EventSerializer
-from portailva.event.models import Event
+from portailva.event.api_v1.serializers import EventSerializer, EventTypeSerializer
+from portailva.event.models import Event, EventType
 
 
 class EventListAPIView(ListAPIView):
@@ -18,7 +18,9 @@ class EventListAPIView(ListAPIView):
         queryset = Event.objects.get_online()
         since = self.request.query_params.get('since', None)
         until = self.request.query_params.get('until', None)
-        asso_id = self.request.query_params.get('id', None)
+        asso_id = self.request.query_params.get('association_id', None)
+        type_id = self.request.query_params.get('type_id', None)
+        place_id = self.request.query_params.get('place_id', None)
 
         if since is None and until is None:
             # We return event for the next two days
@@ -58,6 +60,11 @@ class EventListAPIView(ListAPIView):
         if asso_id is not None:
             queryset = queryset.filter(association__id=asso_id)
 
+        if type_id is not None:
+            queryset = queryset.filter(type_id=type_id)
+
+        if place_id is not None:
+            queryset = queryset.filter(place__in=place_id)
 
         return queryset
 
@@ -71,3 +78,11 @@ class EventByIdAPIView(RetrieveAPIView):
             return Event.objects.get(id=self.kwargs.get('events_pk'))
         except IndexError:
             raise Http404
+
+
+class EventTypeAPIView(ListAPIView):
+    serializer_class = EventTypeSerializer
+    permission_classes = (AllowAny,)
+
+    def get_queryset(self):
+        return EventType.objects.all()

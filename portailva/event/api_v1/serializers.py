@@ -8,7 +8,7 @@ from portailva.utils.api_v1.serializers import PlaceSerializer
 class EventTypeSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = EventType
-        fields = ('name', 'color')
+        fields = ('id', 'name', 'color')
 
 
 class EventPriceSerializer(serializers.ModelSerializer):
@@ -34,7 +34,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Event
-        fields = ('name', 'short_description', 'description', 'type', 'association', 'location', 'begins_at', 'ends_at',
+        fields = ('id', 'name', 'short_description', 'description', 'type', 'association', 'location', 'begins_at', 'ends_at',
                   'prices', 'website_url', 'logo_url', 'facebook_url')
 
     def get_location(self, obj):

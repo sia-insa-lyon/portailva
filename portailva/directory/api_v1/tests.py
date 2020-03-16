@@ -8,7 +8,8 @@ from rest_framework.test import APIClient
 from portailva.association.models import Association, Category
 from portailva.directory.api_v1.serializers import DetailDirectoryEntrySerializer
 from portailva.directory.models import DirectoryEntry
-from portailva.event.models import Event
+from portailva.event.models import Event, EventType
+from portailva.utils.models import Place
 
 
 class DirectoryTestCase(TestCase):
@@ -25,7 +26,8 @@ class DirectoryTestCase(TestCase):
 
         self.association = Association(name='assoTest',
                                        description='courteDescriptionTest',
-                                       category_id=self.category.id)
+                                       category_id=self.category.id,
+                                       logo_url="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
         self.association.save()
 
         self.directory = DirectoryEntry(description='descriptionTest',
@@ -33,11 +35,18 @@ class DirectoryTestCase(TestCase):
                                         association_id=self.association.id)
         self.directory.save()
 
+        self.place = Place(name="placeName", lat=10.0, long=20.0)
+        self.place.save()
+
+        self.eventType = EventType(name="eventTypeName")
+        self.eventType.save()
+
         self.event = Event(name="eventTest",
                            short_description='eventShortDescriptionTest',
                            description='eventDescriptionTest',
                            is_online=True,
-                           type=None,
+                           type=self.eventType,
+                           place=self.place,
                            association_id=self.association.id,
                            begins_at=datetime.datetime.now(),
                            ends_at=datetime.datetime.now(),)
