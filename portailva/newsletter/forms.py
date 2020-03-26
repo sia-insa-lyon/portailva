@@ -24,6 +24,7 @@ class ArticleForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_id = 'articleForm'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
 
     def save(self, commit=True):
         self.instance.association_id = self.association.id
@@ -42,6 +43,7 @@ class NewsletterForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_id = 'newsletterForm'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
 
         # Can't use directly a slice because the queryset is filtered again afterwise,
         # So we get the pk of the last 8 articles and filter using this list (avoids using splice directly)

@@ -1,5 +1,7 @@
 {% extends 'association/base_association.html' %}
 
+{% load l10n %}
+
 {% block page_sub_title %}
     Vue générale
 {% endblock %}
@@ -10,7 +12,34 @@
 {% endblock %}
 
 {% block content_association %}
-    <div class="row mb-3">
+    {% if request.user.is_active and request.user.is_staff %}
+    <b>Statut de l'association</b>
+    <div class="row mb-3 text-center" style="margin-top: 2vh;">
+        <div class="col-md-4">
+            {% if object.is_validated %}
+            <p><span class="dot dot-active"></span>  Est validée</p>
+            {% else %}
+            <p><span class="dot dot-inactive"></span>  N'est pas validée</p>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            {% if object.is_active %}
+            <p><span class="dot dot-active"></span>  Est active</p>
+            {% else %}
+            <p><span class="dot dot-inactive"></span>  Est morte</p>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            {% if object.has_place %}
+            <p><span class="dot dot-active"></span>  Dispose d'un local</p>
+            {% else %}
+            <p><span class="dot dot-inactive"></span>  Ne dispose pas de local</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mb-3" {% if request.user.is_active and request.user.is_staff %}style="margin-top: -2vh;"{% endif %}>
         <div class="col-md-12">
             <b>Nom officiel de l'association</b>
             <div class="card bg-light">
@@ -150,6 +179,24 @@
             </div>
         </div>
     </div>
+    {% if object.has_place %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <b>Local associatif occupé <small class="text-muted">(renseigné par la DGS ou le CVA)</small></b>
+            <div class="card bg-light">
+                <div class="card-body">
+                    {% if object.room_id %}
+                        <a href="http://www.openstreetmap.org/?mlat={{ object.room.lat|unlocalize }}&mlon={{ object.room.long|unlocalize }}&zoom=18">
+                            {{ object.room.name }}
+                        </a>
+                    {% else %}
+                        <i>Non défini</i>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <div class="row mb-3">
         <div class="col-md-12">
             <b>URL du logo</b>

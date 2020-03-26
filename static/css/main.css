@@ -247,3 +247,18 @@ i.fa {
     background-color: #e93c46 !important;
     color:#ededed !important;
 }
+
+.dot {
+  height: 12px;
+  width:12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-active {
+  background-color: rgb(30,241,27);
+}
+
+.dot-inactive {
+  background-color: rgb(231,25,47);
+}

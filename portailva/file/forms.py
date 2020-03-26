@@ -27,6 +27,7 @@ class AssociationFileUploadForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_id = 'associationForm'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
 
     def clean_data(self):
         file = self.cleaned_data['data']
@@ -35,11 +36,12 @@ class AssociationFileUploadForm(forms.Form):
         allowed_types = self.folder.allowed_types.all()
         mime = magic.Magic(mime=True, magic_file=settings.MAGIC_BIN)
         if mime.from_file(file.temporary_file_path()) not in [type.mime_type for type in allowed_types]:
-            raise forms.ValidationError("Ce type de fichier n'est pas autorisé")
+            raise forms.ValidationError("Ce type de fichier n'est pas autorisé", code='invalidType')
 
         if file is not None and file.size > settings.PORTAILVA_APP['file']['file_max_size']:
             raise forms.ValidationError("Votre fichier est trop lourd, la limite autorisée est de " +
-                                        str(settings.PORTAILVA_APP['file']['file_max_size'] // (1024 * 1024)) + "Mo")
+                                        str(settings.PORTAILVA_APP['file']['file_max_size'] // (1024 * 1024)) + "Mo",
+                                        code='invalidSize')
 
         return file
 
@@ -60,13 +62,15 @@ class ResourceFileUploadForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_id = 'associationForm'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
 
     def clean_data(self):
         file = self.cleaned_data['data']
 
         if file is not None and file.size > settings.PORTAILVA_APP['file']['file_max_size']:
             raise forms.ValidationError("Votre fichier est trop lourd, la limite autorisée est de " +
-                                        str(settings.PORTAILVA_APP['file']['file_max_size'] // (1024 * 1024)) + "Mo")
+                                        str(settings.PORTAILVA_APP['file']['file_max_size'] // (1024 * 1024)) + "Mo",
+                                        code='invalidSize')
 
         return file
 
@@ -80,6 +84,7 @@ class ResourceFolderForm(forms.ModelForm):
     def __init__(self, folder, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_id = 'resource-folder-form'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
         if folder is None:
             self.helper.form_action = reverse('resource-folder-create')
         else:
@@ -104,6 +109,7 @@ class ResourceFileForm(forms.Form):
         super(ResourceFileForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
         if folder is None:
             self.helper.form_action = reverse('resource-upload')
         else:
@@ -115,6 +121,7 @@ class ResourceFileForm(forms.Form):
 
         if file is not None and file.size > settings.PORTAILVA_APP['file']['file_max_size']:
             raise forms.ValidationError("Votre fichier est trop lourd, la limite autorisée est de " +
-                                        str(settings.PORTAILVA_APP['file']['file_max_size'] // (1024 * 1024)) + "Mo")
+                                        str(settings.PORTAILVA_APP['file']['file_max_size'] // (1024 * 1024)) + "Mo",
+                                        code='invalidSize')
 
         return file

@@ -11,8 +11,8 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
 
-from .forms import AssociationForm, AssociationAdminForm, MandateForm, PeopleForm
-from .mixins import AssociationMixin
+from .forms import AssociationForm, AssociationAdminForm, MandateForm, PeopleForm, RequirementForm
+from .mixins import AssociationMixin, RequirementMixin, RequirementStaffMixin
 from .models import Association, Mandate, People, Requirement, Accomplishment
 
 
@@ -74,6 +74,10 @@ class AssociationUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save()
 
+        if self.object.has_place and not self.object.room.is_room:
+            self.object.room.is_room = True
+            self.object.room.save()
+
         messages.add_message(self.request, messages.SUCCESS, "Les informations ont bien été mises à jour.")
 
         return redirect(reverse('association-detail', kwargs={'pk': self.object.id}))
@@ -106,6 +110,10 @@ class AssociationNewView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         association = form.save()
         association.save()
+
+        if association.has_place and not association.room.is_room:
+            association.room.is_room = True
+            association.room.save()
 
         return redirect(reverse('association-list'))
 
@@ -158,7 +166,7 @@ class AssociationMandateChangePhoneVisibility(AssociationMixin, UpdateView):
             return redirect(reverse('association-mandate-list', kwargs={
                 'association_pk': self.association.id
             }))
-        except Exception as e:
+        except Exception:
             raise Http404
 
 
@@ -279,8 +287,8 @@ class AssociationRequirementAchieveView(AssociationMixin, SingleObjectMixin, Vie
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        # We only can achieve accomplishment typed requirements
-        if self.object.type != 'accomplishment':
+        # We only can achieve accomplishment or room typed requirements
+        if self.object.type != 'accomplishment' and self.object.type != 'room':
             return Http404
 
         try:
@@ -294,34 +302,60 @@ class AssociationRequirementAchieveView(AssociationMixin, SingleObjectMixin, Vie
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-class RequirementListView(ListView):
+class RequirementListView(RequirementMixin, ListView):
     model = Requirement
     template_name = 'association/requirement/admin_list.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_perm('association.admin_requirement'):
-            raise PermissionDenied
-        return super(RequirementListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return self.model.objects.get_all_active()
 
 
-class RequirementDetailView(DetailView):
+class RequirementDetailView(RequirementMixin, DetailView):
     model = Requirement
     template_name = 'association/requirement/detail.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_perm('association.admin_requirement'):
-            raise PermissionDenied
-        return super(RequirementDetailView, self).dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super(RequirementDetailView, self).get_context_data(**kwargs)
-        context.update({
-            'associations': Association.objects.filter(is_active=True).order_by('name')
-        })
+        # Check if we need to remove association without room
+        if context['object'].type == 'room':
+            context.update({
+                'associations': Association.objects.filter(is_active=True).filter(has_place=True).order_by('name')
+            })
+        else:
+            context.update({
+                'associations': Association.objects.filter(is_active=True).order_by('name')
+            })
         return context
+
+
+class RequirementNewView(RequirementStaffMixin, CreateView):
+    model = Requirement
+    form_class = RequirementForm
+    template_name = 'association/requirement/new.html'
+
+    def form_valid(self, form):
+        requirement = form.save(commit=False)
+        requirement.save()
+        return redirect(reverse('requirement-list'))
+
+
+class RequirementUpdateView(RequirementStaffMixin, UpdateView):
+    model = Requirement
+    form_class = RequirementForm
+    template_name = 'association/requirement/update.html'
+
+    def form_valid(self, form):
+        requirement = form.save(commit=False)
+        requirement.save()
+        return redirect(reverse('requirement-detail', kwargs={
+            'pk': requirement.id
+        }))
+
+
+class RequirementDeleteView(RequirementStaffMixin, DeleteView):
+    model = Requirement
+    template_name = 'association/requirement/delete.html'
+    success_url = reverse_lazy('requirement-list')
 
 
 class GlobalDirectoryView(LoginRequiredMixin, ListView):
@@ -330,4 +364,3 @@ class GlobalDirectoryView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Association.objects.filter(is_active=True).order_by('name')
-

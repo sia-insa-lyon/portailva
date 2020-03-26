@@ -18,6 +18,7 @@
                 <th>Nom</th>
                 <th>Latitude</th>
                 <th>Longitude</th>
+                <th>Est un local ?</th>
                 <th data-orderable="false">Action</th>
             </tr>
             </thead>
@@ -31,6 +32,13 @@
                     </td>
                     <td>{{ place.lat }}</td>
                     <td>{{ place.long }}</td>
+                    <td>
+                        {% if place.is_room %}
+                            <i class="fa fa-check"></i>
+                        {% else %}
+                            <i class="fa fa-times"></i>
+                        {% endif %}
+                    </td>
                     <td>
                         <a href="{% url 'place-update' place.id %}" data-toggle="tooltip" title="Modifier"><i
                                 class="fa fa-pencil"></i></a>

@@ -6,15 +6,25 @@
 {% endblock %}
 
 {% block page_sub_title %}
-  {{ object.name }}
+  <br/>{{ object.name }}
+{% endblock %}
+
+{% block quick_actions %}
+    <a href="{% url 'requirement-list' %}" class="btn btn-secondary"><i class="fa fa-list"></i> Retourner à la liste</a>
+    {% if request.user.is_active and request.user.is_staff %}
+        <a href="{% url 'requirement-delete' object.id %}" class="btn btn-danger"><i class="fa fa-trash"></i>
+            Supprimer</a>
+        <a href="{% url 'requirement-update' object.id %}" class="btn btn-primary"><i class="fa fa-pencil"></i> Modifier</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
+  <br/>
   <table id="prettyTable" class="table table-bordered table-stripped" data-page-length="100">
     <thead>
       <tr>
         <th>Association</th>
-        {% if not object.type == 'accomplishment' %}
+        {% if not object.type == 'accomplishment' and not object.type == 'room' %}
         <th>Etat</th>
         {% endif %}
         <th>Action</th>
@@ -33,7 +43,7 @@
           {% endif %}
           
       <!-- Filling the other cells for each row -->
-          {% if not object.type == 'accomplishment' %}
+          {% if not object.type == 'accomplishment' and not object.type == 'room' %}
             <td class="text-center">
             {% if object|is_achieved:association.id %}
               <span class="label label-success">Validé</span>
@@ -43,7 +53,7 @@
             </td>
           {% endif %}
           <td class="text-center">
-            {% if object.type == 'accomplishment' %}
+            {% if object.type == 'accomplishment' or object.type == 'room' %}
               {% if not requirement|is_achieved:association.id %}
                 <form action="{% url 'association-requirement-achieve' association.id object.id %}" method="post">
                   {% csrf_token %}

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% load l10n %}
 
 {% block css_js_header %}
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css' rel='stylesheet' />
@@ -157,7 +158,7 @@
                         <i class="fa fa-fw fa-location-arrow"></i>
                         {% if event.place %}
                             {% with place=event.place %}
-                                <a href="http://www.google.com/maps/place/{{ place.lat }},{{ place.long }}">
+                                <a href="http://www.openstreetmap.org/?mlat={{ place.lat|unlocalize }}&mlon={{ place.long|unlocalize }}&zoom=18">
                                     {{ place.name }}
                                 </a>
                             {% endwith %}

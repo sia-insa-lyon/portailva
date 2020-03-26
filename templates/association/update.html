@@ -2,6 +2,11 @@
 
 {% load crispy_forms_tags %}
 
+{% block css_js_header %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+{% endblock %}
+
 {% block page_sub_title %}
   Modifier les informations
 {% endblock %}
@@ -13,4 +18,59 @@
 
 {% block content_association %}
   {% crispy form %}
+{% endblock %}
+
+{% block js %}
+    <script type="application/javascript">
+    <!--
+        "use strict";
+
+        const $roomDivSelector = $('#div_id_room');
+        const $placeCheckSelector = $('#div_id_has_place input');
+
+        if(!$placeCheckSelector.is(':checked')){
+            $roomDivSelector.hide('fast');
+        }
+
+        $placeCheckSelector.on('change', function () {
+            if($placeCheckSelector.is(':checked')){
+                $roomDivSelector.show('slow');
+            }else{
+                $roomDivSelector.hide('fast');
+            }
+        });
+
+        $roomDivSelector.find('select').first().select2({
+            width: '100%',
+            dropdownAutoWidth: true,
+            quietMillis: 100,
+            minimumResultsForSearch: 10,
+            formatSelection: function(object, container) {
+                text = object.text;
+                if (object.element[0].parentElement.nodeName === 'OPTGROUP') {
+                    text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
+                }
+                return text;
+            },
+            formatResult: function(result, container) {
+                container.attr('title', result.title || result.element[0].title);
+                return result.text;
+            },
+            sorter: function(data) {
+                return data.sort(function(a, b) {
+                    return (a.text < b.text) ? -1 : (a.text > b.text ? 1 : 0);
+                });
+            },
+            language: {
+                noResults: function(){
+                    return "Aucun lieu correspond à (ou contient) ce nom !";
+               }
+            },
+        }).bind('setValue', function(e, value) {
+            $('#id_room').val(value).trigger('change');
+        });
+
+        $roomDivSelector.find('label').first().on('click', function() { $roomDivSelector.find('select').first().select2('open'); });
+    //-->
+    </script>
 {% endblock %}

@@ -40,7 +40,7 @@
                     <i class="fa fa-fw fa-location-arrow"></i>
                     {% if association.current_directory_entry.place %}
                         {% with place=association.current_directory_entry.place %}
-                            <a href="http://www.google.com/maps/place/{{ place.lat|unlocalize }},{{ place.long|unlocalize }}">
+                            <a href="http://www.openstreetmap.org/?mlat={{ place.lat|unlocalize }}&mlon={{ place.long|unlocalize }}&zoom=18">
                                 {{ place.name }}
                             </a>
                         {% endwith %}
@@ -178,7 +178,7 @@
                         <i class="fa fa-fw fa-location-arrow"></i>
                         {% if event.place %}
                             {% with place=event.place %}
-                                <a href="http://www.google.com/maps/place/{{ place.lat }},{{ place.long }}">
+                                <a href="http://www.openstreetmap.org/?mlat={{ place.lat|unlocalize }}&mlon={{ place.long|unlocalize }}&zoom=18">
                                     {{ place.name }}
                                 </a>
                             {% endwith %}

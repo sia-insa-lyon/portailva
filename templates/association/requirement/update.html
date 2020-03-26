@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block css_js_header %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+{% endblock %}
+
+{% block page_sub_title %}
+  Modifier le critère
+{% endblock %}
+
+{% block quick_actions %}
+<a href="{% url 'requirement-detail' requirement.id %}" class="btn btn-secondary"><i class="fa fa-times"></i> Annuler</a>
+<button form="requirementForm" type="submit" class="btn btn-success"><i class="fa fa-save"></i> Enregistrer</button>
+{% endblock %}
+
+{% block content %}
+  {% crispy form %}
+{% endblock %}
+
+{% block js %}
+    <script type="application/javascript">
+    <!--
+        "use strict";
+
+        $('#div_id_data input').after('<small id="hint_id_help_text" class="form-text text-muted">' +
+            'Les méta-données servent pour les types de critères suivants :' +
+            '<ul><li>Fichier : Le format à respecter est {"tag_id":"XX"} où XX est l\'id du dossier.</li>' +
+            '<li>Mandat : Le format à respecter est {"year":"XXXX"} où XXXX est l\'année du mandat. </li>' +
+            '<li>Validation manuelle : Le format à respecter est {}. </li></ul>' +
+            '</small>');
+    //-->
+    </script>
+{% endblock %}

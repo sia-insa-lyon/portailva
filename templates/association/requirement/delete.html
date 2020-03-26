@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+  Suppression d'une condition
+{% endblock %}
+
+{% block page_sub_title %}
+  <br/>{{ requirement.name }}
+{% endblock %}
+
+{% block quick_actions %}
+  <a href="{% url 'requirement-list' %}" class="btn btn-secondary">Annuler</a>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <div class="alert alert-danger" role="alert">
+        <b>Attention !</b> La suppression du critère <i style="text-decoration: underline;">{{ requirement.name }}</i> entraînera la <u>perte irréversible</u> des données y étant associées.<br>
+        Voulez-vous <u>vraiment</u> poursuivre ?
+      </div>
+      <form action="" method="post">
+        {% csrf_token %}
+        <p class="text-center">
+          <input class="btn btn-danger" type="submit" value="Confirmer la suppression" />
+        </p>
+      </form>
+    </div>
+  </div>
+{% endblock %}

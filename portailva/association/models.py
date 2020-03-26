@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 from portailva.file.models import AssociationFile
 from portailva.utils.fields import LogoURLField
+from portailva.utils.models import Place
 from portailva.utils.validators import validate_iban, validate_siren
 
 
@@ -50,6 +51,8 @@ class Association(models.Model):
     is_active = models.BooleanField("Est active", default=True)
     is_validated = models.BooleanField("Est validée", default=False)
     has_place = models.BooleanField("Possède un local?", default=False)
+    room = models.ForeignKey(Place, verbose_name="Local", related_name="association", blank=True, null=True,
+                              on_delete=models.SET_NULL)
 
     category = models.ForeignKey(Category, verbose_name="Catégorie", on_delete=models.PROTECT)
     users = models.ManyToManyField(User, verbose_name="Utilisateurs", related_name='associations', blank=True)
@@ -187,7 +190,8 @@ class Requirement(models.Model):
     REQUIREMENT_TYPES = (
         ('mandate', 'Mandat'),
         ('file', 'Fichier'),
-        ('accomplishment', 'Validation manuelle')
+        ('accomplishment', 'Validation manuelle'),
+        ('room', 'Validation manuelle (nécessite un local)')
     )
     name = models.CharField("Nom", max_length=100)
     type = models.CharField("Type de condition", max_length=40, choices=REQUIREMENT_TYPES)
@@ -239,6 +243,15 @@ class Requirement(models.Model):
                 .count()
             if accomplishment > 0:
                 achieved = True
+
+        if self.type == 'room':
+            accomplishment = Accomplishment.objects \
+                .filter(requirement__id=self.id) \
+                .filter(association__id=association_id) \
+                .filter(association__has_place=True) \
+                .count()
+            if accomplishment > 0:
+                achieved = True
         return achieved
 
     def get_folder_id(self):
@@ -252,7 +265,8 @@ class Accomplishment(models.Model):
     An Accomplishment is used to achieve a Requirement manually.
     """
     association = models.ForeignKey(Association, verbose_name="Association", on_delete=models.CASCADE)
-    requirement = models.ForeignKey(Requirement, verbose_name="Condition", limit_choices_to={'type': 'accomplishment'},
+    requirement = models.ForeignKey(Requirement, verbose_name="Condition",
+                                    limit_choices_to={'type': ['accomplishment', 'room']},
                                     on_delete=models.CASCADE)
 
     created_at = models.DateTimeField("Date d'ajout", auto_now_add=True)

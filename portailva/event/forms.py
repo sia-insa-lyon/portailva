@@ -40,16 +40,17 @@ class EventForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_id = 'eventForm'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
 
     def clean_ends_at(self):
         ends_at = self.cleaned_data['ends_at']
         begins_at = self.cleaned_data['begins_at']
 
         if ends_at.replace(tzinfo=None) <= datetime.now().replace(tzinfo=None):
-            raise forms.ValidationError("Vous ne pouvez pas créer d'événement dans le passé.")
+            raise forms.ValidationError("Vous ne pouvez pas créer d'événement dans le passé.", code='invalidEnd')
 
         if begins_at >= ends_at:
-            raise forms.ValidationError("La date de fin doit être ultérieure à la date de début.")
+            raise forms.ValidationError("La date de fin doit être ultérieure à la date de début.", code='invalidBegin')
 
         return self.cleaned_data['ends_at']
 
@@ -80,6 +81,7 @@ class EventPriceForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_id = 'eventPriceForm'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
 
     def save(self, commit=True):
         self.instance.event_id = self.event.id

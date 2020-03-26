@@ -1,6 +1,7 @@
 {% extends 'association/base_association.html' %}
 
 {% load humanize %}
+{% load l10n %}
 
 {% block page_sub_title %}
     Détail d'un événement
@@ -45,7 +46,9 @@
             <div class="card bg-light">
                 <div class="card-body">
                     {% if object.place %}
-                        {{ object.place.name }}
+                        <a href="http://www.openstreetmap.org/?mlat={{ object.place.lat|unlocalize }}&mlon={{ object.place.long|unlocalize }}&zoom=18">
+                            {{ object.place.name }}
+                        </a>
                     {% else %}
                         <i>Non défini</i>
                     {% endif %}
@@ -102,7 +105,11 @@
             <b>Page web</b>
             <div class="card bg-light">
                 <div class="card-body">
-                    <a href="{{ object.website_url }}">{{ object.website_url }}</a>
+                    {% if object.website_url %}
+                        <a href="{{ object.website_url }}">{{ object.website_url }}</a>
+                    {% else %}
+                        <i>Non défini</i>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -112,7 +119,11 @@
             <b>Evènement Facebook</b>
             <div class="card bg-light">
                 <div class="card-body">
-                    <a href="{{ object.facebook_url }}">{{ object.facebook_url }}</a>
+                    {% if object.facebook_url %}
+                        <a href="{{ object.facebook_url }}">{{ object.facebook_url }}</a>
+                    {% else %}
+                        <i>Non défini</i>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -194,13 +205,6 @@
                    class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> Ajouter un tarif</a>
             {% endif %}
         </div>
-    </div>
-    <br/>
-    <div class="alert alert-secondary" role="alert">
-        L’évènement apparaîtra dans le <a href="{% url 'public-calendar-view' %}">calendrier de la VA</a>, et sera diffusé dans les newsletters VA,
-        il est aussi recommandé d'ajouter un visuel sur <a href="https://affichage.bde-insa-lyon.fr/">l'affichage dynamique</a>
-        et de l'ajouter aussi sur <a href="https://www.insa-lyon.fr/fr/proposer-un-evenement/">le site de l'INSA</a>
-        pour qu'il soit affiché dans l'agenda officiel de l'INSA et potentiellement mis en avant par la DIRCOM (sur facebook ou autre).
     </div>
     <p>
         <small><i>Dernière modification : {{ object.updated_at|date:'DATETIME_FORMAT' }}</i></small>

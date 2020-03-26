@@ -6,4 +6,4 @@ from portailva.utils.models import Place
 class PlaceSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Place
-        fields = ('id', 'name', 'lat', 'long',)
+        fields = ('id', 'name', 'lat', 'long', 'is_room')

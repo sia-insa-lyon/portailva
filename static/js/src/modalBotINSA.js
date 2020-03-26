@@ -85,7 +85,7 @@ function getHTMLPlaceSection(name, lat, long) {
 
     $refContent.append('<i class="fa fa-fw fa-location-arrow"></i> ');
     if (name && lat && long) {
-        $refContent.append('<a href="http://www.google.com/maps/place/' + lat + ',' + long + '">' + name + '</a>');
+        $refContent.append('<a href="http://www.openstreetmap.org/?mlat=' + lat + '&mlon=' + long + '&zoom=18">' + name + '</a>');
     } else {
         $refContent.append('<em>Non défini</em>');
     }

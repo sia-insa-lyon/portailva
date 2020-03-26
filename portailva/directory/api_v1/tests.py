@@ -27,7 +27,8 @@ class DirectoryTestCase(TestCase):
         self.association = Association(name='assoTest',
                                        description='courteDescriptionTest',
                                        category_id=self.category.id,
-                                       logo_url="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
+                                       logo_url="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+                                       room=None)
         self.association.save()
 
         self.directory = DirectoryEntry(description='descriptionTest',
@@ -35,7 +36,7 @@ class DirectoryTestCase(TestCase):
                                         association_id=self.association.id)
         self.directory.save()
 
-        self.place = Place(name="placeName", lat=10.0, long=20.0)
+        self.place = Place(name="placeName", lat=10.0, long=20.0, is_room=True)
         self.place.save()
 
         self.eventType = EventType(name="eventTypeName")

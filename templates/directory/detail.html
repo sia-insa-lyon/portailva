@@ -106,7 +106,7 @@
                 <div class="card bg-light">
                     <div class="card-body">
                         {% if object.place_id %}
-                            <a href="http://www.google.com/maps/place/{{ object.place.lat|unlocalize }},{{ object.place.long|unlocalize }}">
+                            <a href="http://www.openstreetmap.org/?mlat={{ object.place.lat|unlocalize }}&mlon={{ object.place.long|unlocalize }}&zoom=18">
                                 {{ object.place.name }}
                             </a>
                         {% else %}

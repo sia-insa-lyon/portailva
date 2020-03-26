@@ -21,6 +21,7 @@ class DirectoryEntryForm(forms.ModelForm):
                                                                          's' if (description_length > 0) else '')
         self.helper = FormHelper()
         self.helper.form_method = 'post'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
         self.helper.form_id = 'directoryEntryForm'
 
 
@@ -45,4 +46,5 @@ class OpeningHourForm(forms.ModelForm):
         super(OpeningHourForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
+        self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
         self.helper.form_id = 'openingHourForm'

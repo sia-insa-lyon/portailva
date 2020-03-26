@@ -70,7 +70,7 @@ function getHTMLEventsSection(event) {
 
     if (event.location.name && event.location.lat && event.location.long) {
         const {lat, long, name} = event.location;
-        $refRoot.find('div.col-md-6:nth-child(2)').append('<a href="http://www.google.com/maps/place/' + lat + ',' + long + '">' + name + '</a>');
+        $refRoot.find('div.col-md-6:nth-child(2)').append('<a href="http://www.openstreetmap.org/?mlat=' + lat + '&mlon=' + long + '&zoom=18">' + name + '</a>');
     } else {
         $refRoot.find('div.col-md-6:nth-child(2)').append('<em>Non défini</em>');
     }

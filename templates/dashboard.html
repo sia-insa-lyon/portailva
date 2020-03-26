@@ -40,9 +40,15 @@
                                                     ['Espace libre (en MB)', 'Espace occupé (en MB)']);
 
         {% for req in requirement_stats %}
-        generateCircleGraph('chart-requirement-{{ req.id }}', [{{ req.validate }}, {{ association_stats.active|subtract:req.validate}}],
-                                                    ['rgb(30,241,27)', 'rgb(231,25,47)'],
-                                                    ['Ont validées', "N'ont pas validées"]);
+            {% if req.type == "room" %}
+            generateCircleGraph('chart-requirement-{{ req.id }}', [{{ req.validate }}, {{ association_stats.place|subtract:req.validate}}],
+                                                        ['rgb(30,241,27)', 'rgb(231,25,47)'],
+                                                        ['Ont validées', "N'ont pas validées"]);
+            {% else %}
+            generateCircleGraph('chart-requirement-{{ req.id }}', [{{ req.validate }}, {{ association_stats.active|subtract:req.validate}}],
+                                                        ['rgb(30,241,27)', 'rgb(231,25,47)'],
+                                                        ['Ont validées', "N'ont pas validées"]);
+            {% endif %}
         {% endfor %}
 
     function setStyleCollapse(sectionId){

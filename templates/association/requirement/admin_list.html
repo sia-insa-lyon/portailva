@@ -4,6 +4,12 @@
     Situation administrative
 {% endblock %}
 
+{% if request.user.is_active and request.user.is_staff %}
+    {% block quick_actions %}
+        <a href="{% url 'requirement-new' %}" class="btn btn-success"><i class="fa fa-plus"></i> Ajouter</a>
+    {% endblock %}
+{% endif %}
+
 {% block page_sub_title %}
     Liste des critères
 {% endblock %}
@@ -15,6 +21,9 @@
             <tr>
                 <th>Nom</th>
                 <th>Date de fin de validité</th>
+                {% if request.user.is_active and request.user.is_staff %}
+                <th data-orderable="false">Action</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -22,6 +31,14 @@
                 <tr>
                     <td><a href="{% url 'requirement-detail' requirement.id %}">{{ requirement.name }}</a></td>
                     <td>{{ requirement.active_until }}</td>
+                    {% if request.user.is_active and request.user.is_staff %}
+                    <td>
+                        <a href="{% url 'requirement-update' requirement.id %}" data-toggle="tooltip"
+                           title="Modifier le critère"><i class="fa fa-pencil"></i></a>
+                        <a href="{% url 'requirement-delete' requirement.id %}" data-toggle="tooltip"
+                           title="Supprimer le critère"><i class="fa fa-trash"></i></a>
+                    </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
