@@ -9,6 +9,7 @@
 {% block quick_actions %}
     {% if perms.association.admin_directoryentry %}
         {% if object != None %}
+            <a href="{% url 'association-print' association.id %}" class="btn btn-secondary"><i class="fa fa-print"></i> Voir la version publiée</a>
             <a href="{% url 'association-directory-delete' association.id %}" class="btn btn-danger"><i
                     class="fa fa-trash"></i> Supprimer</a>
             {% if not object.is_online %}
