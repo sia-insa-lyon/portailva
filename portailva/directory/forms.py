@@ -48,3 +48,20 @@ class OpeningHourForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
         self.helper.form_id = 'openingHourForm'
+
+    def clean(self):
+        super(OpeningHourForm, self).clean()
+        begins_at = self.cleaned_data.get('begins_at', None)
+        ends_at = self.cleaned_data.get('ends_at', None)
+        if begins_at is None or ends_at is None:
+            raise forms.ValidationError("Veuillez renseigner les horaires d'ouverture et de fermeture.",
+                                        code='invalidTime')
+        if begins_at > ends_at:
+            raise forms.ValidationError("Les horaires renseignés sont incohérents, "
+                                        "vérifiez que vous ouvrez bien avant de fermer sur ce créneau.",
+                                        code='invalidBegin')
+        if begins_at == ends_at:
+            raise forms.ValidationError("Les horaires renseignés sont identiques, "
+                                        "veuillez changer l'horaire d'ouverture ou de fermeture.",
+                                        code='invalidEqual')
+        return self.cleaned_data
