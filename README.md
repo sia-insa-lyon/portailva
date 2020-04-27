@@ -4,6 +4,10 @@
 
 # PortailVA
 
+> **Warning: This application is now in maintenance mode.** SIA members will only fix critical bugs and will no longer add new functionality or enhance an already existing one.
+> 
+> However, this project is still open to contributions :)
+
 PortailVA is a web application that helps INSA Lyon's organizations
 to properly manage their structure.
 
@@ -28,7 +32,7 @@ And a lots of other dependencies you can find in requirements.txt file.
 
 ## Contributions
 
-After checking [Github Issues](https://github.com/VAINSALyon/portailva),
+After checking [GitLab Issues](https://gitlab.com/sia-insa-lyon/portailva/issues/),
 feel free to contribute by sending your pull requests.
 While we may not merge your PR as is, they serve to start conversations 
 and improve the general PortailVA experience for all users.
@@ -42,7 +46,10 @@ PortailVA - Managing platform for organizations
 Copyright (C) 2016 Léo MARTINEZ
 Copyright (C) 2017 Philippe VIENNE
 Copyright (C) 2017 Gabriel AUGENDRE
-Copyright (C) 2017 BdE INSA Lyon
+Copyright (C) 2017 BdE INSA Lyon - SIA INSA Lyon
+Copyright (C) 2019 Matthieu HALUNKA
+Copyright (C) 2019 Pierre-Yves TARDIEU
+Copyright (C) 2020 Louis GOMBERT
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

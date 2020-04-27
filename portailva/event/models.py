@@ -5,7 +5,7 @@ from django.utils.datetime_safe import datetime
 
 from portailva.association.models import Association
 from portailva.file.models import File
-from portailva.utils.fields import LogoURLField
+from portailva.utils.fields import LogoURLField, AffichageURLField
 from portailva.utils.models import Place
 
 
@@ -47,6 +47,13 @@ class Event(models.Model):
 
     website_url = models.URLField("Page web", blank=True)
     facebook_url = models.URLField("Evènement Facebook", blank=True)
+
+    # Affichage stuff
+    has_poster = models.BooleanField("Est à publier sur Affichage ?", default=False)
+    begin_publication_at = models.DateTimeField(verbose_name="Début d'affichage", blank=True, null=True)
+    end_publication_at = models.DateTimeField(verbose_name="Fin d'affichage", blank=True, null=True)
+    content_url = AffichageURLField(verbose_name='Url du contenu', blank=True, null=True)
+    duration = models.IntegerField(verbose_name="Durée d'apparition à l'écran (en s)", blank=True, default=7)
 
     objects = EventManager()
 

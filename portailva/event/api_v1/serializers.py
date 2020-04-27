@@ -31,11 +31,12 @@ class EventSerializer(serializers.ModelSerializer):
     association = serializers.SerializerMethodField()
     prices = serializers.SerializerMethodField()
     logo_url = serializers.SerializerMethodField()
+    affichage = serializers.SerializerMethodField()
 
     class Meta(object):
         model = Event
         fields = ('id', 'name', 'short_description', 'description', 'type', 'association', 'location', 'begins_at', 'ends_at',
-                  'prices', 'website_url', 'logo_url', 'facebook_url')
+                  'prices', 'website_url', 'logo_url', 'facebook_url', 'affichage')
 
     def get_location(self, obj):
         return PlaceSerializer(obj.place).data
@@ -53,3 +54,12 @@ class EventSerializer(serializers.ModelSerializer):
         if not obj.logo_url or obj.logo_url == '':
             return obj.association.logo_url
         return obj.logo_url
+
+    def get_affichage(self, obj):
+        data = {}
+        if obj.has_poster:
+            data['begin_publication_at'] = obj.begin_publication_at
+            data['end_publication_at'] = obj.end_publication_at
+            data['content_url'] = obj.content_url
+            data['duration'] = obj.duration
+        return data

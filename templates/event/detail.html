@@ -28,9 +28,15 @@
             Cet événement est en attente de validation par un modérateur. Il n'est donc pas en ligne.
         </div>
     {% else %}
+        {% if not object.has_poster %}
         <div class="alert alert-success" role="alert">
             Cet événement est validé et en ligne.
         </div>
+        {% else %}
+        <div class="alert alert-success" role="alert">
+            Cet événement est validé et en ligne (via Portail VA et Affichage).
+        </div>
+        {% endif %}
     {% endif %}
 
     <div class="row mb-3">
@@ -206,6 +212,52 @@
             {% endif %}
         </div>
     </div>
+
+    <div class="row mb-3 text-center" style="margin-top: 2vh;">
+        <div class="col-md-12">
+            {% if object.has_poster %}
+            <p><span class="dot dot-active"></span>  Souhaite être publié sur Affichage</p>
+            {% else %}
+            <p><span class="dot dot-inactive"></span>  Ne souhaite pas être publié sur Affichage</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if object.has_poster %}
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <b>Date de début de l'affichage sur les TV</b>
+            <div class="card bg-light">
+                <div class="card-body">{{ object.begin_publication_at|date:'DATETIME_FORMAT' }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <b>Date de fin de l'affichage sur les TV</b>
+            <div class="card bg-light">
+                <div class="card-body">{{ object.end_publication_at|date:'DATETIME_FORMAT' }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <b>URL du contenu</b>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <a href="{{ object.content_url }}">
+                        Aller sur le contenu
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <b>Durée d'apparition à l'écran</b>
+            <div class="card bg-light">
+                <div class="card-body">{{ object.duration }} secondes</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <p>
         <small><i>Dernière modification : {{ object.updated_at|date:'DATETIME_FORMAT' }}</i></small>
     </p>

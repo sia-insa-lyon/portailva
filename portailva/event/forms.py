@@ -29,10 +29,23 @@ class EventForm(forms.ModelForm):
         # widget=DateTimePicker(options=settings.PICKER_DATETIME_OPTIONS)
     )
 
+    begin_publication_at = forms.DateTimeField(
+        label="Date et heure de début de l'affichage sur les TV via Affichage",
+        help_text="Format : " + settings.PICKER_DATETIME_OPTIONS['format'],
+        required=False
+    )
+
+    end_publication_at = forms.DateTimeField(
+        label="Date et heure de fin de l'affichage sur les TV via Affichage",
+        help_text="Format : " + settings.PICKER_DATETIME_OPTIONS['format'],
+        required=False
+    )
+
     class Meta(object):
         model = Event
         fields = ('type', 'name', 'short_description', 'description', 'place', 'begins_at', 'ends_at',
-                  'website_url', 'logo_url', 'facebook_url')
+                  'website_url', 'logo_url', 'facebook_url', 'has_poster', 'begin_publication_at', 'end_publication_at',
+                  'content_url', 'duration')
 
     def __init__(self, *args, **kwargs):
         self.association = kwargs.pop('association', None)
@@ -42,7 +55,8 @@ class EventForm(forms.ModelForm):
         self.helper.form_id = 'eventForm'
         self.helper.form_error_title = 'Veuillez corriger les erreurs suivantes :'
 
-    def clean_ends_at(self):
+    def clean(self):
+        super(EventForm, self).clean()
         ends_at = self.cleaned_data['ends_at']
         begins_at = self.cleaned_data['begins_at']
 
@@ -52,7 +66,39 @@ class EventForm(forms.ModelForm):
         if begins_at >= ends_at:
             raise forms.ValidationError("La date de fin doit être ultérieure à la date de début.", code='invalidBegin')
 
-        return self.cleaned_data['ends_at']
+        has_poster = self.cleaned_data['has_poster']
+
+        if has_poster:
+            begin_publication_at = self.cleaned_data['begin_publication_at']
+            end_publication_at = self.cleaned_data['end_publication_at']
+
+            if not begin_publication_at or not end_publication_at:
+                if not begin_publication_at:
+                    raise forms.ValidationError("Vous devez renseigner la date de début de publication.", code='missingBeginPubli')
+                if not end_publication_at:
+                    raise forms.ValidationError("Vous devez renseigner la date de fin de publication.", code='missingEndPubli')
+
+            content_url = self.cleaned_data['content_url']
+            duration = self.cleaned_data['duration']
+            if not content_url or not duration:
+                if not content_url:
+                    raise forms.ValidationError("Vous devez renseigner la ressource à publier.", code='missingContent')
+                if not duration:
+                    raise forms.ValidationError("Vous devez renseigner la durée d'apparition de la publication.", code='missingDuration')
+
+            if duration < 1:
+                raise forms.ValidationError("La durée d'apparition de publication doit être de 1 s au minimum.", code='invalidDuration')
+
+            if end_publication_at.replace(tzinfo=None) <= datetime.now().replace(tzinfo=None):
+                raise forms.ValidationError("Vous ne pouvez pas publier d'événement dans le passé.", code='invalidEndPublication')
+
+            if begin_publication_at >= end_publication_at:
+                raise forms.ValidationError("La date de fin de publication doit être ultérieure à la date de début de publication.", code='invalidBeginPublication')
+
+            if ends_at < end_publication_at:
+                raise forms.ValidationError("Vous ne pouvez pas publier d'événement après la fin de ce dernier.", code='invalidEndPublicationWithBegin')
+
+        return self.cleaned_data
 
     def save(self, commit=True):
         self.instance.association_id = self.association.id

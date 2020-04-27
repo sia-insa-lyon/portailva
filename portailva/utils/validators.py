@@ -15,6 +15,20 @@ def validate_image_url(url):
                               "le lien ainsi généré dans ce champ.")
 
 
+def validate_affichage_url(url):
+    res = requests.head(url, allow_redirects=False)
+    if res.status_code in [400, 401, 402, 403, 404, 500, 501, 502, 503]:
+        raise ValidationError("L'URL saisie ne semble pas pointer vers une ressource valide. "
+                              "Assurez-vous que l'URL que vous fournissez ne pointe pas vers une ressource indisponible"
+                              " publiquement et que cette dernière existe bien.")
+    if res.is_redirect or res.is_permanent_redirect:
+        raise ValidationError("L'URL saisie ne semble pas pointer vers une ressource valide. "
+                              "Assurez-vous que l'URL que vous fournissez ne pointe pas vers une visionneuse "
+                              "type Google Drive, mais bien vers le fichier en lui-même. "
+                              "Vérifiez que votre URL ne correspond pas à un raccoursiseur de lien "
+                              "(les redirections ne sont pas autorisés).")
+
+
 def validate_iban(iban):
     fr_iban_re = re.compile(r'^FR[0-9A-Z]{25}$')
     if not fr_iban_re.match(iban):

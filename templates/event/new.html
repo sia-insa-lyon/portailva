@@ -21,7 +21,7 @@
     <br/>
     <div class="alert alert-secondary" role="alert">
         L’évènement apparaîtra dans le <a href="{% url 'public-calendar-view' %}">calendrier de la VA</a>, et sera diffusé dans les newsletters VA,
-        il est aussi recommandé d'ajouter un visuel sur <a href="https://affichage.bde-insa-lyon.fr/">l'affichage dynamique</a>
+        il est aussi recommandé d'ajouter un visuel sur <a href="https://affichage.bde-insa-lyon.fr/">l'affichage dynamique</a> (si vous ne souhaitez pas utilisez l'interface de Portail VA pour cela)
         et de l'ajouter aussi sur <a href="https://www.insa-lyon.fr/fr/proposer-un-evenement/">le site de l'INSA</a>
         pour qu'il soit affiché dans l'agenda officiel de l'INSA et potentiellement mis en avant par la DIRCOM (sur facebook ou autre).
     </div>
@@ -61,6 +61,28 @@
             $('#id_place').val(value).trigger('change');
         });
         $('label[for=id_place]').on('click', function() { $('#id_place').select2('open'); });
+
+        const $affichageDivSelector = [$('#div_id_begin_publication_at'), $('#div_id_end_publication_at'),
+                                        $('#div_id_content_url'), $('#div_id_duration')];
+        const $affichageCheckSelector = $('#div_id_has_poster input');
+
+        if(!$affichageCheckSelector.is(':checked')){
+            $affichageDivSelector.map(($div) => {
+                $div.hide('fast');
+            });
+        }
+
+        $affichageCheckSelector.on('change', function () {
+            if($affichageCheckSelector.is(':checked')){
+                $affichageDivSelector.map(($div) => {
+                    $div.show('slow');
+                });
+            }else{
+                $affichageDivSelector.map(($div) => {
+                    $div.hide('fast');
+                });
+            }
+        });
     //-->
     </script>
 {% endblock %}
