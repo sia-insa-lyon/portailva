@@ -44,7 +44,7 @@ pipenv-to-requirements==0.7.1
 pipenv==2018.11.26
 premailer==3.0.0
 psycopg2-binary==2.8.3
-pyjwt==1.7.1
+pyjwt==2.4.0
 python-dateutil==2.8.0
 python-magic==0.4.15
 python-social-auth==0.2.21
